@@ -13,11 +13,11 @@ class UserSiteRole(models.TextChoices):
     GUEST = 'guest', 'Guest'
 
 def user_profile_pic_path(instance, filename):
-    return f'upload/post/{instance.username}/{filename}'
+    return f'upload/profile_pic/{instance.username}/{filename}'
 
 
 def user_post_blob_path(instance,filename):
-    return f'upload/profile_pic/{instance.USER_POST_ID.USER_ID.username}/{filename}'
+    return f'upload/post/{instance.USER_POST_ID.USER_ID.username}/{filename}'
 """
 class UserSite(models.Model):
     ID = models.AutoField(primary_key=True)

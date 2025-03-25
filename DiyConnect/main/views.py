@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse
 import json
 from django.contrib.auth.hashers import check_password
-from .models import UserSites
+from .models import UserSites, UserPost, UserPost_BLOB
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 
@@ -124,6 +124,53 @@ def home(request):
 def postAdd(request):
 
     if(request.method =="POST"):
-        print("this is for postadd")
+       
+        role = request.POST.get("role")
+        title = request.POST.get("title")
+        description = request.POST.get("description")
+
+        # Retrieve multiple files
+        
+        images_files = request.FILES.getlist("imagesFiles[]")
+        up = UserPost()
+       
+        """
+        #DEBUGGING
+        print(request.FILES)
+        print("Role:", role)
+        print("Title:", title)
+        """
+        up.USER_ID = request.user
+        up.description = description
+        up.title = title
+        up.user_role_type = role
+        up.save()
+        lastID = UserPost.objects.values('ID').last()
+        last_obj_up =  UserPost.objects.get(ID = lastID['ID'])
+        i =0
+        """
+        # DEBUGGING
+        print(lastID)
+        print(last_obj_up)
+        images_files = []
+        """
+        for key in request.FILES:
+            if key.startswith("imagesFiles["):  # Match keys like 'imagesFiles[0]', 'imagesFiles[1]'
+              
+                
+                file = request.FILES[key]
+                saved_image = UserPost_BLOB.objects.create(
+                USER_POST_ID=last_obj_up,
+                position=i,
+                blob=file)
+                i+=1
+                # images_files.append(request.FILES[key])  # -- Checking Info     
+        
+       
+        #print("Uploaded Files:", [file.name for file in images_files]) # -- Checking Info
+       
+
+        
+        return JsonResponse({"msg": "Request Complete"}, status=200)
     context ={}
     return render(request,'main/subpages/post/postAdd.html', context)

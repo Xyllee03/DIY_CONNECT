@@ -129,6 +129,8 @@
     usr_all_bck_opt_ref.href = get_link.getAttribute("data-url");
     let usr_all_end_opt = document.getElementById("usr_all_end_opt");
     let btn_create = document.createElement("div");
+    //let selectedFile_compiled = null;
+
     btn_create.classList.add("button");
     btn_create.textContent = "POST";
     usr_all_end_opt.appendChild(btn_create);
@@ -138,9 +140,10 @@
     btn_inp_image.addEventListener("click", () => {
       inp_image.click();
     });
-
+    let selectedFiles = null;
     inp_image.addEventListener("change", (event) => {
-      let selectedFiles = Array.from(event.target.files); // Convert FileList to Array
+      //let selectedFile_compiled = event.target.files;
+      selectedFiles = Array.from(event.target.files); // Convert FileList to Array
       let count = selectedFiles.length;
 
       if (count === 1) {
@@ -207,31 +210,36 @@
 
     function Validate() {
       //Given
-
-      let data = {};
+      if (!selectedFiles) {
+        console.log("there is no files");
+        //err_msg.textContent = "Please add a profile image";
+        return false;
+      }
+      let data = new FormData();
       let inp_role = document.getElementById("inp_role").value;
       let inp_title = document.getElementById("inp_title").value;
       let inp_desc = document.getElementById("inp_desc").value;
-
-      data = {
-        role: inp_role,
-        title: inp_title,
-        description: inp_desc,
-      };
+      data.append("role", inp_role);
+      data.append("title", inp_title);
+      data.append("description", inp_desc);
+      selectedFiles.forEach((file, index) => {
+        data.append(`imagesFiles[${index}]`, file);
+      });
       return data;
     }
     usr_all_end_opt.addEventListener("click", () => {
-      let json_data = Validate();
+      let form_data = Validate();
+
+      // console.log([...form_data.entries()]); // Debug: Log form data content
       let filler_data = {};
       //POST
       let response = fetch("{% url 'main:postAdd' %}", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           "X-CSRFToken": getCookie("csrftoken"),
         },
         mode: "same-origin",
-        body: JSON.stringify(filler_data),
+        body: form_data,
       })
         .then((res) => {
           return res.json();
