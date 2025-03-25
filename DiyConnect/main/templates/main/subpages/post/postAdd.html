@@ -1,0 +1,249 @@
+{% extends '../subpages_base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}
+    <title>Create Post | DIY CONNECT</title>
+    {% endblock title%}
+  </head>
+  <style>
+    /* {% block styles %} */
+    .sty-inp-postAdd-image {
+      height: 560px;
+      width: 560px;
+      border: solid 2px;
+
+      display: flex;
+      justify-content: center; /* Center horizontally */
+      align-items: center; /* Center vertically */
+      text-align: center; /* Ensure text is centered */
+      margin: auto; /* Centers the whole circle in the parent container */
+      font-size: 30px;
+
+      font-family: "Montserrat", sans-serif;
+
+      font-weight: 800;
+      font-style: normal;
+    }
+
+    .sty-inp-IN-image {
+      display: grid;
+      height: 560px;
+      width: 560px;
+      gap: 5px;
+      background: #f0f0f0;
+      overflow: hidden;
+    }
+
+    /* {% endblock styles %} */
+  </style>
+  <body>
+    <!-- prettier-ignore -->
+    {% block content %}
+    <!-- //prettier-ignore -->
+    <div class="container">
+      <div class="columns is-vcentered has-text-centered">
+        <div class="column">
+          <div>
+            <input
+              type="text is-larege"
+              placeholder="Add A Title"
+              class="input"
+              id="inp_title"
+            />
+          </div>
+          <div>
+            <textarea
+              class="textarea"
+              placeholder="Add a description"
+              id="inp_desc"
+            ></textarea>
+          </div>
+          <div class="">
+            <h1>Pick role you stated</h1>
+          </div>
+          <div class="columns">
+            <div class="column">
+              <h1 class="button" onclick="role_post_desc()">Contributor</h1>
+            </div>
+            <div class="column">
+              <h1 class="button" onclick="role_post_desc()">Innovator</h1>
+            </div>
+            <div class="column">
+              <h1 class="button" onclick="role_post_desc()">Collector</h1>
+            </div>
+          </div>
+          <!-- Hidden Role-->
+          <input type="text" id="inp_role" />
+          <div class="columns is-vcentered">
+            <div class="column">
+              <h1>--ICON--</h1>
+            </div>
+            <div class="column">
+              <h1 id="desc_onchange">description</h1>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div
+            class="sty-inp-postAdd-image sty-inp-IN-image"
+            id="btn_inp_image"
+          >
+            <!-- CSS ISSUE -->
+            <h1>
+              <ion-icon name="add-circle" style="font-size: 195px"></ion-icon>
+            </h1>
+            <!-- HIDDEN INPUT FILE -->
+            <input
+              type="file"
+              src=""
+              name=""
+              id="inp_image"
+              accept="image/*"
+              hidden
+              multiple
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- prettier-ignore -->
+    <div id="get_link" data-url="{% url 'main:diyconn_home' %}" hidden></div>
+    {% endblock content %}
+    <!-- //prettier-ignore -->
+  </body>
+
+  <script>
+    //{% block scripts %}
+
+    // GIVEN
+    let usr_all_bck_opt_label = document.getElementById(
+      "usr_all_bck_opt_label"
+    );
+    let usr_all_bck_opt_ref = document.getElementById("usr_all_bck_opt_ref");
+    let get_link = document.getElementById("get_link");
+    usr_all_bck_opt_label.textContent = "Create Post";
+    usr_all_bck_opt_ref.href = get_link.getAttribute("data-url");
+    let usr_all_end_opt = document.getElementById("usr_all_end_opt");
+    let btn_create = document.createElement("div");
+    btn_create.classList.add("button");
+    btn_create.textContent = "POST";
+    usr_all_end_opt.appendChild(btn_create);
+
+    let inp_image = document.getElementById("inp_image");
+    let btn_inp_image = document.getElementById("btn_inp_image");
+    btn_inp_image.addEventListener("click", () => {
+      inp_image.click();
+    });
+
+    inp_image.addEventListener("change", (event) => {
+      let selectedFiles = Array.from(event.target.files); // Convert FileList to Array
+      let count = selectedFiles.length;
+
+      if (count === 1) {
+        btn_inp_image.style.gridTemplateColumns = "1fr";
+        btn_inp_image.style.gridTemplateRows = "1fr";
+      } else if (count === 2) {
+        btn_inp_image.style.gridTemplateColumns = "1fr 1fr";
+        btn_inp_image.style.gridTemplateRows = "1fr";
+      } else if (count === 3) {
+        btn_inp_image.style.gridTemplateColumns = "1fr 1fr";
+        btn_inp_image.style.gridTemplateRows = "1fr 1fr";
+      } else if (count == 4) {
+        btn_inp_image.style.gridTemplateColumns = "1fr 1fr";
+        btn_inp_image.style.gridTemplateRows = "1fr 1fr";
+      } else {
+        alert("Can only take 4 images per post");
+        return;
+      }
+
+      // Clear previous images (optional)
+      btn_inp_image.innerHTML = "";
+      btn_inp_image.style.display = "grid";
+
+      // Define layout based on image count
+
+      // Add images dynamically
+      selectedFiles.forEach((file, index) => {
+        let imageUrl = URL.createObjectURL(file);
+        let img = document.createElement("img");
+        img.src = imageUrl;
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "cover";
+
+        // If 3 images, make the last one span two columns
+        if (count === 3 && index === 2) {
+          img.style.gridColumn = "1 / span 2";
+        }
+
+        btn_inp_image.appendChild(img);
+      });
+
+      // Hide text inside the div (if exists)
+      let textElement = btn_inp_image.querySelector("h1");
+      if (textElement) textElement.style.display = "none";
+    });
+
+    //Given
+    let desc_onchange = document.getElementById("desc_onchange");
+    function role_post_desc() {
+      let inp_role = document.getElementById("inp_role");
+      let role_desc = event.target.textContent.replace(/\s+/g, "");
+      if (role_desc === "Contributor") {
+        desc_onchange.textContent = "THIS IS FOR CONTRIBUTOR";
+        inp_role.value = "Contributor";
+      } else if (role_desc === "Innovator") {
+        desc_onchange.textContent = "THIS IS FOR INNOVATOR";
+        inp_role.value = "Innovator";
+      } else if (role_desc === "Collector") {
+        desc_onchange.textContent = "THIS IS FOR Collector";
+        inp_role.value = "Collector";
+      }
+    }
+
+    function Validate() {
+      //Given
+
+      let data = {};
+      let inp_role = document.getElementById("inp_role").value;
+      let inp_title = document.getElementById("inp_title").value;
+      let inp_desc = document.getElementById("inp_desc").value;
+
+      data = {
+        role: inp_role,
+        title: inp_title,
+        description: inp_desc,
+      };
+      return data;
+    }
+    usr_all_end_opt.addEventListener("click", () => {
+      let json_data = Validate();
+      let filler_data = {};
+      //POST
+      let response = fetch("{% url 'main:postAdd' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        mode: "same-origin",
+        body: JSON.stringify(filler_data),
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((msg) => {
+          console.log(msg);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+
+    //{% endblock scripts %}
+  </script>
+</html>

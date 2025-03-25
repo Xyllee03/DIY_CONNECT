@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}
+    <title>SubPages Base</title>
+    {% endblock title %}
+  </head>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+  />
+  <style>
+    /*
+    {% block styles %}
+    {% endblock styles %}
+    */
+    .inherit_width {
+      width: 100%;
+    }
+  </style>
+  <body>
+    {% include './misc/navbar_sub.html' %}
+    <section class="hero is-fullheight-with-navbar">
+      <div class="hero-body">
+        <div class="inherit_width">
+          <script
+            type="module"
+            src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+          ></script>
+          <script
+            nomodule
+            src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+          ></script>
+          <!-- prettier-ignore -->
+          {% block content %}
+          <!-- //prettier-ignore  -->
+          <!-- prettier-ignore -->
+          {% endblock content %}
+          <!-- //prettier-ignore  -->
+        </div>
+      </div>
+    </section>
+
+    <script>
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      //{% block scripts %}
+
+      //{% endblock scripts%}
+    </script>
+  </body>
+</html>

@@ -1,0 +1,204 @@
+{% extends './auth_base.html' %}
+
+<html>
+  <head>
+    <!-- prettier-ignore -->
+    {% block title %}
+    <!-- //prettier-ignore -->
+    <title>Profile | DIY CONNECT</title>
+    <!-- prettier-ignore -->
+    {% endblock title %}
+    <!-- //prettier-ignore
+              -->
+    <style></style>
+  </head>
+</html>
+<body>
+  <!-- prettier-ignore -->
+  {% block content %}
+  <!-- //prettier-ignore -->
+  <div class="container container-bkg">
+    <div class="has-text-centered">
+      <h1 class="sty-sty-auth-header sty-size-auth-header mb-6">DIY Connect</h1>
+    </div>
+    <div class="has-text-centered">
+      <div class="columns is-vcentered">
+        <div class="column is-1"></div>
+        <div class="column">
+          <h1
+            class="sty-size-sub-header sty-sty-sub-header-registrationProfile"
+          >
+            Let's prepare your profile
+          </h1>
+          <h1 class="sty-sty-subtitle-registrationProfile">
+            Add image and bio to have a good impression of other people to you.
+          </h1>
+        </div>
+        <div class="column is-1"></div>
+        <div class="column">
+          <!-- /// CSS ISSUE (inherit_width) ///-->
+          <div class="inherit_width">
+            <div class="sty_inp_image" id="btn_inp_image">
+              <h1>Click to add an Image</h1>
+            </div>
+          </div>
+          <input
+            type="text"
+            class="input is-medium mt-3"
+            placeholder="add a bio"
+            id="inp_bio"
+          />
+
+          <!-- HIDDEN ELEMENT -->
+          <input
+            type="file"
+            src=""
+            name=""
+            id="inp_image"
+            accept="image/*"
+            hidden
+          />
+        </div>
+        <div class="column is-1"></div>
+      </div>
+      <div class="has-text-centered sty-err-msg" id="err_msg"></div>
+      <div class="button sty-btn-submit" id="btn_submit">Submit</div>
+    </div>
+
+    <div id="userData" data-info="{{ UserPreData|safe }}"></div>
+  </div>
+  <!-- MODAL -->
+  <div class="modal" id="modal_user_verified">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p
+          class="modal-card-title has-text-centered sty-sty-auth-header sty-size-sub-header"
+        >
+          NEW ACCOUNT CREATED
+        </p>
+      </header>
+      <section class="modal-card-body">
+        <div class="has-text-centered sty-sty-subtitle-registrationProfile">
+          <h1>Congratulations you created an Account in DIY Connect</h1>
+        </div>
+        <div class="has-text-centered"></div>
+      </section>
+      <footer class="modal-card-foot sty-modal-footer">
+        <div class="has-text-centered">
+          <button class="button sty-btn-submit" id="btn_to_login">
+            Back To Login
+          </button>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!-- prettier-ignore -->
+  {% endblock content %}
+  <!-- //prettier-ignore -->
+
+  <script>
+    //{% block scripts %}
+
+    //GIVEN
+    let modal_user_verified = document.getElementById("modal_user_verified");
+    let btn_submit = document.getElementById("btn_submit");
+    let btn_inp_image = document.getElementById("btn_inp_image");
+    let inp_image = document.getElementById("inp_image");
+    let btn_to_login = document.getElementById("btn_to_login");
+    let selectedFile = null;
+
+    // Other ways trigger file
+    btn_inp_image.addEventListener("click", () => {
+      inp_image.click();
+    });
+    //console.log(data_stored);  --> Check if you want to see SESSION user data
+    inp_image.addEventListener("change", (event) => {
+      selectedFile = event.target.files[0];
+      let imageUrl = URL.createObjectURL(selectedFile);
+      btn_inp_image.style.background = `url(${imageUrl})`;
+      btn_inp_image.style.backgroundSize = "cover"; // Ensure it covers the div
+      btn_inp_image.style.backgroundPosition = "center";
+      btn_inp_image.style.backgroundRepeat = "no-repeat";
+
+      // Hide the text after image selection (optional)
+      btn_inp_image.querySelector("h1").style.display = "none";
+      // Check if files is there
+      /* 
+      if (selectedFile) {
+        console.log("Selected file:", selectedFile.name);
+      }
+        */
+    });
+
+    btn_submit.addEventListener("click", () => {
+      //No Error handler
+      // Expects Data will provide
+      let form_data = Validate();
+
+      // Check Each Form Data
+      /*
+      form_data.forEach((value, key) => {
+        console.log(key, value);
+      });
+      */
+
+      let response = fetch("{% url 'main:authentication_ADD' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+        mode: "same-origin",
+        body: form_data,
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("Request failed");
+          }
+        })
+        .then((res) => {
+          console.log(res);
+
+          modal_user_verified.classList.add("is-active");
+          //  window.location.href = res.redirect_url;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      //Check if data get
+      //console.log(form_data);
+    });
+
+    function Validate() {
+      // GIVEN
+      let err_msg = document.getElementById("err_msg");
+      let userDataElement = document.getElementById("userData");
+      let pre_user_data = userDataElement.dataset.info;
+
+      // Convert string to JSON
+      let validJsonString = pre_user_data.replace(/'/g, '"');
+      let jsonObject_user_data = JSON.parse(validJsonString);
+      let inp_bio = document.getElementById("inp_bio").value;
+      // ADD a image handler for selectedFile
+      // PLAN if no image place default image provide
+
+      if (!selectedFile) {
+        err_msg.textContent = "Please add a profile image";
+        return false;
+      }
+      let data = new FormData();
+      data.append("UserDataPrep", JSON.stringify(jsonObject_user_data));
+      data.append("bio", inp_bio);
+      data.append("ImageFile", selectedFile);
+      return data;
+    }
+
+    btn_to_login.addEventListener("click", () => {
+      window.location.href = "/authentication/login/";
+    });
+    //{% endblock scripts %}
+  </script>
+</body>

@@ -1,0 +1,304 @@
+{% extends './auth_base.html' %}
+<html>
+  <head>
+    <!-- prettier-ignore -->
+    {% block title %}
+    <!-- //prettier-ignore -->
+    <title>Registration | DIY CONNECT</title>
+    <!-- prettier-ignore -->
+    {% endblock title %}
+    <!-- //prettier-ignore
+          -->
+    <style></style>
+  </head>
+
+  <body>
+    <!-- prettier-ignore -->
+    {% block content %}
+    <!-- //prettier-ignore -->
+    <div class="container container-bkg">
+      <div class="columns is-vcentered">
+        <div class="column">
+          <div class="has-text-left">
+            <a class="button" href="{% url 'main:authentication_login' %}">
+              DIY CONNECT LOGO
+            </a>
+          </div>
+        </div>
+        <div class="column">
+          <h1 class="has-text-right sty-size-sub-header sty-sty-auth-header">
+            Registration Form
+          </h1>
+        </div>
+      </div>
+
+      <hr class="sty-hr mb-6" />
+      <form>
+        <div class="columns is-vcentered">
+          <div class="column has-text-centered">
+            <div class="columns is-vcentered">
+              <div class="column">
+                <h1 class="sty-sty-auth-label sty-size-auth-label">
+                  First Name:
+                </h1>
+              </div>
+              <div class="column">
+                <div>
+                  <input
+                    type="text"
+                    class="input is-medium sty-sty-inp-border"
+                    id="inp_first_name"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="columns is-vcentered">
+              <div class="column">
+                <h1 class="sty-sty-auth-label sty-size-auth-label">
+                  Last Name :
+                </h1>
+              </div>
+              <div class="column">
+                <div>
+                  <input
+                    type="text"
+                    class="input is-medium sty-sty-inp-border"
+                    id="inp_last_name"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="columns is-vcentered">
+              <div class="column">
+                <h1 class="sty-sty-auth-label sty-size-auth-label">Email:</h1>
+              </div>
+              <div class="column">
+                <div>
+                  <input
+                    type="text"
+                    class="input is-medium sty-sty-inp-border"
+                    id="inp_email"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="columns is-vcentered">
+              <div class="column">
+                <h1 class="sty-sty-auth-label sty-size-auth-label">
+                  Municipality or City:
+                </h1>
+              </div>
+              <!-- //// CSS ISSUE /////-->
+              <div class="column">
+                <div>
+                  <div
+                    class="select is-medium sty-sty-inp-border sty_inp_dropdown"
+                  >
+                    <select id="inp_municipality">
+                      <option value="Bacoor">Bacoor</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="columns is-vcentered">
+              <div class="column">
+                <h1 class="sty-sty-auth-label sty-size-auth-label">
+                  Barangay:
+                </h1>
+              </div>
+              <div class="column">
+                <div>
+                  <div>
+                    <div class="select is-medium sty_inp_dropdown">
+                      <select id="inp_barangay">
+                        <option value="Molino-IV">Molino IV</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="columns is-vcentered">
+              <div class="column">
+                <h1 class="sty-sty-auth-label sty-size-auth-label">
+                  Subdivision
+                </h1>
+              </div>
+              <div class="column">
+                <div>
+                  <div>
+                    <div class="select is-medium sty_inp_dropdown">
+                      <select id="inp_subdivision">
+                        <option value="South-2">South-2</option>
+                        <option value="South-1">South-1</option>
+                        <option value="East-1">East-1</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column has-text-centered">
+            <div class="columns is-vcentered">
+              <div class="column">
+                <h1 class="sty-sty-auth-label sty-size-auth-label">
+                  Username:
+                </h1>
+              </div>
+              <div class="column">
+                <div>
+                  <input
+                    type="text"
+                    class="input is-medium sty-sty-inp-border"
+                    id="inp_username"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="columns is-vcentered">
+              <div class="column">
+                <h1 class="sty-sty-auth-label sty-size-auth-label">
+                  Password :
+                </h1>
+              </div>
+              <div class="column">
+                <div>
+                  <input
+                    type="password"
+                    class="input is-medium sty-sty-inp-border"
+                    id="inp_password"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="columns is-vcentered">
+              <div class="column">
+                <h1 class="sty-sty-auth-label sty-size-auth-label">
+                  Re-type Password :
+                </h1>
+              </div>
+              <div class="column">
+                <div>
+                  <input
+                    type="password"
+                    class="input is-medium sty-sty-inp-border"
+                    id="inp_retype_password"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="has-text-centered sty-err-msg" id="err_msg"></div>
+      <div class="has-text-centered">
+        <div class="button sty-btn-submit mt-6" id="btn_pre_register">
+          Register
+        </div>
+      </div>
+    </div>
+    <!-- prettier-ignore -->
+    {% endblock content %}
+    <!-- //prettier-ignore -->
+
+    <script>
+      //{% block scripts %}
+
+      //BTN
+      let btn_pre_register = document.getElementById("btn_pre_register");
+      btn_pre_register.addEventListener("click", () => {
+        let json_data = Validate();
+
+        if (!json_data) {
+          console.log("There is an error in fields");
+          return;
+        }
+        // Check Json data
+        // console.log(json_data);
+
+        let response = fetch("{% url 'main:authentication_preLoad' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+          body: JSON.stringify(json_data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // If response status is not OK (400, 500, etc.), throw an error
+              return response.json().then((errData) => {
+                throw errData;
+              });
+            }
+            return response.json(); // Otherwise, parse the JSON response
+          })
+          .then((res) => {
+            //console.log(res);
+            window.location.href = res.redirect_url;
+          })
+          .catch((err) => {
+            //console.log(err);
+            console.log("Error:", err.error || "An unexpected error occurred");
+
+            let err_msg = document.getElementById("err_msg");
+            err_msg.textContent = `${err.error}`;
+          });
+      });
+
+      function Validate() {
+        //GIVEN
+        let inp_first_name = document.getElementById("inp_first_name").value;
+        let inp_last_name = document.getElementById("inp_last_name").value;
+        let inp_email = document.getElementById("inp_email").value;
+        let inp_municipality =
+          document.getElementById("inp_municipality").value;
+        let inp_barangay = document.getElementById("inp_barangay").value;
+        let inp_username = document.getElementById("inp_username").value;
+        let inp_password = document.getElementById("inp_password").value;
+        let inp_retype_password = document.getElementById(
+          "inp_retype_password"
+        ).value;
+        let inp_subdivision = document.getElementById("inp_subdivision").value;
+        let err_msg = document.getElementById("err_msg");
+
+        if (
+          inp_first_name.trim() !== "" &&
+          inp_last_name.trim() !== "" &&
+          inp_email.trim() !== "" &&
+          inp_username.trim() !== "" &&
+          inp_password.trim() !== "" &&
+          inp_retype_password.trim() !== "" &&
+          inp_subdivision.trim() !== ""
+        ) {
+          if (inp_retype_password !== inp_password) {
+            err_msg.textContent =
+              "Your password and re-type password doesn't match. Please change it before proceeding.";
+            return false;
+          }
+        } else {
+          err_msg.textContent =
+            "All fields are required. Please fill in every field before proceeding.";
+          return false;
+        }
+        data = {
+          firstName: inp_first_name,
+          lastName: inp_last_name,
+          email: inp_email,
+          municipality_or_city: inp_municipality,
+          barangay: inp_barangay,
+          username: inp_username,
+          password: inp_password,
+          retype_password: inp_retype_password,
+          subdivision: inp_subdivision,
+        };
+        return data;
+      }
+
+      //{% endblock scripts %}
+    </script>
+  </body>
+</html>

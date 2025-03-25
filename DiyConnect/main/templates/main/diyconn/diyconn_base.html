@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}
+    <title>DIY CONNECT</title>
+    {% endblock title %}
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    />
+    <style>
+      /*
+        {% block styles %}
+        {% endblock styles%}
+        */
+    </style>
+  </head>
+  <body>
+    <!-- prettier-ignore -->
+    <div class="container">{% include '../misc/diy_navbar.html'%}</div>
+    <!-- //prettier-ignore -->
+
+    <!-- prettier-ignore -->
+    {% block content %}
+    <!-- //prettier-ignore  -->
+
+    <!-- prettier-ignore -->
+    {% endblock content %}
+    <!-- //prettier-ignore  -->
+
+    <div class="modal" id="mdl_logout">
+      <div class="modal-background" onclick="mdl_f_logout_close()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title has-text-centered">Logout</p>
+          <button
+            class="delete"
+            aria-label="close"
+            onclick="mdl_f_logout_close()"
+          ></button>
+        </header>
+        <section class="modal-card-body has-text-centered">
+          Are you sure you want to Logout in DIY Connect?
+        </section>
+        <!-- Follow auth_registerationProfile to center the btn -->
+        <footer class="modal-card-foot">
+          <div class="has-text-centered">
+            <a
+              class="button is-success"
+              id="btn_mdl_logout"
+              href="{% url 'main:authentication_logout' %}"
+            >
+              Save changes
+            </a>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+
+    <script>
+      let mdl_logout = document.getElementById("mdl_logout");
+      let navAll_logout = document.getElementById("navAll_logout");
+      let btn_mdl_logout = document.getElementById("btn_mdl_logout");
+
+      navAll_logout.addEventListener("click", () => {
+        mdl_logout.classList.add("is-active");
+      });
+
+      function mdl_f_logout_close() {
+        mdl_logout.classList.remove("is-active");
+      }
+
+      //{% block scripts %}
+      //{% endblock scripts%}
+    </script>
+  </body>
+</html>
