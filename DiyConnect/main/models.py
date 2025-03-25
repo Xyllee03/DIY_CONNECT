@@ -5,6 +5,7 @@ from django.contrib.auth.hashers import make_password
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager,PermissionsMixin
 
+# test
 class UserSiteRole(models.TextChoices):
     INNOVATOR = 'innovator', 'Innovator'
     CONTRIBUTOR = 'contributor', 'Contributor'
