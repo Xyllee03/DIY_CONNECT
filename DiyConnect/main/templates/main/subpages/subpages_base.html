@@ -11,6 +11,10 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
   />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet"
+  />
   <style>
     /*
     {% block styles %}
@@ -18,6 +22,50 @@
     */
     .inherit_width {
       width: 100%;
+    }
+    .sty-bk-font-size {
+      font-size: 36px;
+      font-family: "Roboto", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 500;
+      font-style: normal;
+      font-variation-settings: "wdth" 100;
+      color: #ffffff;
+    }
+    .sty-bk-font-size:hover {
+      background-color: #ffffff;
+      color: #283618;
+    }
+    .sty-upper-right-componet-font-size {
+      font-size: 24px;
+    }
+    .sty-subtitle-low-font-size {
+      font-size: 24px;
+    }
+    .sty-subtitle-lower-font-size {
+      font-size: 20px;
+    }
+    .sty-header-big-font-size {
+      font-size: 64px;
+    }
+    .sty-font-family-roboto {
+      font-family: "Roboto", sans-serif;
+      font-optical-sizing: auto;
+      font-style: normal;
+      font-variation-settings: "wdth" 100;
+    }
+    .sty-font-family-montserrat {
+      font-family: "Montserrat", sans-serif;
+      font-optical-sizing: auto;
+      font-style: normal;
+    }
+    .sty-font-family-hind {
+      font-family: "Hind Madurai", sans-serif;
+      font-style: normal;
+    }
+    .sty-nav-fix {
+      background-color: #283618;
+      height: 120px;
     }
   </style>
   <body>
@@ -27,12 +75,13 @@
         <div class="inherit_width">
           <script
             type="module"
-            src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+            src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"
           ></script>
           <script
             nomodule
-            src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+            src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"
           ></script>
+
           <!-- prettier-ignore -->
           {% block content %}
           <!-- //prettier-ignore  -->
@@ -44,6 +93,7 @@
     </section>
 
     <script>
+      //console.log(window.customElements.get("ion-icon"));
       function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== "") {

@@ -37,6 +37,61 @@
       background: #f0f0f0;
       overflow: hidden;
     }
+    .sty-btn-post-component {
+      width: 170px;
+      height: 45px;
+      color: #283618;
+      background-color: #fefae0;
+    }
+    .sty-inp-txt-header {
+      height: 170px;
+      text-align: center;
+      background-color: #d9d9d9;
+      border: #283618 2px solid;
+      color: black;
+      overflow: auto;
+      resize: none;
+    }
+    .sty-header-weight {
+      font-weight: 800;
+    }
+    .sty-inp-txt-subheader {
+      background-color: #d9d9d9;
+      border: #283618 2px solid;
+      color: black;
+      font-weight: 400;
+      resize: none;
+    }
+    .sty-subheader-lbl {
+      color: black;
+      font-weight: 700;
+    }
+    .sty-role {
+      width: 100%;
+      font-weight: 500;
+      border: #ffffff solid 1px;
+    }
+    .sty-role-selected {
+      background-color: #d9d9d9;
+      color: #283618;
+    }
+    .sty-role-not-selected {
+      background-color: #283618;
+      color: #fefae0;
+    }
+    .sty-icon-info {
+      color: #75f94c;
+      font-size: 40px;
+    }
+    .sty-description-lbl {
+      text-align: justify;
+      color: black;
+    }
+    .sty-err-msg {
+      color: red;
+      font-size: 20px;
+      font-weight: 500;
+    }
 
     /* {% endblock styles %} */
   </style>
@@ -48,42 +103,79 @@
       <div class="columns is-vcentered has-text-centered">
         <div class="column">
           <div>
+            <!--
             <input
-              type="text is-larege"
+              type="text "
               placeholder="Add A Title"
-              class="input"
+              class="input sty-header-big-font-size sty-inp-txt-header sty-header-weight"
               id="inp_title"
             />
+            -->
+            <textarea
+              placeholder="Add A Title"
+              name=""
+              id="inp_title"
+              class="input sty-header-big-font-size sty-inp-txt-header sty-header-weight"
+            ></textarea>
           </div>
           <div>
             <textarea
-              class="textarea"
+              class="textarea sty-inp-txt-subheader mt-2 sty-font-family-hind"
               placeholder="Add a description"
               id="inp_desc"
             ></textarea>
           </div>
           <div class="">
-            <h1>Pick role you stated</h1>
+            <h1
+              class="has-text-left sty-subtitle-low-font-size sty-font-family-roboto mt-5 sty-subheader-lbl"
+            >
+              Pick role you stated...
+            </h1>
           </div>
-          <div class="columns">
+          <div class="columns is-0">
             <div class="column">
-              <h1 class="button" onclick="role_post_desc()">Contributor</h1>
+              <h1
+                id="sty_choice_role"
+                class="sty-subtitle-low-font-size sty-font-family-roboto sty-role"
+                onclick="role_post_desc()"
+              >
+                Contributor
+              </h1>
             </div>
             <div class="column">
-              <h1 class="button" onclick="role_post_desc()">Innovator</h1>
+              <h1
+                id="sty_choice_role"
+                class="sty-subtitle-low-font-size sty-font-family-roboto sty-role"
+                onclick="role_post_desc()"
+              >
+                Innovator
+              </h1>
             </div>
             <div class="column">
-              <h1 class="button" onclick="role_post_desc()">Collector</h1>
+              <h1
+                id="sty_choice_role"
+                class="sty-subtitle-low-font-size sty-font-family-roboto sty-role"
+                onclick="role_post_desc()"
+              >
+                Collector
+              </h1>
             </div>
           </div>
           <!-- Hidden Role-->
-          <input type="text" id="inp_role" />
+          <input type="text" id="inp_role" hidden />
           <div class="columns is-vcentered">
-            <div class="column">
-              <h1>--ICON--</h1>
+            <div class="column is-2">
+              <h1 class="sty-icon-info">
+                <ion-icon name="information-circle"></ion-icon>
+              </h1>
             </div>
             <div class="column">
-              <h1 id="desc_onchange">description</h1>
+              <h1
+                id="desc_onchange"
+                class="sty-subtitle-lower-font-size sty-font-family-hind sty-description-lbl"
+              >
+                description
+              </h1>
             </div>
           </div>
         </div>
@@ -109,6 +201,7 @@
           </div>
         </div>
       </div>
+      <div class="has-text-centered sty-err-msg" id="err_msg"></div>
     </div>
     <!-- prettier-ignore -->
     <div id="get_link" data-url="{% url 'main:diyconn_home' %}" hidden></div>
@@ -119,6 +212,18 @@
   <script>
     //{% block scripts %}
 
+    // INITIALIZED
+    let ini_inp_role = document.getElementById("inp_role");
+    let ini_desc_onchange = document.getElementById("desc_onchange");
+    ini_inp_role.value = "Contributor";
+    ini_desc_onchange.innerHTML =
+      "A Contributor is an individual who provides materials, resources, or support to a project, organization, or business. <b> As a contributor, you are encouraged to share items that can be repurposed, ensuring they are useful to others. Please only post items that you are willing to give away freely for the benefit of those who can make use of them. </b>";
+    let ini_sty_choice_role = document.querySelectorAll("#sty_choice_role");
+    ini_sty_choice_role.forEach((el) =>
+      el.classList.add("sty-role-not-selected")
+    );
+    ini_sty_choice_role[0].classList.remove("sty-role-not-selected");
+    ini_sty_choice_role[0].classList.add("sty-role-selected");
     // GIVEN
     let usr_all_bck_opt_label = document.getElementById(
       "usr_all_bck_opt_label"
@@ -129,9 +234,14 @@
     usr_all_bck_opt_ref.href = get_link.getAttribute("data-url");
     let usr_all_end_opt = document.getElementById("usr_all_end_opt");
     let btn_create = document.createElement("div");
-    //let selectedFile_compiled = null;
+    let err_msg = document.getElementById("err_msg");
 
+    //let selectedFile_compiled = null;
+    // INTIALIZE THE COMPONENT
     btn_create.classList.add("button");
+    btn_create.classList.add("sty-subtitle-low-font-size");
+    btn_create.classList.add("sty-font-family-roboto");
+    btn_create.classList.add("sty-btn-post-component");
     btn_create.textContent = "POST";
     usr_all_end_opt.appendChild(btn_create);
 
@@ -159,7 +269,8 @@
         btn_inp_image.style.gridTemplateColumns = "1fr 1fr";
         btn_inp_image.style.gridTemplateRows = "1fr 1fr";
       } else {
-        alert("Can only take 4 images per post");
+        err_msg.textContent = "Can only take 4 images per post";
+        //alert("Can only take 4 images per post");
         return;
       }
 
@@ -194,31 +305,47 @@
     //Given
     let desc_onchange = document.getElementById("desc_onchange");
     function role_post_desc() {
+      let sty_choice_role = document.querySelectorAll("#sty_choice_role");
+      sty_choice_role.forEach((el) =>
+        el.classList.add("sty-role-not-selected")
+      );
       let inp_role = document.getElementById("inp_role");
       let role_desc = event.target.textContent.replace(/\s+/g, "");
+
       if (role_desc === "Contributor") {
-        desc_onchange.textContent = "THIS IS FOR CONTRIBUTOR";
-        inp_role.value = "Contributor";
+        desc_onchange.innerHTML =
+          "A Contributor is an individual who provides materials, resources, or support to a project, organization, or business. <b> As a contributor, you are encouraged to share items that can be repurposed, ensuring they are useful to others. Please only post items that you are willing to give away freely for the benefit of those who can make use of them. </b>";
       } else if (role_desc === "Innovator") {
-        desc_onchange.textContent = "THIS IS FOR INNOVATOR";
+        desc_onchange.innerHTML =
+          "An Innovator is an  individual who  collects and creatively repurposes items to give them a second life through innovative projects. <b> As an innovator, you should only post projects that you genuinely intend to create</b>, demonstrating how the collected items can be transformed into something new and valuable. By doing so, you contribute to a more sustainable and environmentally friendly community.";
         inp_role.value = "Innovator";
       } else if (role_desc === "Collector") {
-        desc_onchange.textContent = "THIS IS FOR Collector";
+        desc_onchange.innerHTML =
+          "A Collector is an individual who gathers recyclable items that can be exchanged for money or other benefits. If you are a collector, you should only <b> post items that you are actively looking to collect and are willing to pick up or receive.</b> This helps facilitate an efficient exchange process while promoting recycling and sustainability.";
         inp_role.value = "Collector";
       }
+      event.target.classList.remove("sty-role-not-selected");
+      event.target.classList.add("sty-role-selected");
     }
 
     function Validate() {
       //Given
       if (!selectedFiles) {
         console.log("there is no files");
+        err_msg.textContent = "Please add a input in all fields";
         //err_msg.textContent = "Please add a profile image";
         return false;
       }
-      let data = new FormData();
+
       let inp_role = document.getElementById("inp_role").value;
       let inp_title = document.getElementById("inp_title").value;
       let inp_desc = document.getElementById("inp_desc").value;
+      if (inp_role === "" || inp_title === "" || inp_desc === "") {
+        err_msg.textContent = "Please add a input in all fields";
+
+        return false;
+      }
+      let data = new FormData();
       data.append("role", inp_role);
       data.append("title", inp_title);
       data.append("description", inp_desc);
@@ -229,9 +356,12 @@
     }
     usr_all_end_opt.addEventListener("click", () => {
       let form_data = Validate();
-
+      //console.log(form_data);
+      if (!form_data) {
+        return;
+      }
       // console.log([...form_data.entries()]); // Debug: Log form data content
-      let filler_data = {};
+      //let filler_data = {};
       //POST
       let response = fetch("{% url 'main:postAdd' %}", {
         method: "POST",
@@ -246,6 +376,7 @@
         })
         .then((msg) => {
           console.log(msg);
+          window.location.href = `/${msg.redirect_url}`;
         })
         .catch((err) => {
           console.log(err);

@@ -171,6 +171,6 @@ def postAdd(request):
        
 
         
-        return JsonResponse({"msg": "Request Complete"}, status=200)
+        return JsonResponse({"msg": "Request Complete","redirect_url":"diyconnect/home/"}, status=200)
     context ={}
     return render(request,'main/subpages/post/postAdd.html', context)
