@@ -12,9 +12,99 @@
     <!-- prettier-ignore -->
     {% block content %}
     <!-- //prettier-ignore -->
+    <!-- hidden-last-value-post -->
+    <input type="text" id="trial_role" value="Innovator" hidden />
+    <input type="text" name="" id="hidden_last_post_value" value="0" hidden />
+    <input type="text" id="hidden_post_role" value="Innovator" hidden />
+    <!-- TRIALLLL -->
     <h1 class="has-text-centered">this is for home html</h1>
+    <div id="postContainer">
+      <div class="container">
+        <div class="section is-large">
+          <div class="columns is-vcentered has-text-centered">
+            <div class="column">
+              <h1>300 pcs of Plastics Bottles</h1>
+              <h1>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Deserunt ipsa natus aut ratione debitis! Quo, provident sed!
+                Sapiente architecto ratione omnis! Odio omnis delectus cum
+                dolores cupiditate repellendus totam quia sunt dolore! Nostrum
+                numquam deserunt modi, minus natus possimus, animi doloremque,
+                atque aperiam sunt tempore dolorem voluptas repellat? Enim,
+                asperiores?
+              </h1>
+              <div class="columns">
+                <div class="column"><h1>-- msg-icon --</h1></div>
+                <div class="column"><h1>--request--</h1></div>
+                <div class="column"><h1>--share--</h1></div>
+              </div>
+            </div>
+            <div class="column">
+              <h1>IMAGESS</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- prettier-ignore -->
     {% endblock content %}
     <!-- //prettier-ignore -->
+    <script>
+      //{% block scripts %}
+
+      // IF WORKS IT WORK
+      let hidden_last_post_value = document.getElementById(
+        "hidden_last_post_value"
+      ).value;
+      let hidden_post_role = document.getElementById("hidden_post_role").value;
+
+      let postContainer = document.getElementById("postContainer");
+      async function fetchNewPost() {
+        let response = await fetch(
+          `/post/get/${hidden_last_post_value}/${hidden_post_role}`
+        );
+        try {
+          let data = await response.json();
+          hidden_last_post_value = data.latest_post_count;
+          console.log(data.latest_post_count);
+          setTimeout(fetchNewPost, 2000); // Calls again after 2 seconds
+          /*
+          let div_newPost = document.createElement("div");
+          div_newPost.classList.add("container");
+
+          div_newPost.innerHTML = `
+      <div class="section is-large">
+        <div class="columns is-vcentered has-text-centered">
+          <div class="column">
+            <h1> title}</h1>
+            <h1> description}</h1>
+            <div class="columns">
+              <div class="column"><h1>-- msg-icon --</h1></div>
+              <div class="column"><h1>--request--</h1></div>
+              <div class="column"><h1>--share--</h1></div>
+            </div>
+          </div>
+          <div class="column">
+            <h1>IMAGESS</h1>
+          </div>
+        </div>
+      </div>
+    `;
+          postContainer.appendChild(div_newPost);
+
+          */
+        } catch (err) {
+          console.log(err);
+          console.log("error has been handled");
+        }
+
+        // Get the lastest count
+      }
+      fetchNewPost();
+      //---''
+
+      //{% endblock scripts%}
+    </script>
   </body>
 </html>

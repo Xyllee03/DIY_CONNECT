@@ -15,11 +15,42 @@
         {% block styles %}
         {% endblock styles%}
         */
+      .sty-h-navbar-role {
+        font-size: 24px;
+        color: #ffffff !important;
+      }
+      .sty-h-navbar-role-items {
+        background-color: #ffffff;
+        color: #283618;
+      }
+      .sty-h-navbar-icons {
+        font-size: 53px;
+        color: #ffffff;
+      }
+      .sty-h-navbar-icons:hover {
+        background-color: #ffffff;
+        color: #283618;
+      }
+      .sty-h-navbar-bkg {
+        background-color: #283618;
+      }
+      .sty-h-navbar-profileName {
+        font-size: 36px;
+        color: #ffffff;
+      }
+      .sty-h-navbar-profileName:hover {
+        background-color: #ffffff;
+        color: #283618;
+      }
+      .sty-h-navbar-profileImage {
+        font-size: 56px;
+        color: #ffffff;
+      }
     </style>
   </head>
   <body>
     <!-- prettier-ignore -->
-    <div class="container">{% include '../misc/diy_navbar.html'%}</div>
+    {% include '../misc/diy_navbar.html'%}
     <!-- //prettier-ignore -->
 
     <!-- prettier-ignore -->
@@ -68,16 +99,39 @@
     ></script>
 
     <script>
+      //given
       let mdl_logout = document.getElementById("mdl_logout");
       let navAll_logout = document.getElementById("navAll_logout");
       let btn_mdl_logout = document.getElementById("btn_mdl_logout");
+      let navbar_role_show = document.getElementById("navbar_role_show");
+      let trial_role = document.getElementById("trial_role"); //CHANGE THIS FOR PROPER
 
+      let get_all_role_elements = document.querySelectorAll(
+        "#nav_getElement_choice_role"
+      );
       navAll_logout.addEventListener("click", () => {
         mdl_logout.classList.add("is-active");
       });
 
       function mdl_f_logout_close() {
         mdl_logout.classList.remove("is-active");
+      }
+
+      // FOR NAVBAR AND PUT IT IN HOME
+      function navbar_role_change() {
+        get_all_role_elements.forEach((element) => {
+          element.classList.remove("is-selected");
+        });
+        let role_check = event.target.textContent.replace(/\s+/g, "");
+        if (role_check === "Contributor") {
+          navbar_role_show.textContent = "Contributor";
+        } else if (role_check === "Innovator") {
+          navbar_role_show.textContent = "Innovator";
+        } else if (role_check === "Collector") {
+          navbar_role_show.textContent = "Collector";
+        }
+        //event.target.classList.remove("sty-role-not-selected");
+        event.target.classList.add("is-selected");
       }
 
       //{% block scripts %}

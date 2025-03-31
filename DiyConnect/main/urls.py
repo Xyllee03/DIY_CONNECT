@@ -23,5 +23,8 @@ urlpatterns = [
 
     #POST
       path('post/add/', views.postAdd,  name="postAdd"),
+      path('post/get/<int:lastest_post>/<str:role_post>', views.postGet,  name="postGet"),
+
+
     
 ]

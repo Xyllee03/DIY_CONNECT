@@ -5,7 +5,7 @@ from django.contrib.auth.hashers import check_password
 from .models import UserSites, UserPost, UserPost_BLOB
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
-
+import time
 # Create your views here.
 
 
@@ -118,6 +118,35 @@ def home(request):
     return render(request,'main/diyconn/home.html', context)
 
 
+def postGet(request,lastest_post, role_post):
+  
+   
+    timeout = 30
+    start_time = time.time()
+    # = UserPost.objects.filter(user_role_type = role_post )
+   
+    while time.time() - start_time < timeout:
+            try:
+                new_posts = UserPost.objects.filter(user_role_type=role_post).order_by("-modified_at")[lastest_post]
+                print(new_posts)
+        
+                if new_posts:
+                    lastest_post +=1  # Update latest post ID
+                    get_blob_info  = UserPost_BLOB.objects.filter(USER_POST_ID = new_posts).order_by('position')
+                    return JsonResponse({
+                'new_posts':{
+                    'id': new_posts.ID,
+                    'title': new_posts.title,
+                    'description':new_posts.description,
+                    'blob': list(get_blob_info.values())
+                    
+                },  # Convert queryset to list
+                'latest_post_count': lastest_post
+            })
+                time.sleep(2)
+
+            except:
+                return JsonResponse({"msg": "There is no new post available"}, status=500)
 
 # POST
 @login_required

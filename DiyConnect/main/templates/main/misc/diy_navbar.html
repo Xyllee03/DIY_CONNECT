@@ -1,61 +1,93 @@
-<nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a class="navbar-item">
-      <h1>DIY CONNECT</h1>
-    </a>
+<nav
+  class="navbar sty-h-navbar-bkg"
+  role="navigation"
+  aria-label="main navigation"
+>
+  <div class="container">
+    <!--
+    <div class="navbar-brand">
+      <a class="navbar-item">
+        <h1>DIY CONNECT</h1>
+      </a>
 
-    <a
-      role="button"
-      class="navbar-burger"
-      aria-label="menu"
-      aria-expanded="false"
-      data-target="navbarBasicExample"
-    >
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
+      <a
+        role="button"
+        class="navbar-burger"
+        aria-label="menu"
+        aria-expanded="false"
+        data-target="navbarBasicExample"
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+-->
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-item sty-h-navbar-role">
+            <div id="navbar_role_show">Innovator</div>
+            <ion-icon name="chevron-down"></ion-icon>
+          </a>
 
-  <div id="navbarBasicExample" class="navbar-menu">
-    <div class="navbar-start">
-      <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link"> Innovator </a>
+          <div class="navbar-dropdown">
+            <a
+              class="navbar-item is-selected sty-h-navbar-role-items"
+              id="nav_getElement_choice_role"
+              onclick="navbar_role_change()"
+            >
+              Innovator
+            </a>
+            <a
+              class="navbar-item sty-h-navbar-role-items"
+              id="nav_getElement_choice_role"
+              onclick="navbar_role_change()"
+            >
+              Contributor
+            </a>
+            <a
+              class="navbar-item sty-h-navbar-role-items"
+              id="nav_getElement_choice_role"
+              onclick="navbar_role_change()"
+            >
+              Collector
+            </a>
+          </div>
+        </div>
 
-        <div class="navbar-dropdown">
-          <a class="navbar-item is-selected"> Innovator </a>
-          <a class="navbar-item"> Contributor </a>
-          <a class="navbar-item"> Collector </a>
+        <a class="navbar-item sty-h-navbar-icons">
+          <h1 class="">
+            <ion-icon name="people"></ion-icon></h1
+        ></a>
+        <a class="navbar-item sty-h-navbar-icons">
+          <h1 class="">
+            <ion-icon name="notifications"></ion-icon></h1
+        ></a>
+        <a
+          class="navbar-item sty-h-navbar-icons"
+          href="{% url 'main:postAdd' %}"
+        >
+          <h1>
+            <ion-icon name="add-circle"></ion-icon></h1
+        ></a>
+        <div class="navbar-item">
+          <input type="text" class="input" placeholder="search" />
         </div>
       </div>
 
-      <a class="navbar-item">
-        <h1>
-          <ion-icon name="people"></ion-icon></h1
-      ></a>
-      <a class="navbar-item">
-        <h1>
-          <ion-icon name="notifications"></ion-icon></h1
-      ></a>
-      <a class="navbar-item" href="{% url 'main:postAdd' %}">
-        <h1>
-          <ion-icon name="add-circle"></ion-icon></h1
-      ></a>
-    </div>
-
-    <div class="navbar-end">
-      <div class="navbar-item">
-        <h1 class="button" id="navAll_logout">
+      <div class="navbar-end">
+        <a class="navbar-item sty-h-navbar-icons" id="navAll_logout">
           <ion-icon name="power"></ion-icon>
-        </h1>
+        </a>
+        <a class="navbar-item sty-h-navbar-profileName">
+          <h1>User_Name</h1>
+        </a>
+        <a class="navbar-item sty-h-navbar-profileImage">
+          <ion-icon name="person-circle"></ion-icon>
+        </a>
       </div>
-      <a class="navbar-item">
-        <h1>User_Name</h1>
-      </a>
-      <a class="navbar-item">
-        <ion-icon name="person-circle"></ion-icon>
-      </a>
     </div>
   </div>
 </nav>
