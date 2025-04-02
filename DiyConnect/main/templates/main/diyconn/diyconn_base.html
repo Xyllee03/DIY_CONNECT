@@ -10,6 +10,10 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
     <style>
       /*
         {% block styles %}
@@ -22,6 +26,18 @@
       .sty-h-navbar-role-items {
         background-color: #ffffff;
         color: #283618;
+        font-size: 24px;
+      }
+      .sty-h-role-is-selected {
+        width: 100% !important;
+        height: 100% !important;
+        background-color: #283618 !important;
+        color: #ffffff !important;
+        font-size: 24px !important;
+      }
+      .sty-h-navbar-role-items:hover {
+        background-color: #fefae0 !important;
+        color: #283618 !important;
       }
       .sty-h-navbar-icons {
         font-size: 53px;
@@ -46,6 +62,27 @@
         font-size: 56px;
         color: #ffffff;
       }
+      .sty-mdl-footer-btn {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+      .sty-mdl-head {
+        font-size: 36px;
+        font-weight: 800;
+        color: black;
+      }
+      .sty-mdl-msg {
+        font-size: 20px;
+        font-weight: 400;
+        color: black;
+      }
+      .sty-mdl-btn-submit {
+        color: #ffffff;
+        font-weight: 600;
+        background-color: #283618;
+        font-size: 25px;
+      }
     </style>
   </head>
   <body>
@@ -65,7 +102,7 @@
       <div class="modal-background" onclick="mdl_f_logout_close()"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title has-text-centered">Logout</p>
+          <p class="modal-card-title sty-mdl-head has-text-centered">Logout</p>
           <button
             class="delete"
             aria-label="close"
@@ -73,17 +110,19 @@
           ></button>
         </header>
         <section class="modal-card-body has-text-centered">
-          Are you sure you want to Logout in DIY Connect?
+          <h1 class="sty-mdl-msg">
+            Are you sure you want to Logout in DIY Connect?
+          </h1>
         </section>
         <!-- Follow auth_registerationProfile to center the btn -->
         <footer class="modal-card-foot">
-          <div class="has-text-centered">
+          <div class="sty-mdl-footer-btn">
             <a
-              class="button is-success"
+              class="button sty-mdl-btn-submit"
               id="btn_mdl_logout"
               href="{% url 'main:authentication_logout' %}"
             >
-              Save changes
+              Continue
             </a>
           </div>
         </footer>
@@ -99,6 +138,22 @@
     ></script>
 
     <script>
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
       //given
       let mdl_logout = document.getElementById("mdl_logout");
       let navAll_logout = document.getElementById("navAll_logout");
@@ -119,19 +174,44 @@
 
       // FOR NAVBAR AND PUT IT IN HOME
       function navbar_role_change() {
+        let get_hidden_post_role = document.getElementById("hidden_post_role");
         get_all_role_elements.forEach((element) => {
-          element.classList.remove("is-selected");
+          element.classList.remove("sty-h-role-is-selected");
         });
         let role_check = event.target.textContent.replace(/\s+/g, "");
         if (role_check === "Contributor") {
           navbar_role_show.textContent = "Contributor";
+          get_hidden_post_role.value = "Contributor";
         } else if (role_check === "Innovator") {
           navbar_role_show.textContent = "Innovator";
+          get_hidden_post_role.value = "Innovator";
         } else if (role_check === "Collector") {
           navbar_role_show.textContent = "Collector";
+          get_hidden_post_role.value = "Collector";
         }
         //event.target.classList.remove("sty-role-not-selected");
-        event.target.classList.add("is-selected");
+        event.target.classList.add("sty-h-role-is-selected");
+
+        let json_data = { role: get_hidden_post_role.value };
+        let response = fetch("{% url 'main:postRoleChange' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+          body: JSON.stringify(json_data),
+        })
+          .then((res) => {
+            return res.json();
+          })
+          .then((msg) => {
+            console.log(msg);
+            window.location.reload();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
 
       //{% block scripts %}

@@ -21,7 +21,11 @@ urlpatterns = [
     path('diyconnect/home/', views.home,  name="diyconn_home"),
 
 
+    #Search
+    path('diyconnect/search/<str:search_item>', views.postSearch,  name="postSearch"),
+
     #POST
+      path('post/getRoleChange/', views.postRoleChange,  name="postRoleChange"),
       path('post/add/', views.postAdd,  name="postAdd"),
       path('post/get/<int:lastest_post>/<str:role_post>', views.postGet,  name="postGet"),
 

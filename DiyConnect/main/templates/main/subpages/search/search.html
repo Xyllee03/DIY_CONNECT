@@ -1,0 +1,236 @@
+{% extends '../subpages_base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}
+    <title>Create Post | DIY CONNECT</title>
+    {% endblock title%}
+  </head>
+  <style>
+    /*{% block styles %}*/
+    .sty-se-container-typg-innovator {
+      background-color: #283618;
+      color: #ffffff;
+      padding: 40px;
+      border-radius: 16px;
+    }
+    .sty-header-se {
+      font-weight: 600;
+    }
+    .sty-desc-se {
+      font-weight: 400;
+    }
+    .sty-title-container {
+      font-weight: 800;
+    }
+    .sty-inp-se {
+      width: 700px;
+      font-size: 24px;
+    }
+    .sty-se-container-typg-innovator {
+      background-color: #283618;
+      color: #ffffff;
+      padding: 40px;
+      border-radius: 16px;
+    }
+
+    .sty-se-container-typg-contributor {
+      background-color: #48cae4;
+      color: #ffffff;
+      padding: 40px;
+      border-radius: 16px;
+    }
+
+    .sty-se-container-typg-collector {
+      background-color: #9d8189;
+      color: #ffffff;
+      padding: 40px;
+      border-radius: 16px;
+    }
+    /* {% endblock styles %}*/
+  </style>
+  <body>
+    <!-- prettier-ignore -->
+    {% block content %}
+    <!-- //prettier-ignore -->
+
+    <div class="container">
+      <div class="sty-se-container-typg-innovator mb-3">
+        <h1
+          class="sty-subtitle-low-font-size sty-title-container sty-font-family-roboto"
+        >
+          Request Materials
+        </h1>
+        <!-- prettier-ignore -->
+        {% if Innovator_post %}
+      {% for Innovator in Innovator_post %}
+        <!-- //prettier-ignore -->
+
+        <div class="columns is-vcentered">
+          <div class="column is-2"></div>
+          <div class="column is-2">
+            <h1>--PROFILE-PIC--</h1>
+          </div>
+          <div class="column">
+            <div>
+              <h1
+                class="sty-head-littl-big-font-size sty-font-family-montserrat sty-header-se"
+              >
+                {{ Innovator.title }}
+              </h1>
+
+              <h1 class="sty-subtitle-lower-font-size sty-font-family-hind">
+                {{ Innovator.description }}
+              </h1>
+            </div>
+          </div>
+          <div class="column is-2"></div>
+        </div>
+
+        <!-- prettier-ignore -->
+        {% endfor %} {% else %}
+        <!-- //prettier-ignore -->
+        <h1 class="has-text-centered">There is no Innovator post yet</h1>
+        <!-- prettier-ignore -->
+        {% endif %}
+      </div>
+      <!-- //prettier-ignore -->
+      <!-- ////////////////////  CONTRIBUTOR  ////////////  -->
+      <div class="sty-se-container-typg-contributor mb-3">
+        <h1
+          class="sty-subtitle-low-font-size sty-title-container sty-font-family-roboto"
+        >
+          Available Items
+        </h1>
+        <!-- prettier-ignore -->
+        {% if Contributor_post %}
+      {% for Contributor in Contributor_post %}
+        <!-- //prettier-ignore -->
+
+        <div class="columns is-vcentered">
+          <div class="column is-2"></div>
+          <div class="column is-2">
+            <h1>--PROFILE-PIC--</h1>
+          </div>
+          <div class="column">
+            <div>
+              <h1
+                class="sty-head-littl-big-font-size sty-font-family-montserrat sty-header-se"
+              >
+                {{ Contributor.title }}
+              </h1>
+
+              <h1 class="sty-subtitle-lower-font-size sty-font-family-hind">
+                {{ Contributor.description }}
+              </h1>
+            </div>
+          </div>
+          <div class="column is-2"></div>
+        </div>
+
+        <!-- prettier-ignore -->
+        {% endfor %} {% else %}
+        <!-- //prettier-ignore -->
+        <h1 class="has-text-centered">There is no Contributor post yet</h1>
+        <!-- prettier-ignore -->
+        {% endif %}
+      </div>
+      <!-- //prettier-ignore -->
+
+      <!-- ////////////////////  Collector  ////////////  -->
+      <div class="sty-se-container-typg-collector mb-3">
+        <h1
+          class="sty-subtitle-low-font-size sty-title-container sty-font-family-roboto"
+        >
+          Location Collection
+        </h1>
+        <!-- prettier-ignore -->
+        {% if Collector_post %}
+      {% for Collector in Collector_post %}
+        <!-- //prettier-ignore -->
+
+        <div class="columns is-vcentered">
+          <div class="column is-2"></div>
+          <div class="column is-2">
+            <h1>--PROFILE-PIC--</h1>
+          </div>
+          <div class="column">
+            <div>
+              <h1
+                class="sty-head-littl-big-font-size sty-font-family-montserrat sty-header-se"
+              >
+                {{ Collector.title }}
+              </h1>
+
+              <h1 class="sty-subtitle-lower-font-size sty-font-family-hind">
+                {{ Collector.description }}
+              </h1>
+            </div>
+          </div>
+          <div class="column is-2"></div>
+        </div>
+
+        <!-- prettier-ignore -->
+        {% endfor %} {% else %}
+        <!-- //prettier-ignore -->
+        <h1 class="has-text-centered">There is no Collector post yet</h1>
+        <!-- prettier-ignore -->
+        {% endif %}
+      </div>
+    </div>
+    <div id="get_link" data-url="{% url 'main:diyconn_home' %}" hidden></div>
+    <div id="get_search_item" data-url="{{ search_item }}" hidden></div>
+    <!-- prettier-ignore -->
+    {% endblock content %}
+    <!-- //prettier-ignore -->
+
+    <script>
+      // {% block scripts %}
+
+      // INITIALIZED
+      function Initialized() {
+        //
+
+        let get_link = document.getElementById("get_link");
+        let usr_all_bck_opt_ref = document.getElementById(
+          "usr_all_bck_opt_ref"
+        );
+
+        usr_all_bck_opt_ref.href = get_link.getAttribute("data-url");
+        let usr_all_bck_opt_label = document.getElementById(
+          "usr_all_bck_opt_label"
+        );
+        usr_all_bck_opt_label.textContent = "Search and Explore";
+        let get_search_item = document.getElementById("get_search_item");
+        let usr_all_end_opt = document.getElementById("usr_all_end_opt");
+        let ini_new_input = document.createElement("input");
+        ini_new_input.classList.add("input");
+        ini_new_input.classList.add("sty-inp-se");
+        ini_new_input.id = "inp_se_items";
+        ini_new_input.value = get_search_item.getAttribute("data-url");
+
+        usr_all_end_opt.appendChild(ini_new_input);
+      }
+      Initialized();
+
+      let inp_se_items = document.getElementById("inp_se_items");
+
+      inp_se_items.addEventListener("keypress", () => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          console.log("Searching..");
+          let get_data_search = inp_se_items.value;
+          if (get_data_search === "") {
+            return;
+          }
+
+          window.location.href = `/diyconnect/search/${get_data_search}`;
+        }
+      });
+      //{% endblock scripts %}
+    </script>
+  </body>
+</html>

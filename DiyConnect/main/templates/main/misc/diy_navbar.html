@@ -1,5 +1,5 @@
 <nav
-  class="navbar sty-h-navbar-bkg"
+  class="navbar sty-h-navbar-bkg is-fixed-top"
   role="navigation"
   aria-label="main navigation"
 >
@@ -34,7 +34,7 @@
 
           <div class="navbar-dropdown">
             <a
-              class="navbar-item is-selected sty-h-navbar-role-items"
+              class="navbar-item sty-h-role-is-selected sty-h-navbar-role-items"
               id="nav_getElement_choice_role"
               onclick="navbar_role_change()"
             >
@@ -73,7 +73,12 @@
             <ion-icon name="add-circle"></ion-icon></h1
         ></a>
         <div class="navbar-item">
-          <input type="text" class="input" placeholder="search" />
+          <input
+            type="text"
+            class="input"
+            placeholder="search"
+            id="nav_search_bar"
+          />
         </div>
       </div>
 
@@ -82,7 +87,7 @@
           <ion-icon name="power"></ion-icon>
         </a>
         <a class="navbar-item sty-h-navbar-profileName">
-          <h1>User_Name</h1>
+          <h1>{{ username }}</h1>
         </a>
         <a class="navbar-item sty-h-navbar-profileImage">
           <ion-icon name="person-circle"></ion-icon>

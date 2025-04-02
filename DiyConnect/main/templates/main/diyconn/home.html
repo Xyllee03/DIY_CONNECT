@@ -7,44 +7,123 @@
     {% block title %}
     <title>Home | DIY CONNECT</title>
     {% endblock title %}
+
+    <style>
+      /* {% block styles %}*/
+      .sty-sect-cl-opt {
+        background-color: #283618;
+      }
+      .sty-sect-opt {
+        font-size: 40px;
+        color: #ffffff;
+        border: solid #ffffff 1px;
+      }
+      .sty-sect-desc {
+        font-size: 20px;
+        text-align: justify;
+        color: black;
+        font-family: "Hind Madurai", sans-serif;
+        font-weight: 400;
+      }
+      .sty-sect-header {
+        font-size: 64px;
+        text-align: left;
+        color: black;
+        font-family: "Montserrat", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 800;
+        font-style: normal;
+      }
+      .sty-sect-opt-icon {
+        font-size: 38px;
+        color: #ffffff;
+      }
+      .sty-inp-postAdd-image {
+        background-color: #d9d9d9;
+        height: 600px;
+        width: 560px;
+
+        padding-left: 80px;
+        padding-right: 80px;
+
+        padding-top: 20px;
+        padding-bottom: 20px;
+        display: flex;
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        text-align: center; /* Ensure text is centered */
+        margin: auto; /* Centers the whole circle in the parent container */
+        font-size: 30px;
+
+        font-family: "Montserrat", sans-serif;
+
+        font-weight: 800;
+        font-style: normal;
+      }
+      .sty-inp-img-container {
+        display: grid;
+        height: 100%;
+        width: 100%;
+        gap: 5px;
+        background: #f0f0f0;
+        overflow: hidden;
+      }
+
+      /* {% endblock styles %} */
+    </style>
   </head>
   <body>
     <!-- prettier-ignore -->
     {% block content %}
     <!-- //prettier-ignore -->
     <!-- hidden-last-value-post -->
-    <input type="text" id="trial_role" value="Innovator" hidden />
+    <!--<input type="text" id="trial_role" value="Innovator" />-->
     <input type="text" name="" id="hidden_last_post_value" value="0" hidden />
-    <input type="text" id="hidden_post_role" value="Innovator" hidden />
+    <input
+      type="text"
+      id="hidden_post_role"
+      value="{{ role_post_filter }}"
+      hidden
+    />
     <!-- TRIALLLL -->
-    <h1 class="has-text-centered">this is for home html</h1>
+
     <div id="postContainer">
+      <!-- DRAFT TEMPLATE
       <div class="container">
-        <div class="section is-large">
+        <div class="section is-medium">
           <div class="columns is-vcentered has-text-centered">
             <div class="column">
-              <h1>300 pcs of Plastics Bottles</h1>
-              <h1>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Deserunt ipsa natus aut ratione debitis! Quo, provident sed!
-                Sapiente architecto ratione omnis! Odio omnis delectus cum
-                dolores cupiditate repellendus totam quia sunt dolore! Nostrum
-                numquam deserunt modi, minus natus possimus, animi doloremque,
-                atque aperiam sunt tempore dolorem voluptas repellat? Enim,
-                asperiores?
+              <h1 class="sty-sect-header">300 pcs of Plastics Bottles</h1>
+              <h1 class="sty-sect-desc">
+                The plastic bottles are clean, all 1.5 liters, with no labels
+                and caps removed. They are dry and free from any residue, ready
+                for recycling.
               </h1>
-              <div class="columns">
-                <div class="column"><h1>-- msg-icon --</h1></div>
-                <div class="column"><h1>--request--</h1></div>
-                <div class="column"><h1>--share--</h1></div>
+              <div class="columns mt-5 is-vcentered sty-sect-cl-opt">
+                <div class="column">
+                  <h1 class="px-6 sty-sect-opt-icon">
+                    <ion-icon name="chatbox-ellipses"></ion-icon>
+                  </h1>
+                </div>
+                <div class="column sty-sect-opt px-6">
+                  <h1 class="">Request</h1>
+                </div>
+                <div class="column">
+                  <h1 class="px-6 sty-sect-opt-icon">
+                    <ion-icon name="share-outline"></ion-icon>
+                  </h1>
+                </div>
               </div>
             </div>
             <div class="column">
-              <h1>IMAGESS</h1>
+              <div>
+                <img alt="" />
+              </div>
             </div>
           </div>
         </div>
       </div>
+      -->
     </div>
 
     <!-- prettier-ignore -->
@@ -53,48 +132,139 @@
     <script>
       //{% block scripts %}
 
+      // INITIALIZED
+
+      function Initilized() {
+        let ini_get_all_role_elements = document.querySelectorAll(
+          "#nav_getElement_choice_role"
+        );
+        let ini_navbar_role_show = document.getElementById("navbar_role_show");
+        let ini_get_hidden_post_role =
+          document.getElementById("hidden_post_role");
+        ini_get_all_role_elements.forEach((element) => {
+          element.classList.remove("sty-h-role-is-selected");
+        });
+        let role_check = ini_get_hidden_post_role.value;
+
+        if (role_check === "Contributor") {
+          ini_navbar_role_show.textContent = "Contributor";
+          // ini_get_hidden_post_role.value = "Contributor";
+          ini_get_all_role_elements[1].classList.add("sty-h-role-is-selected");
+        } else if (role_check === "Innovator") {
+          ini_navbar_role_show.textContent = "Innovator";
+          //ini_get_hidden_post_role.value = "Innovator";
+          ini_get_all_role_elements[0].classList.add("sty-h-role-is-selected");
+        } else if (role_check === "Collector") {
+          ini_navbar_role_show.textContent = "Collector";
+          // ini_get_hidden_post_role.value = "Collector";
+          ini_get_all_role_elements[2].classList.add("sty-h-role-is-selected");
+        }
+      }
+      Initilized();
+
       // IF WORKS IT WORK
       let hidden_last_post_value = document.getElementById(
         "hidden_last_post_value"
       ).value;
-      let hidden_post_role = document.getElementById("hidden_post_role").value;
 
       let postContainer = document.getElementById("postContainer");
       async function fetchNewPost() {
+        let hidden_post_role =
+          document.getElementById("hidden_post_role").value;
         let response = await fetch(
           `/post/get/${hidden_last_post_value}/${hidden_post_role}`
         );
         try {
           let data = await response.json();
+
           hidden_last_post_value = data.latest_post_count;
-          console.log(data.latest_post_count);
+          // TESTING
+          // console.log(data);
+          // console.log(data.latest_post_count);
           setTimeout(fetchNewPost, 2000); // Calls again after 2 seconds
-          /*
+
           let div_newPost = document.createElement("div");
           div_newPost.classList.add("container");
 
+          //clean_path = image_path.replace("/upload/", "");
           div_newPost.innerHTML = `
-      <div class="section is-large">
-        <div class="columns is-vcentered has-text-centered">
-          <div class="column">
-            <h1> title}</h1>
-            <h1> description}</h1>
-            <div class="columns">
-              <div class="column"><h1>-- msg-icon --</h1></div>
-              <div class="column"><h1>--request--</h1></div>
-              <div class="column"><h1>--share--</h1></div>
-            </div>
-          </div>
-          <div class="column">
-            <h1>IMAGESS</h1>
-          </div>
-        </div>
-      </div>
-    `;
+      <div class="section is-medium">
+             <div class="columns is-vcentered has-text-centered">
+               <div class="column">
+                 <h1 class="sty-sect-header">     ${data.new_posts.title}</h1>
+                 <h1 class="sty-sect-desc">
+                   ${data.new_posts.description}
+                 </h1>
+                 <div class="columns mt-5 is-vcentered sty-sect-cl-opt">
+                   <div class="column">
+                     <h1 class="px-6 sty-sect-opt-icon">
+                       <ion-icon name="chatbox-ellipses"></ion-icon>
+                     </h1>
+                   </div>
+                   <div class="column sty-sect-opt px-6">
+                     <h1 class="">Request</h1>
+                   </div>
+                   <div class="column">
+                     <h1 class="px-6 sty-sect-opt-icon">
+                       <ion-icon name="share-outline"></ion-icon>
+                     </h1>
+                   </div>
+                 </div>
+               </div>
+               <div class="column">
+                 <div class="sty-inp-img-container sty-inp-postAdd-image " id='inp_img_container_${data.latest_post_count}'>
+                   <img alt="" src= "" />
+                 </div>
+               </div>
+             </div>
+           </div>
+       `;
+
           postContainer.appendChild(div_newPost);
 
-          */
+          let get_item_inp_img_container = document.getElementById(
+            `inp_img_container_${data.latest_post_count}`
+          );
+
+          let get_num_images = data.new_posts.blob_url.length;
+          // TESTING
+          //console.log(`Number of images:${get_num_images}`);
+          if (get_num_images == 1) {
+            get_item_inp_img_container.style.gridTemplateColumns = "1fr";
+            get_item_inp_img_container.style.gridTemplateRows = "1fr";
+          } else if (get_num_images == 2) {
+            get_item_inp_img_container.style.gridTemplateColumns = "1fr 1fr";
+            get_item_inp_img_container.style.gridTemplateRows = "1fr";
+          } else if (get_num_images === 3) {
+            get_item_inp_img_container.style.gridTemplateColumns = "1fr 1fr";
+            get_item_inp_img_container.style.gridTemplateRows = "1fr 1fr";
+          } else if (get_num_images == 4) {
+            get_item_inp_img_container.style.gridTemplateColumns = "1fr 1fr";
+            get_item_inp_img_container.style.gridTemplateRows = "1fr 1fr";
+          } else {
+            console.log("big file");
+          }
+          get_item_inp_img_container.innerHTML = "";
+          get_item_inp_img_container.style.display = "grid";
+          get_images_arr = data.new_posts.blob_url;
+
+          get_images_arr.forEach((element, index) => {
+            let imageUrl = element;
+            let img = document.createElement("img");
+            img.src = imageUrl;
+            img.style.width = "100%";
+            img.style.height = "100%";
+            img.style.objectFit = "cover";
+
+            // If 3 images, make the last one span two columns
+            if (get_num_images === 3 && index === 2) {
+              img.style.gridColumn = "1 / span 2";
+            }
+
+            get_item_inp_img_container.appendChild(img);
+          });
         } catch (err) {
+          setTimeout(fetchNewPost, 5000);
           console.log(err);
           console.log("error has been handled");
         }
@@ -103,6 +273,20 @@
       }
       fetchNewPost();
       //---''
+
+      // SEARCH BAR
+      let nav_search_bar = document.getElementById("nav_search_bar");
+      nav_search_bar.addEventListener("keypress", () => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          let get_data_search = nav_search_bar.value;
+          if (get_data_search === "") {
+            return;
+          }
+          // console.log("Searching..");
+          window.location.href = `/diyconnect/search/${get_data_search}`;
+        }
+      });
 
       //{% endblock scripts%}
     </script>

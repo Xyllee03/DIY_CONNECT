@@ -134,7 +134,13 @@ AUTHENTICATION_BACKENDS = [
     'main.auth_backends.UserSiteBackend',
 ]
 
-
+import os
 AUTH_USER_MODEL = 'main.Usersites'
 CSRF_COOKIE_SECURE = True
+"""
 
+MEDIA_URL = '/post/'  
+MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../upload'))"
+"""
+MEDIA_URL = '/media/'  # URL path where media files will be accessible
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  

@@ -37,6 +37,7 @@ def authentication_login(request):
                 login(request, user)  # Log the user in
                 #print(request.user)
                 #print(request.user.is_authenticated)
+                request.session["RolesPostFilter"] = 'Innovator'
                 return JsonResponse({"msg": "User has been retrieve", "redirect_url": "/diyconnect/home/"}, status=200)
             else:
                 return JsonResponse({"error": "Invalid username or password."}, status=400)
@@ -114,9 +115,19 @@ def authentication_logout(request):
 # DIY CONNECT APP
 @login_required
 def home(request):
-    context ={}
+    get_role_post_filter = request.session.get("RolesPostFilter")
+    get_username = request.user.username
+    
+    context ={"username": get_username,"role_post_filter":get_role_post_filter}
     return render(request,'main/diyconn/home.html', context)
 
+
+def postRoleChange(request):
+    if(request.method =="POST"):
+        data = json.loads(request.body)
+        request.session["RolesPostFilter"] = data['role']
+      
+        return JsonResponse({"msg": "Changing Item Post"}, status=200)
 
 def postGet(request,lastest_post, role_post):
   
@@ -133,12 +144,15 @@ def postGet(request,lastest_post, role_post):
                 if new_posts:
                     lastest_post +=1  # Update latest post ID
                     get_blob_info  = UserPost_BLOB.objects.filter(USER_POST_ID = new_posts).order_by('position')
+                    item = get_blob_info.first().blob.url
                     return JsonResponse({
                 'new_posts':{
                     'id': new_posts.ID,
                     'title': new_posts.title,
                     'description':new_posts.description,
-                    'blob': list(get_blob_info.values())
+                                  
+                    'blob_url': [item.blob.url for item in get_blob_info],
+                    
                     
                 },  # Convert queryset to list
                 'latest_post_count': lastest_post
@@ -203,3 +217,25 @@ def postAdd(request):
         return JsonResponse({"msg": "Request Complete","redirect_url":"diyconnect/home/"}, status=200)
     context ={}
     return render(request,'main/subpages/post/postAdd.html', context)
+
+
+def postSearch(request, search_item):
+    #print(search_item)
+    get_innovator = UserPost.objects.filter(title__icontains=search_item, user_role_type ="Innovator")
+    get_contributor = UserPost.objects.filter(title__icontains=search_item, user_role_type ="Contributor")
+    get_collector = UserPost.objects.filter(title__icontains=search_item, user_role_type ="Collector")
+
+    # Testing
+    print("Innovator")
+    print(get_innovator)
+    print("Contributor")
+    print(get_contributor)
+    print("collector")
+    print(get_collector)
+    context ={
+     "Innovator_post":get_innovator,
+     "Contributor_post":get_contributor,
+     "Collector_post":get_collector,
+     "search_item": search_item
+    }
+    return render(request,'main/subpages/search/search.html', context)
