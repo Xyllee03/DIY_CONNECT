@@ -138,6 +138,22 @@
     ></script>
 
     <script>
+      async function initializeCSRF() {
+        let response = await fetch("{% url 'main:set_csrf_token' %}", {
+          method: "GET",
+          credentials: "include", // ✅ Ensures cookies are sent and received
+        });
+
+        if (response.ok) {
+          console.log("CSRF Token Initialized");
+        } else {
+          console.error("Failed to initialize CSRF");
+        }
+      }
+
+      // Call this function when the page loads
+      initializeCSRF();
+
       function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== "") {

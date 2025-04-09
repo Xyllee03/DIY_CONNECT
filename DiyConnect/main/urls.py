@@ -28,7 +28,11 @@ urlpatterns = [
       path('post/getRoleChange/', views.postRoleChange,  name="postRoleChange"),
       path('post/add/', views.postAdd,  name="postAdd"),
       path('post/get/<int:lastest_post>/<str:role_post>', views.postGet,  name="postGet"),
+    #Messages
+      path('diyconn/messages/', views.Messages,  name="Messages"),
 
 
+      #INITIALIZED
+        path('Initialized/cookies/', views.set_csrf_token,  name="set_csrf_token"),
     
 ]

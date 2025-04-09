@@ -1,0 +1,72 @@
+{% extends '../subpages_base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}
+    <title>Messages | DIY CONNECT</title>
+    {% endblock title %}
+    <style>
+      /* {% block styles %} */
+
+      /* {% endblock styles %}*/
+    </style>
+  </head>
+  <body>
+    <!-- prettier-ignore -->
+    {% block content %}
+    <!-- //prettier-ignore -->
+
+    <div class="columns is-vcentered">
+      <div class="column">
+        <div>
+          <div class="columns is-vcentered">
+            <div class="column">
+              <h1>--- Profile--</h1>
+            </div>
+            <div class="column">
+              <h1>--- Username ---</h1>
+              <h1>--lastmessage--</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="columns">
+          <div class="column">
+            <h1>This is for message left</h1>
+          </div>
+          <div class="column">
+            <h1>This is for message right</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="get_link" data-url="{% url 'main:diyconn_home' %}" hidden></div>
+    <!-- prettier-ignore -->
+    {% endblock content %}
+    <!-- //prettier-ignore -->
+
+    <script>
+      // {% block scripts %}
+      // INITIALIZED
+      function Initialized() {
+        let get_link = document.getElementById("get_link");
+        let usr_all_bck_opt_ref = document.getElementById(
+          "usr_all_bck_opt_ref"
+        );
+
+        usr_all_bck_opt_ref.href = get_link.getAttribute("data-url");
+        let usr_all_bck_opt_label = document.getElementById(
+          "usr_all_bck_opt_label"
+        );
+        usr_all_bck_opt_label.textContent = "Messages";
+      }
+      Initialized();
+      // {% endblock scripts %}
+    </script>
+  </body>
+</html>

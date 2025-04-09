@@ -68,6 +68,9 @@
         background: #f0f0f0;
         overflow: hidden;
       }
+      .sty-sect-msg-opt:hover {
+        cursor: pointer;
+      }
 
       /* {% endblock styles %} */
     </style>
@@ -179,7 +182,7 @@
 
           hidden_last_post_value = data.latest_post_count;
           // TESTING
-          // console.log(data);
+          console.log(data);
           // console.log(data.latest_post_count);
           setTimeout(fetchNewPost, 2000); // Calls again after 2 seconds
 
@@ -197,7 +200,7 @@
                  </h1>
                  <div class="columns mt-5 is-vcentered sty-sect-cl-opt">
                    <div class="column">
-                     <h1 class="px-6 sty-sect-opt-icon">
+                     <h1 class="px-6 sty-sect-opt-icon sty-sect-msg-opt" onclick=btnUsermsg_post() data-user-id=${data.new_posts.user} >
                        <ion-icon name="chatbox-ellipses"></ion-icon>
                      </h1>
                    </div>
@@ -287,6 +290,46 @@
           window.location.href = `/diyconnect/search/${get_data_search}`;
         }
       });
+      function btnUsermsg_post() {
+        event.preventDefault();
+        get_user_id = event.target.getAttribute("data-user-id");
+        console.log(get_user_id);
+        json_data = {
+          user_id: get_user_id,
+        };
+        print(json_data);
+        let response = fetch("{% url 'main:Messages' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+          body: JSON.stringify(json_data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // If response status is not OK (400, 500, etc.), throw an error
+              return response.json().then((errData) => {
+                throw errData;
+              });
+            }
+            return response.json(); // Otherwise, parse the JSON response
+          })
+          .then((res) => {
+            console.log(res);
+            // window.location.href = res.redirect_url;
+          })
+          .catch((err) => {
+            console.log(err);
+            /*
+            console.log("Error:", err.error || "An unexpected error occurred");
+
+            let err_msg = document.getElementById("err_msg");
+            err_msg.textContent = `${err.error}`;
+            */
+          });
+      }
 
       //{% endblock scripts%}
     </script>

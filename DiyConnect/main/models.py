@@ -99,7 +99,8 @@ class UserSites(AbstractBaseUser,PermissionsMixin,BaseUserManager):
     def save(self, *args, **kwargs):
         # Hash the password before saving (only if it's not already hashed)
         if not self.password.startswith('pbkdf2_sha256$'):
-            self.password = make_password(self.password)
+            #self.password = make_password(self.password)
+            self.set_password(self.password) 
         super().save(*args, **kwargs)
     def __str__(self):
         return f"{self.username} - {self.get_role_display()}"  
@@ -120,3 +121,19 @@ class UserPost_BLOB(models.Model):
     USER_POST_ID = models.ForeignKey(UserPost, on_delete=models.CASCADE)
     blob = models.ImageField(upload_to=user_post_blob_path)
     position = models.IntegerField()
+
+
+# MESSAGES
+class UserMessages(models.Model):
+    ID = models.AutoField(primary_key=True)
+    USER_SENDER_ID = models.ForeignKey(UserSites, on_delete=models.CASCADE, related_name='sent_messages')
+    USER_RECIPIENT_ID = models.ForeignKey(UserSites, on_delete=models.CASCADE, related_name='received_messages')
+    created_at= models.DateTimeField(auto_now_add=True)
+    
+
+class Conversation(models.Model):
+    ID = models.AutoField(primary_key=True)
+    messages = models.TextField()
+    blob = models.ImageField(blank=True, null=True)
+    timeStamp = models.DateTimeField(auto_now=True)
+    USERS_MESSAGES_ID = models.ForeignKey(UserMessages, on_delete=models.CASCADE)

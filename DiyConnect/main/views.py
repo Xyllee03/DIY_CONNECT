@@ -6,7 +6,14 @@ from .models import UserSites, UserPost, UserPost_BLOB
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 import time
+from django.views.decorators.csrf import ensure_csrf_cookie
 # Create your views here.
+
+
+#initialized_cookie
+@ensure_csrf_cookie
+def set_csrf_token(request):
+    return JsonResponse({"message": "CSRF token set"})
 
 
 def index(request):
@@ -25,13 +32,18 @@ def authentication_login(request):
     if(request.method =="POST"):
         data = json.loads(request.body)
         #print(data['username'])
-        
+
         try:
             u_check = UserSites.objects.filter(username=data['username']).first()
             #print("this is login")
             #print(u_check)
-            #print(u_check)
-          
+            """
+            print("Input Password:", data['password'])
+            print("Stored Hashed Password:", u_check.password)
+            print(data)
+            print(u_check.password)
+            print(check_password(data['password'], u_check.password))
+            """
             if(check_password(data['password'], u_check.password)):
                 user = authenticate(request, username=data['username'], password=data['password'])
                 login(request, user)  # Log the user in
@@ -83,13 +95,14 @@ def authentication_ADD(request):
         #get_user_data = request.POST.get("UserDataPrep")
         bio = request.POST.get("bio")
         get_user_data = json.loads(request.POST.get('UserDataPrep'))
+        print(get_user_data)
         u = UserSites()
         #lastID = UserSites.objects.values('ID').last()
         #u.ID = lastID['ID'] + 1
         u.first_name = get_user_data['firstName']
         u.last_name = get_user_data['lastName']
         u.email = get_user_data['email']
-        u.password_hash = get_user_data['password']
+        u.password = get_user_data['password']
         u.profile_picture = get_image_file
         u.city_or_municipality = get_user_data['municipality_or_city']
         u.username = get_user_data['username']
@@ -150,6 +163,7 @@ def postGet(request,lastest_post, role_post):
                     'id': new_posts.ID,
                     'title': new_posts.title,
                     'description':new_posts.description,
+                    'user': new_posts.USER_ID.ID, 
                                   
                     'blob_url': [item.blob.url for item in get_blob_info],
                     
@@ -224,18 +238,41 @@ def postSearch(request, search_item):
     get_innovator = UserPost.objects.filter(title__icontains=search_item, user_role_type ="Innovator")
     get_contributor = UserPost.objects.filter(title__icontains=search_item, user_role_type ="Contributor")
     get_collector = UserPost.objects.filter(title__icontains=search_item, user_role_type ="Collector")
+    get_users = UserSites.objects.filter(username__icontains=search_item)
 
     # Testing
+
+    """
     print("Innovator")
     print(get_innovator)
     print("Contributor")
     print(get_contributor)
     print("collector")
     print(get_collector)
+    print("user")
+    print(get_users)
+    """
     context ={
      "Innovator_post":get_innovator,
      "Contributor_post":get_contributor,
      "Collector_post":get_collector,
-     "search_item": search_item
+     "search_item": search_item,
+     "user_profile": get_users
     }
     return render(request,'main/subpages/search/search.html', context)
+
+
+def Messages(request):
+    if(request.method =="POST"):
+        data = json.loads(request.body)
+        print(data)
+
+    context ={}
+    return render(request, 'main/subpages/messages/messages.html',context)
+
+
+
+
+
+
+    

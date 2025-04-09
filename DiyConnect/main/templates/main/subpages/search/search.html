@@ -50,6 +50,12 @@
       padding: 40px;
       border-radius: 16px;
     }
+    .sty-se-container-typg-users {
+      background-color: #c6ac8f;
+      color: #ffffff;
+      padding: 40px;
+      border-radius: 16px;
+    }
     /* {% endblock styles %}*/
   </style>
   <body>
@@ -177,6 +183,46 @@
         {% endfor %} {% else %}
         <!-- //prettier-ignore -->
         <h1 class="has-text-centered">There is no Collector post yet</h1>
+        <!-- prettier-ignore -->
+        {% endif %}
+      </div>
+      <!-- ////////////////////  Users Profile ////////////  -->
+      <div class="sty-se-container-typg-users mb-3">
+        <h1
+          class="sty-subtitle-low-font-size sty-title-container sty-font-family-roboto"
+        >
+          User Profile
+        </h1>
+        <!-- prettier-ignore -->
+        {% if user_profile %}
+        {% for user in user_profile %}
+        <!-- //prettier-ignore -->
+
+        <div class="columns is-vcentered">
+          <div class="column is-2"></div>
+          <div class="column is-2">
+            <h1>--PROFILE-PIC--</h1>
+          </div>
+          <div class="column">
+            <div>
+              <h1
+                class="sty-head-littl-big-font-size sty-font-family-montserrat sty-header-se"
+              >
+                {{ user.username }}
+              </h1>
+
+              <h1 class="sty-subtitle-lower-font-size sty-font-family-hind">
+                {{ Collector.bio }}
+              </h1>
+            </div>
+          </div>
+          <div class="column is-2"></div>
+        </div>
+
+        <!-- prettier-ignore -->
+        {% endfor %} {% else %}
+        <!-- //prettier-ignore -->
+        <h1 class="has-text-centered">There is no User post yet</h1>
         <!-- prettier-ignore -->
         {% endif %}
       </div>
