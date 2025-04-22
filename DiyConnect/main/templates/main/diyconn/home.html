@@ -82,25 +82,29 @@
     <!-- hidden-last-value-post -->
     <!--<input type="text" id="trial_role" value="Innovator" />-->
     <input type="text" name="" id="hidden_last_post_value" value="0" hidden />
-    <input
-      type="text"
-      id="hidden_post_role"
-      value="{{ role_post_filter }}"
-      hidden
-    />
+    <input type="text" id="hidden_post_role" value="{{ role_post_filter }}" hidden />
     <!-- TRIALLLL -->
 
     <div id="postContainer">
-      <!-- DRAFT TEMPLATE
+      <!-- DRAFT TEMPLATE -->
       <div class="container">
         <div class="section is-medium">
           <div class="columns is-vcentered has-text-centered">
             <div class="column">
+              <div class="columns is-vcentered">
+                <div class="column is-2">
+                  <ion-icon name="person-circle"></ion-icon>
+                </div>
+                <div class="column has-text-left sty-mdl-msg">
+                  <h1 style="font-weight: 700">PlasticHunterX</h1>
+                  <h1>March 21, 2025</h1>
+                  <h1><ion-icon name="location"></ion-icon>South - 2 Bacoor Cavite</h1>
+                </div>
+              </div>
               <h1 class="sty-sect-header">300 pcs of Plastics Bottles</h1>
               <h1 class="sty-sect-desc">
-                The plastic bottles are clean, all 1.5 liters, with no labels
-                and caps removed. They are dry and free from any residue, ready
-                for recycling.
+                The plastic bottles are clean, all 1.5 liters, with no labels and caps removed. They
+                are dry and free from any residue, ready for recycling.
               </h1>
               <div class="columns mt-5 is-vcentered sty-sect-cl-opt">
                 <div class="column">
@@ -126,7 +130,6 @@
           </div>
         </div>
       </div>
-      -->
     </div>
 
     <!-- prettier-ignore -->
@@ -138,12 +141,9 @@
       // INITIALIZED
 
       function Initilized() {
-        let ini_get_all_role_elements = document.querySelectorAll(
-          "#nav_getElement_choice_role"
-        );
+        let ini_get_all_role_elements = document.querySelectorAll("#nav_getElement_choice_role");
         let ini_navbar_role_show = document.getElementById("navbar_role_show");
-        let ini_get_hidden_post_role =
-          document.getElementById("hidden_post_role");
+        let ini_get_hidden_post_role = document.getElementById("hidden_post_role");
         ini_get_all_role_elements.forEach((element) => {
           element.classList.remove("sty-h-role-is-selected");
         });
@@ -166,17 +166,12 @@
       Initilized();
 
       // IF WORKS IT WORK
-      let hidden_last_post_value = document.getElementById(
-        "hidden_last_post_value"
-      ).value;
+      let hidden_last_post_value = document.getElementById("hidden_last_post_value").value;
 
       let postContainer = document.getElementById("postContainer");
       async function fetchNewPost() {
-        let hidden_post_role =
-          document.getElementById("hidden_post_role").value;
-        let response = await fetch(
-          `/post/get/${hidden_last_post_value}/${hidden_post_role}`
-        );
+        let hidden_post_role = document.getElementById("hidden_post_role").value;
+        let response = await fetch(`/post/get/${hidden_last_post_value}/${hidden_post_role}`);
         try {
           let data = await response.json();
 
@@ -194,6 +189,16 @@
       <div class="section is-medium">
              <div class="columns is-vcentered has-text-centered">
                <div class="column">
+                  <div class="columns is-vcentered">
+                <div class="column is-2">
+                  <ion-icon name="person-circle"></ion-icon>
+                </div>
+                <div class="column has-text-left sty-mdl-msg">
+                  <h1 style="font-weight: 700">${data.new_posts.username}</h1>
+                  <h1>${data.new_posts.date_modified}</h1>
+                  <h1><ion-icon name="location"></ion-icon> ${data.new_posts.user_location.subdivision} ${data.new_posts.user_location.city_or_municipality}</h1>
+                </div>
+              </div>
                  <h1 class="sty-sect-header">     ${data.new_posts.title}</h1>
                  <h1 class="sty-sect-desc">
                    ${data.new_posts.description}

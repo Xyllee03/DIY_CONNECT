@@ -163,7 +163,10 @@ def postGet(request,lastest_post, role_post):
                     'id': new_posts.ID,
                     'title': new_posts.title,
                     'description':new_posts.description,
+                    'date_modified': new_posts.modified_at,
                     'user': new_posts.USER_ID.ID, 
+                    'username': new_posts.USER_ID.username,
+                    'user_location':{'subdivision':new_posts.USER_ID.subdivision, 'city_or_municipality': new_posts.USER_ID.city_or_municipality}, 
                                   
                     'blob_url': [item.blob.url for item in get_blob_info],
                     
@@ -272,7 +275,9 @@ def Messages(request):
 
 
 
-
+def people(request):
+    context ={}
+    return render(request,'main/subpages/people/people.html', context)
 
 
     

@@ -1,0 +1,120 @@
+{% extends '../subpages_base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}
+    <title>People | DIY CONNECT</title>
+    {% endblock title %}
+    <style>
+      /* {% block styles %}*/
+      /* {% endblock styles %}*/
+    </style>
+  </head>
+  <body>
+    <!-- prettier-ignore -->
+    {% block content %}
+    <!-- //prettier-ignore  -->
+    <div class="container">
+      <div class="columns">
+        <div class="column">
+          <h1>Discover New People</h1>
+          <div class="columns is-vcentered">
+            <div class="column">
+              <h1>PROFILE IMAGE</h1>
+            </div>
+            <div class="column">
+              <h1>GreenGlowVibes</h1>
+              <h1 class="button">Add Friend</h1>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <h1>Friend Request</h1>
+          <div class="columns is-vcentered">
+            <div class="column">
+              <h1>PROFILE IMAGE</h1>
+            </div>
+            <div class="column">
+              <h1>PlasticHunterX</h1>
+              <h1 class="button">Accept</h1>
+            </div>
+          </div>
+          <div class="columns is-vcentered">
+            <div class="column">
+              <h1>PROFILE IMAGE</h1>
+            </div>
+            <div class="column">
+              <h1>EcoCrafted</h1>
+              <div class="columns">
+                <div class="column">
+                  <div class="button">del_btn</div>
+                </div>
+                <div class="column">
+                  <h1 class="button">Accept</h1>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h1>Friends</h1>
+          <div class="columns is-vcentered">
+            <div class="column">
+              <h1>PROFILE IMAGE</h1>
+            </div>
+            <div class="column">
+              <h1>PlasticHunterX</h1>
+              <h1 class="button">Removed</h1>
+            </div>
+          </div>
+          <div class="columns is-vcentered">
+            <div class="column">
+              <h1>PROFILE IMAGE</h1>
+            </div>
+            <div class="column">
+              <h1>EcoCrafted</h1>
+              <div class="columns">
+                <div class="column">
+                  <div class="button">Remove Friend</div>
+                </div>
+                <div class="column">
+                  <h1 class="button">Msg_btn</h1>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- prettier-ignore -->
+    <div id="get_link" data-url="{% url 'main:diyconn_home' %}" hidden></div>
+    {% endblock content %}
+    <!-- //prettier-ignore  -->
+
+    <script>
+      //{% block scripts %}
+      function Initialized() {
+        //
+
+        let get_link = document.getElementById("get_link");
+        let usr_all_bck_opt_ref = document.getElementById("usr_all_bck_opt_ref");
+
+        usr_all_bck_opt_ref.href = get_link.getAttribute("data-url");
+        let usr_all_bck_opt_label = document.getElementById("usr_all_bck_opt_label");
+        usr_all_bck_opt_label.textContent = "People";
+        //let get_search_item = document.getElementById("get_search_item");
+        //let usr_all_end_opt = document.getElementById("usr_all_end_opt");
+        let ini_new_input = document.createElement("input");
+        ini_new_input.classList.add("input");
+        ini_new_input.classList.add("sty-inp-se");
+        ini_new_input.id = "inp_se_people";
+        //ini_new_input.value = get_search_item.getAttribute("data-url");
+
+        usr_all_end_opt.appendChild(ini_new_input);
+      }
+      Initialized();
+      //{% endblock scripts %}
+    </script>
+  </body>
+</html>
