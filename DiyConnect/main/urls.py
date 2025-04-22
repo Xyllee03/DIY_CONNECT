@@ -19,8 +19,9 @@ urlpatterns = [
 
     # DIY CONNECT APP
     path('diyconnect/home/', views.home,  name="diyconn_home"),
-
-
+    
+    #People
+ path('diyconnect/people/', views.people,  name="people"),
     #Search
     path('diyconnect/search/<str:search_item>', views.postSearch,  name="postSearch"),
 
