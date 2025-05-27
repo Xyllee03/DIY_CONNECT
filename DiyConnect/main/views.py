@@ -134,6 +134,50 @@ def home(request):
     context ={"username": get_username,"role_post_filter":get_role_post_filter}
     return render(request,'main/diyconn/home.html', context)
 
+# POST
+def postGet_specific(request,post_id):
+     post = UserPost.objects.filter(ID=post_id).first()
+     get_post_blobs = UserPost_BLOB.objects.filter(USER_POST_ID=post)
+     print(get_post_blobs)
+     if post is None:
+         post = False
+     context={"post_data":post,
+              "post_data_blob":get_post_blobs,
+              }
+     return render(request,'main/subpages/post/postRetrieve.html', context)
+
+def postGet_profile(request, username):
+   
+
+    user_profile = UserSites.objects.get(username=username)
+    user_list_post = UserPost.objects.filter(USER_ID = user_profile).order_by('-modified_at')
+    context = []
+    for post in user_list_post:
+            blobs = UserPost_BLOB.objects.filter(USER_POST_ID=post).order_by('position')
+            blob_list = [
+                {
+                    "id": blob.ID,
+                    "image_url": blob.blob.url,
+                    "position": blob.position
+                }
+                for blob in blobs
+            ]
+
+            context.append({
+                "id": post.ID,
+                "username":post.USER_ID.username,
+                "user_location":{"subdivision": post.USER_ID.subdivision,"city_or_municipality":post.USER_ID.city_or_municipality},
+                "title": post.title, 
+                "description": post.description,  
+                "date_modified": post.modified_at,
+                "blobs": blob_list,
+                "user_ID":post.USER_ID.ID,
+               
+            })
+
+    
+    
+    return JsonResponse({"msg": "Checking if there is a post", "items":context}, status=200)
 
 def postRoleChange(request):
     if(request.method =="POST"):
@@ -179,7 +223,7 @@ def postGet(request,lastest_post, role_post):
             except:
                 return JsonResponse({"msg": "There is no new post available"}, status=500)
 
-# POST
+
 @login_required
 def postAdd(request):
 
@@ -236,6 +280,7 @@ def postAdd(request):
     return render(request,'main/subpages/post/postAdd.html', context)
 
 
+
 def postSearch(request, search_item):
     #print(search_item)
     get_innovator = UserPost.objects.filter(title__icontains=search_item, user_role_type ="Innovator")
@@ -265,6 +310,63 @@ def postSearch(request, search_item):
     return render(request,'main/subpages/search/search.html', context)
 
 
+def postDelete(request, post_id):
+    #print("this is for delete post")
+    get_post = UserPost.objects.get(ID = post_id)
+    get_post.delete()
+    return JsonResponse({"msg": "Deleting Post", "redirect_url":"/diyconnect/home/"}, status=200)
+
+
+def postEdit(request, post_id):
+
+
+    get_post = UserPost.objects.get(ID=post_id)
+    get_username = get_post.USER_ID.username
+    get_post_blobs = UserPost_BLOB.objects.filter(USER_POST_ID=get_post)
+    context ={
+    "post_data":get_post,
+     "post_data_blob":get_post_blobs,
+     "prev_url_location": f"/diyconn/profile/get/{get_username}"
+    }
+    return render(request,'main/subpages/post/postEdit.html',context)
+
+
+def postEditSave(request, post_id):
+    if(request.method=="POST"):
+        print(request.FILES)
+        get_post = UserPost.objects.get(ID=post_id)
+
+        role = request.POST.get("role")
+        title = request.POST.get("title")
+        description = request.POST.get("description")
+        get_post.description=description
+        get_post.user_role_type =role
+        get_post.title = title
+        get_post.save()
+        if not request.FILES:
+            print("There are no uploaded files")
+            return JsonResponse({"msg": "Saving Modifying Post (no images)", "redirect_url": "/diyconnect/home/"}, status=200)
+
+        print("FILES RECEIVED:", request.FILES)
+
+        # Optional: delete previous blobs
+        UserPost_BLOB.objects.filter(USER_POST_ID=get_post).delete()
+
+        i = 0
+        for key in request.FILES:
+            if key.startswith("imagesFiles["):
+                file = request.FILES[key]
+                UserPost_BLOB.objects.create(
+                    USER_POST_ID=get_post,
+                    position=i,
+                    blob=file
+                )
+                i += 1
+
+        return JsonResponse({"msg": "Saving Modifying Post (with images)", "redirect_url": "/diyconnect/home/"}, status=200)
+
+
+#messages
 def Messages(request):
     if(request.method =="POST"):
         data = json.loads(request.body)
@@ -280,4 +382,16 @@ def people(request):
     return render(request,'main/subpages/people/people.html', context)
 
 
-    
+def profile_user(request, username):
+    check_owner_post = False
+    if(request.user.username == username):
+        check_owner_post= True
+    context ={
+        "username":username,
+        "Check_owner_post":check_owner_post,
+    }
+    return render(request,'main/subpages/profile/profileView.html', context)
+
+
+
+

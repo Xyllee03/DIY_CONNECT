@@ -10,6 +10,58 @@
     {% endblock title %}
     <style>
       /* {% block styles %}*/
+      .sty-header-display-section {
+        font-size: 40px;
+        font-weight: 400;
+        color: black;
+      }
+      .sty-header-names {
+        font-size: 36px;
+        font-weight: 400;
+        color: black;
+      }
+      .sty-center-single-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .sty-icon {
+        font-size: 34px;
+      }
+
+      .sty-btn-single-discover-sect {
+        padding-left: 47px;
+        padding-right: 47px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+      }
+      .sty-btn-addFriend-discover-sect {
+        background-color: #283618;
+        color: #fefae0;
+      }
+
+      .sty-btn-single-friendRequest-sect {
+        width: 100%;
+        padding-top: 15px;
+        padding-bottom: 15px;
+      }
+
+      .sty-btn-friendRequest-sect {
+        background-color: #fefae0;
+        border: solid 3px #000000;
+        color: #283618;
+      }
+
+      .sty-btn-single-friend-sect {
+        width: 100%;
+        padding-top: 15px;
+        padding-bottom: 15px;
+      }
+      .sty-btn-friend-sect {
+        background-color: #283618;
+        color: #fefae0;
+      }
+
       /* {% endblock styles %}*/
     </style>
   </head>
@@ -20,70 +72,139 @@
     <div class="container">
       <div class="columns">
         <div class="column">
-          <h1>Discover New People</h1>
+          <!-- DISCOVER START (PEOPLE)-->
+          <h1 class="sty-header-display-section sty-font-family-montserrat">
+            Discover New People
+          </h1>
           <div class="columns is-vcentered">
             <div class="column">
-              <h1>PROFILE IMAGE</h1>
+              <h1 class="has-text-centered">PROFILE IMAGE</h1>
             </div>
             <div class="column">
-              <h1>GreenGlowVibes</h1>
-              <h1 class="button">Add Friend</h1>
+              <h1
+                class="sty-header-names sty-font-family-roboto has-text-centered mb-3"
+              >
+                GreenGlowVibes
+              </h1>
+              <div class="sty-center-single-btn">
+                <h1
+                  class="button sty-subtitle-low-font-size sty-btn-addFriend-discover-sect sty-btn-single-discover-sect"
+                >
+                  Add Friend
+                </h1>
+              </div>
             </div>
           </div>
+          <!-- DISCOVER END (PEOPLE-->
         </div>
         <div class="column">
-          <h1>Friend Request</h1>
+          <!-- FRIEND REQUEST START -->
+          <h1 class="sty-header-display-section sty-font-family-montserrat">
+            Friend Request
+          </h1>
           <div class="columns is-vcentered">
             <div class="column">
-              <h1>PROFILE IMAGE</h1>
+              <h1 class="has-text-centered">PROFILE IMAGE</h1>
             </div>
             <div class="column">
-              <h1>PlasticHunterX</h1>
-              <h1 class="button">Accept</h1>
+              <h1
+                class="sty-header-names sty-font-family-roboto has-text-centered mb-3"
+              >
+                PlasticHunterX
+              </h1>
+              <div class="sty-center-single-btn">
+                <h1
+                  class="button sty-btn-single-friendRequest-sect sty-btn-friendRequest-sect sty-subtitle-low-font-size"
+                >
+                  Accepted
+                </h1>
+              </div>
             </div>
           </div>
+
           <div class="columns is-vcentered">
             <div class="column">
-              <h1>PROFILE IMAGE</h1>
+              <h1 class="has-text-centered">PROFILE IMAGE</h1>
             </div>
             <div class="column">
-              <h1>EcoCrafted</h1>
-              <div class="columns">
+              <h1
+                class="sty-header-names sty-font-family-roboto mb-3 has-text-centered"
+              >
+                EcoCrafted
+              </h1>
+              <div class="columns is-vcentered">
                 <div class="column">
-                  <div class="button">del_btn</div>
+                  <div class="sty-center-single-btn">
+                    <div class="button sty-icon">
+                      <ion-icon name="trash"></ion-icon>
+                    </div>
+                  </div>
                 </div>
-                <div class="column">
-                  <h1 class="button">Accept</h1>
+                <div class="column is-7">
+                  <div class="sty-center-single-btn">
+                    <h1
+                      class="button sty-subtitle-low-font-size sty-btn-friendRequest-sect sty-btn-single-friendRequest-sect"
+                    >
+                      Accept
+                    </h1>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <h1>Friends</h1>
+          <!-- FRIEND REQUEST END -->
+          <!-- FRIENDS START -->
+          <h1 class="sty-header-display-section sty-font-family-montserrat">
+            Friends
+          </h1>
           <div class="columns is-vcentered">
             <div class="column">
-              <h1>PROFILE IMAGE</h1>
+              <h1 class="has-text-centered">PROFILE IMAGE</h1>
             </div>
             <div class="column">
-              <h1>PlasticHunterX</h1>
-              <h1 class="button">Removed</h1>
+              <h1
+                class="sty-header-names sty-font-family-roboto mb-3 has-text-centered"
+              >
+                PlasticHunterX
+              </h1>
+              <div class="sty-center-single-btn">
+                <h1
+                  class="button sty-btn-single-friend-sect sty-subtitle-low-font-size sty-btn-friend-sect"
+                >
+                  Removed
+                </h1>
+              </div>
             </div>
           </div>
           <div class="columns is-vcentered">
             <div class="column">
-              <h1>PROFILE IMAGE</h1>
+              <h1 class="has-text-centered">PROFILE IMAGE</h1>
             </div>
             <div class="column">
-              <h1>EcoCrafted</h1>
-              <div class="columns">
+              <h1
+                class="sty-header-names sty-font-family-roboto mb-3 has-text-centered"
+              >
+                EcoCrafted
+              </h1>
+              <div class="columns is-vcentered">
                 <div class="column">
-                  <div class="button">Remove Friend</div>
+                  <div class="sty-center-single-btn">
+                    <div
+                      class="button sty-btn-single-friend-sect sty-btn-friend-sect sty-subtitle-low-font-size"
+                    >
+                      Remove Friend
+                    </div>
+                  </div>
                 </div>
                 <div class="column">
-                  <h1 class="button">Msg_btn</h1>
+                  <h1 class="button sty-icon">
+                    <ion-icon name="chatbubble-ellipses"></ion-icon>
+                  </h1>
                 </div>
               </div>
             </div>
           </div>
+          <!-- FRIENDS END -->
         </div>
       </div>
     </div>
@@ -98,10 +219,14 @@
         //
 
         let get_link = document.getElementById("get_link");
-        let usr_all_bck_opt_ref = document.getElementById("usr_all_bck_opt_ref");
+        let usr_all_bck_opt_ref = document.getElementById(
+          "usr_all_bck_opt_ref"
+        );
 
         usr_all_bck_opt_ref.href = get_link.getAttribute("data-url");
-        let usr_all_bck_opt_label = document.getElementById("usr_all_bck_opt_label");
+        let usr_all_bck_opt_label = document.getElementById(
+          "usr_all_bck_opt_label"
+        );
         usr_all_bck_opt_label.textContent = "People";
         //let get_search_item = document.getElementById("get_search_item");
         //let usr_all_end_opt = document.getElementById("usr_all_end_opt");

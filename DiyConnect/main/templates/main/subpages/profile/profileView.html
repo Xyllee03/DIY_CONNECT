@@ -8,18 +8,436 @@
     <title>Profile | DIY CONNECT</title>
     {% endblock title%}
   </head>
+  <style>
+    /*{% block styles %} */
+    .sty-sect-cl-opt {
+      background-color: #283618;
+    }
+    .sty-sect-opt {
+      font-size: 40px;
+      color: #ffffff;
+      border: solid #ffffff 1px;
+    }
+    .sty-sect-opt-CRUD-wdth-inherit {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+    .sty-sect-opt-CRUD {
+      font-size: 24px;
+      color: #ffffff;
+      border: solid #ffffff 1px;
+      background-color: #283618;
+      width: 325px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .sty-sect-opt-CRUD:hover {
+      background-color: #d9d9d9;
+      cursor: pointer;
+      transition: all ease-in 0.3s;
+    }
+    .sty-sect-desc {
+      font-size: 20px;
+      text-align: justify;
+      color: black;
+      font-family: "Hind Madurai", sans-serif;
+      font-weight: 400;
+    }
+    .sty-sect-header {
+      font-size: 64px;
+      text-align: left;
+      color: black;
+      font-family: "Montserrat", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 800;
+      font-style: normal;
+    }
+    .sty-sect-opt-icon {
+      font-size: 38px;
+      color: #ffffff;
+    }
+    .sty-inp-postAdd-image {
+      background-color: #d9d9d9;
+      height: 600px;
+      width: 560px;
+
+      padding-left: 80px;
+      padding-right: 80px;
+
+      padding-top: 20px;
+      padding-bottom: 20px;
+      display: flex;
+      justify-content: center; /* Center horizontally */
+      align-items: center; /* Center vertically */
+      text-align: center; /* Ensure text is centered */
+      margin: auto; /* Centers the whole circle in the parent container */
+      font-size: 30px;
+
+      font-family: "Montserrat", sans-serif;
+
+      font-weight: 800;
+      font-style: normal;
+    }
+    .sty-inp-img-container {
+      display: grid;
+      height: 100%;
+      width: 100%;
+      gap: 5px;
+      background: #f0f0f0;
+      overflow: hidden;
+    }
+    .sty-sect-msg-opt:hover {
+      cursor: pointer;
+    }
+
+    .sty-mdl-head {
+      font-size: 36px;
+      font-weight: 800;
+      color: black;
+    }
+    .sty-mdl-msg {
+      font-size: 20px;
+      font-weight: 400;
+      color: black;
+    }
+    .sty-mdl-btn-submit {
+      color: #ffffff;
+      font-weight: 600;
+      background-color: #283618;
+      font-size: 25px;
+    }
+    .sty-mdl-footer-btn {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    /*{% endblock styles %} */
+  </style>
   <body>
     <!-- prettier-ignore -->
+
     {% block content %}
     <!-- //prettier-ignore -->
-    <h1>This is profile</h1>
+
+    <h1 id="get_username" hidden>{{ username }}</h1>
+
+    <div id="get_link" data-url="{% url 'main:diyconn_home' %}" hidden></div>
+    <div id="get_check_owner_post" data-url="{{ Check_owner_post }}"></div>
     <!-- prettier-ignore -->
+
+    <div id="postContainer">
+      <!-- DRAFT TEMPLATE 
+      <div class="container">
+        <div class="section is-medium">
+          <div class="columns is-vcentered has-text-centered">
+            <div class="column">
+              <div class="columns is-vcentered">
+                <div class="column is-2">
+                  <ion-icon name="person-circle"></ion-icon>
+                </div>
+                <div class="column has-text-left sty-mdl-msg">
+                  <h1 style="font-weight: 700">PlasticHunterX</h1>
+                  <h1>March 21, 2025</h1>
+                  <h1><ion-icon name="location"></ion-icon>South - 2 Bacoor Cavite</h1>
+                </div>
+              </div>
+              <h1 class="sty-sect-header">300 pcs of Plastics Bottles</h1>
+              <h1 class="sty-sect-desc">
+                The plastic bottles are clean, all 1.5 liters, with no labels and caps removed. They
+                are dry and free from any residue, ready for recycling.
+              </h1>
+              <div class="columns mt-5 is-vcentered sty-sect-cl-opt">
+                <div class="column">
+                  <h1 class="px-6 sty-sect-opt-icon">
+                    <ion-icon name="chatbox-ellipses"></ion-icon>
+                  </h1>
+                </div>
+                <div class="column sty-sect-opt px-6">
+                  <h1 class="">Request</h1>
+                </div>
+                <div class="column">
+                  <h1 class="px-6 sty-sect-opt-icon">
+                    <ion-icon name="share-outline"></ion-icon>
+                  </h1>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div>
+                <img alt="" />
+              </div>
+            </div>
+          </div>
+
+          <div class="columns mt-6">
+            <div class="column">
+              <div class="has-text-centered">
+                <div class="sty-sect-opt-CRUD">
+                  Modify
+                </div>
+              </div>
+            </div>
+          <div class="column">
+              <div class="has-text-centered">
+                <div class="sty-sect-opt-CRUD">
+               Delete
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+-->
+ <!-- MODAL FOR DELETE POST -->
+  <div class="modal"id ="mdl_delete_post">
+  <div class="modal-background" onclick="close_modals()"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title sty-mdl-head has-text-centered">Delete Post</p>
+      <button class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body has-text-centered">
+        <h1 class="sty-mdl-msg">
+            Are you sure you want to delete this post?
+          </h1>
+    </section>
+    <footer class="modal-card-foot">
+        <div class="sty-mdl-footer-btn">
+            <a
+              class="button sty-mdl-btn-submit"
+              id="btn_mdl_delete_submit"
+
+
+            >
+              Continue
+            </a>
+          </div>
+    </footer>
+  </div>
+</div>
+
+
+    </div>
     {% endblock content %}
     <!-- //prettier-ignore -->
 
     <script>
       //{% block scripts %}
+      // GIVEN
+      let usr_all_bck_opt_ref = document.getElementById("usr_all_bck_opt_ref");
+      usr_all_bck_opt_ref.href = get_link.getAttribute("data-url");
+      let usr_all_bck_opt_label = document.getElementById(
+        "usr_all_bck_opt_label"
+      );
+      let get_username = document.getElementById("get_username");
+      usr_all_bck_opt_label.textContent = "Viewing " + get_username.textContent;
 
+      let postContainer = document.getElementById("postContainer");
+      async function getProfilePost() {
+        let get_username2 = document.getElementById("get_username").textContent;
+        let items = await fetch(`/post/profile/get/${get_username2}/`);
+        let post = await items.json();
+
+        // console.log(post);
+        let i = 0;
+        post.items.forEach((data) => {
+          let div_newPost = document.createElement("div");
+          div_newPost.classList.add("container");
+          console.log(data);
+          //clean_path = image_path.replace("/upload/", "");
+          div_newPost.innerHTML = `
+            <div class="section is-medium">
+                   <div class="columns is-vcentered has-text-centered">
+                     <div class="column">
+                        <div class="columns is-vcentered">
+                      <div class="column is-2">
+                        <ion-icon name="person-circle"></ion-icon>
+                      </div>
+                      <div class="column has-text-left sty-mdl-msg">
+                        <h1 style="font-weight: 700">${data.username}</h1>
+                        <h1>${data.date_modified}</h1>
+                        <h1><ion-icon name="location"></ion-icon> ${data.user_location.subdivision} ${data.user_location.city_or_municipality}</h1>
+                      </div>
+                    </div>
+                       <h1 class="sty-sect-header">     ${data.title}</h1>
+                       <h1 class="sty-sect-desc">
+                         ${data.description}
+                       </h1>
+                       <div class="columns mt-5 is-vcentered sty-sect-cl-opt">
+                         <div class="column">
+                           <h1 class="px-6 sty-sect-opt-icon sty-sect-msg-opt" onclick=btnUsermsg_post() data-user-id=${data.userID} >
+                             <ion-icon name="chatbox-ellipses"></ion-icon>
+                           </h1>
+                         </div>
+                         <div class="column sty-sect-opt px-6">
+                           <h1 class="">Request</h1>
+                         </div>
+                         <div class="column">
+                          <h1 class="px-6 sty-sect-opt-icon" data-url="/post/specific/${data.id}"  onclick="copyLinkPost(event)">
+                       <ion-icon name="share-outline"></ion-icon>
+                     </h1>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="column">
+                       <div class="sty-inp-img-container sty-inp-postAdd-image " id='inp_img_container_${i}'>
+                         <img alt="" src= "" />
+                       </div>
+                     </div>
+
+                   </div>
+      <div id="chk_CRUD_operations_${i}"> </div>
+                 </div>
+             `;
+
+          postContainer.appendChild(div_newPost);
+          let get_item_inp_img_container = document.getElementById(
+            `inp_img_container_${i}`
+          );
+
+          let chk_CRUD_operations = document.getElementById(
+            `chk_CRUD_operations_${i}`
+          );
+          let get_check_owner_post = document
+            .getElementById("get_check_owner_post")
+            .getAttribute("data-url");
+          console.log(`Check owner post:  ${get_check_owner_post}`);
+
+          if (get_check_owner_post === "True") {
+            chk_CRUD_operations.innerHTML = `
+               <div class="columns mt-6">
+            <div class="column">
+              <div class="sty-sect-opt-CRUD-wdth-inherit">
+                <a class="sty-sect-opt-CRUD" id="modify_${data.id}" href="/post/edit/${data.id}" >
+                  Modify
+                </a>
+              </div>
+            </div>
+          <div class="column">
+              <div class="sty-sect-opt-CRUD-wdth-inherit">
+                <div class="sty-sect-opt-CRUD" id ="delete_${data.id}" onclick="open_delete_modal(this)">
+               Delete
+                </div>
+              </div>
+            </div>
+          </div>`;
+          }
+
+          //console.log("CHEKCING");
+
+          let get_num_images = data.blobs.length;
+
+          // TESTING
+          //console.log(`Number of images:${get_num_images}`);
+          if (get_num_images == 1) {
+            get_item_inp_img_container.style.gridTemplateColumns = "1fr";
+            get_item_inp_img_container.style.gridTemplateRows = "1fr";
+          } else if (get_num_images == 2) {
+            get_item_inp_img_container.style.gridTemplateColumns = "1fr 1fr";
+            get_item_inp_img_container.style.gridTemplateRows = "1fr";
+          } else if (get_num_images === 3) {
+            get_item_inp_img_container.style.gridTemplateColumns = "1fr 1fr";
+            get_item_inp_img_container.style.gridTemplateRows = "1fr 1fr";
+          } else if (get_num_images == 4) {
+            get_item_inp_img_container.style.gridTemplateColumns = "1fr 1fr";
+            get_item_inp_img_container.style.gridTemplateRows = "1fr 1fr";
+          } else {
+            console.log("big file");
+          }
+          get_item_inp_img_container.innerHTML = "";
+          get_item_inp_img_container.style.display = "grid";
+          get_images_arr = data.blobs;
+
+          get_images_arr.forEach((element, index) => {
+            let imageUrl = element.image_url;
+            let img = document.createElement("img");
+            img.src = imageUrl;
+            img.style.width = "100%";
+            img.style.height = "100%";
+            img.style.objectFit = "cover";
+
+            // If 3 images, make the last one span two columns
+            if (get_num_images === 3 && index === 2) {
+              img.style.gridColumn = "1 / span 2";
+            }
+
+            get_item_inp_img_container.appendChild(img);
+          });
+          i++;
+        });
+      }
+      getProfilePost();
+
+      // DELETE POST
+      let mdl_delete_post = document.getElementById("mdl_delete_post");
+
+      function open_delete_modal(element) {
+        let btn_mdl_delete_submit = document.getElementById(
+          "btn_mdl_delete_submit"
+        );
+
+        let fullid = element.id.split("_");
+        let post_id = fullid[1];
+        btn_mdl_delete_submit.setAttribute("data-url", post_id);
+        // btn_mdl_delete_submit.href = ``;
+        mdl_delete_post.classList.add("is-active");
+
+        /*
+
+          */
+      }
+      let btn_mdl_delete_submit = document.getElementById(
+        "btn_mdl_delete_submit"
+      );
+      btn_mdl_delete_submit.addEventListener("click", (event) => {
+        let post_id = event.target.getAttribute("data-url");
+        let response = fetch(`/post/delete/${post_id}/`, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // If response status is not OK (400, 500, etc.), throw an error
+              return response.json().then((errData) => {
+                throw errData;
+              });
+            }
+            return response.json(); // Otherwise, parse the JSON response
+          })
+          .then((res) => {
+            console.log(res);
+            window.location.reload();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+      function close_modals() {
+        mdl_delete_post.classList.remove("is-active");
+      }
+      function copyLinkPost(event) {
+        const target = event.currentTarget; // More reliable than event.target
+        const url = target.getAttribute("data-url");
+        const fullUrl = `${window.location.origin}${url}`;
+
+        // Copy to clipboard
+        navigator.clipboard
+          .writeText(fullUrl)
+          .then(() => {
+            console.log("Copied to clipboard:", fullUrl);
+            alert("Link copied to clipboard!");
+          })
+          .catch((err) => {
+            console.error("Failed to copy:", err);
+          });
+      }
       //{% endblock scripts %}
     </script>
   </body>

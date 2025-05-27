@@ -28,10 +28,19 @@ urlpatterns = [
     #POST
       path('post/getRoleChange/', views.postRoleChange,  name="postRoleChange"),
       path('post/add/', views.postAdd,  name="postAdd"),
+            path('post/specific/<int:post_id>', views.postGet_specific,  name="postGet_specific"),
+      path('post/edit/save/<int:post_id>', views.postEditSave,  name="postEditSave"),
+      path('post/edit/<int:post_id>', views.postEdit,  name="postEdit"),
       path('post/get/<int:lastest_post>/<str:role_post>', views.postGet,  name="postGet"),
+        path('post/delete/<int:post_id>/', views.postDelete,  name="postGet"),
+
+      path('post/profile/get/<str:username>/', views.postGet_profile, name="postGet_profile"),
     #Messages
       path('diyconn/messages/', views.Messages,  name="Messages"),
 
+  #Profile
+    path('diyconn/profile/get/<str:username>/', views.profile_user, name ="profile_user"),
+  
 
       #INITIALIZED
         path('Initialized/cookies/', views.set_csrf_token,  name="set_csrf_token"),

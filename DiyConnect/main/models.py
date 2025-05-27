@@ -12,6 +12,13 @@ class UserSiteRole(models.TextChoices):
     COLLECTOR = 'collector', 'Collector'
     GUEST = 'guest', 'Guest'
 
+class FriendStatus(models.TextChoices):
+    PENDING= 'pending', 'Pending'
+    ACCEPTED= 'accepted','Accepted'
+    REJECTED = 'rejected','Rejected'
+
+
+
 def user_profile_pic_path(instance, filename):
     return f'upload/profile_pic/{instance.username}/{filename}'
 
@@ -121,6 +128,20 @@ class UserPost_BLOB(models.Model):
     USER_POST_ID = models.ForeignKey(UserPost, on_delete=models.CASCADE)
     blob = models.ImageField(upload_to=user_post_blob_path)
     position = models.IntegerField()
+
+
+
+#Friends
+class Friendships(models.Model):
+    ID = models.AutoField(primary_key=True)
+    REQUESTER_ID = models.ForeignKey(UserSites, on_delete=models.CASCADE, related_name='sent_requests')
+    RECEIVER_ID = models.ForeignKey(UserSites, on_delete=models.CASCADE, related_name='received_requests')
+
+    status = models.CharField(max_length=20, choices=FriendStatus.choices, default=FriendStatus.PENDING)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return f"{self.REQUESTER_ID} → {self.RECEIVER_ID} ({self.status})"
 
 
 # MESSAGES

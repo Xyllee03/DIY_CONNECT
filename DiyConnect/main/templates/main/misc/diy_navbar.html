@@ -1,4 +1,8 @@
-<nav class="navbar sty-h-navbar-bkg is-fixed-top" role="navigation" aria-label="main navigation">
+<nav
+  class="navbar sty-h-navbar-bkg is-fixed-top"
+  role="navigation"
+  aria-label="main navigation"
+>
   <div class="container">
     <!--
     <div class="navbar-brand">
@@ -53,7 +57,10 @@
           </div>
         </div>
 
-        <a class="navbar-item sty-h-navbar-icons" href="{% url 'main:people' %}">
+        <a
+          class="navbar-item sty-h-navbar-icons"
+          href="{% url 'main:people' %}"
+        >
           <h1 class="">
             <ion-icon name="people"></ion-icon></h1
         ></a>
@@ -61,12 +68,20 @@
           <h1 class="">
             <ion-icon name="notifications"></ion-icon></h1
         ></a>
-        <a class="navbar-item sty-h-navbar-icons" href="{% url 'main:postAdd' %}">
+        <a
+          class="navbar-item sty-h-navbar-icons"
+          href="{% url 'main:postAdd' %}"
+        >
           <h1>
             <ion-icon name="add-circle"></ion-icon></h1
         ></a>
         <div class="navbar-item">
-          <input type="text" class="input" placeholder="search" id="nav_search_bar" />
+          <input
+            type="text"
+            class="input"
+            placeholder="search"
+            id="nav_search_bar"
+          />
         </div>
       </div>
 
@@ -74,7 +89,10 @@
         <a class="navbar-item sty-h-navbar-icons" id="navAll_logout">
           <ion-icon name="power"></ion-icon>
         </a>
-        <a class="navbar-item sty-h-navbar-profileName">
+        <a
+          class="navbar-item sty-h-navbar-profileName"
+          href="{% url 'main:profile_user' username=username %}"
+        >
           <h1>{{ username }}</h1>
         </a>
         <a class="navbar-item sty-h-navbar-profileImage">
