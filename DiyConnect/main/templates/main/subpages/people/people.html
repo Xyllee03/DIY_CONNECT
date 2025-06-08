@@ -39,6 +39,11 @@
         background-color: #283618;
         color: #fefae0;
       }
+      .sty-btn-addFriend-discover-sect--Request {
+        background-color: #fefae0;
+        color: #283618;
+        border: 3px solid black;
+      }
 
       .sty-btn-single-friendRequest-sect {
         width: 100%;
@@ -61,7 +66,58 @@
         background-color: #283618;
         color: #fefae0;
       }
+      .profile-img-container {
+        width: 290px; /* same width and height */
+        height: 290px;
 
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #000000; /* optional background */
+      }
+      .profile-img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: cover;
+      }
+      #friendRequest_container {
+        height: 50vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        scroll-behavior: smooth;
+      }
+      #friendContainer {
+        height: 50vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        scroll-behavior: smooth;
+      }
+
+      /* Modal DELETE Friend Request */
+      .sty-mdl-footer-btn {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+      .sty-mdl-head {
+        font-size: 36px;
+        font-weight: 800;
+        color: black;
+      }
+      .sty-mdl-msg {
+        font-size: 20px;
+        font-weight: 400;
+        color: black;
+      }
+      .sty-mdl-btn-submit {
+        color: #ffffff;
+        font-weight: 600;
+        background-color: #283618;
+        font-size: 25px;
+      }
       /* {% endblock styles %}*/
     </style>
   </head>
@@ -72,10 +128,12 @@
     <div class="container">
       <div class="columns">
         <div class="column">
-          <!-- DISCOVER START (PEOPLE)-->
           <h1 class="sty-header-display-section sty-font-family-montserrat">
             Discover New People
           </h1>
+          <div id="discoverPeople_container"></div>
+          <!-- DISCOVER START (PEOPLE)
+     
           <div class="columns is-vcentered">
             <div class="column">
               <h1 class="has-text-centered">PROFILE IMAGE</h1>
@@ -95,13 +153,16 @@
               </div>
             </div>
           </div>
+          -->
           <!-- DISCOVER END (PEOPLE-->
         </div>
         <div class="column">
-          <!-- FRIEND REQUEST START -->
           <h1 class="sty-header-display-section sty-font-family-montserrat">
             Friend Request
           </h1>
+          <div id="friendRequest_container"></div>
+          <!-- FRIEND REQUEST START 
+        
           <div class="columns is-vcentered">
             <div class="column">
               <h1 class="has-text-centered">PROFILE IMAGE</h1>
@@ -121,7 +182,10 @@
               </div>
             </div>
           </div>
+          -->
+          <!-- FRIEND REQUEST END -->
 
+          <!-- FRIEND REQUEST START 
           <div class="columns is-vcentered">
             <div class="column">
               <h1 class="has-text-centered">PROFILE IMAGE</h1>
@@ -152,11 +216,14 @@
               </div>
             </div>
           </div>
+          -->
           <!-- FRIEND REQUEST END -->
-          <!-- FRIENDS START -->
+
           <h1 class="sty-header-display-section sty-font-family-montserrat">
             Friends
           </h1>
+          <div id="friendContainer"></div>
+          <!-- FRIENDS START 
           <div class="columns is-vcentered">
             <div class="column">
               <h1 class="has-text-centered">PROFILE IMAGE</h1>
@@ -176,6 +243,9 @@
               </div>
             </div>
           </div>
+        -->
+          <!-- FRIENDS END -->
+          <!-- FRIENDS START
           <div class="columns is-vcentered">
             <div class="column">
               <h1 class="has-text-centered">PROFILE IMAGE</h1>
@@ -204,10 +274,83 @@
               </div>
             </div>
           </div>
+           -->
           <!-- FRIENDS END -->
         </div>
       </div>
     </div>
+
+    <!-- MODAL DELETE WARNING (FRIEND REQUEST)-->
+    <div class="modal" id="mdl_friendRequestWarning">
+      <div
+        class="modal-background"
+        onclick="mdl_f_deleteFriendRequest_close()"
+      ></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title sty-mdl-head has-text-centered">
+            Delete Friend Request
+          </p>
+          <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body has-text-centered">
+          <h1 class="sty-mdl-msg" id="mdl_friendRequest_body"></h1>
+          <input
+            type="text"
+            name=""
+            id="inp_user_ID_friendDeleteRequest"
+            value=""
+            hidden
+          />
+        </section>
+
+        <footer class="modal-card-foot">
+          <div class="sty-mdl-footer-btn">
+            <a
+              class="button sty-mdl-btn-submit"
+              onclick="mdl_btn_submit_deleteFriendRequest()"
+            >
+              Continue
+            </a>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <!-- MODAL DELETE WARNING (FRIEND REQUEST) END-->
+    <!-- MODAL FRIEND REMOVE  START -->
+    <div class="modal" id="mdl_RemoveFriend">
+      <div class="modal-background" onclick="close_removeFriend_mdl() "></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title sty-mdl-head has-text-centered">
+            Remove Friend
+          </p>
+          <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body has-text-centered">
+          <h1 class="sty-mdl-msg" id="mdl_removeFriend_body"></h1>
+          <input
+            type="text"
+            name=""
+            id="inp_user_ID_friendRemove"
+            value=""
+            hidden
+          />
+        </section>
+
+        <footer class="modal-card-foot">
+          <div class="sty-mdl-footer-btn">
+            <a
+              class="button sty-mdl-btn-submit"
+              onclick="mdl_btn_submit_deleteFriend()"
+            >
+              Continue
+            </a>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <!-- MODAL FRIEND REMOVE END-->
     <!-- prettier-ignore -->
     <div id="get_link" data-url="{% url 'main:diyconn_home' %}" hidden></div>
     {% endblock content %}
@@ -230,15 +373,378 @@
         usr_all_bck_opt_label.textContent = "People";
         //let get_search_item = document.getElementById("get_search_item");
         //let usr_all_end_opt = document.getElementById("usr_all_end_opt");
+
+        //ini_new_input.value = get_search_item.getAttribute("data-url");
+        /*
         let ini_new_input = document.createElement("input");
         ini_new_input.classList.add("input");
         ini_new_input.classList.add("sty-inp-se");
         ini_new_input.id = "inp_se_people";
-        //ini_new_input.value = get_search_item.getAttribute("data-url");
-
         usr_all_end_opt.appendChild(ini_new_input);
+        */
       }
       Initialized();
+
+      async function ini_discoverPeople() {
+        let discoverPeople_container = document.getElementById(
+          "discoverPeople_container"
+        );
+        let people = await fetch("{% url 'main:peopleGetDiscover' %}");
+        let people_data = await people.json();
+        // console.log(people_data);
+        let discover_people_section = document.createElement("div");
+        people_data.DiscoverPeople.forEach((element) => {
+          //console.log(element);
+          discover_people_section.classList.add("discover-people-contatiner");
+          discover_people_section.innerHTML += ` <div class="columns is-vcentered">
+            <div class="column">
+              <div class="profile-img">
+             <img src ="${element.Profile}" class='profile-img' >
+                </div>
+             </div>
+            <div class="column">
+              <h1
+                class="sty-header-names sty-font-family-roboto has-text-centered mb-3"
+              >${element.username}</h1>
+              <div class="sty-center-single-btn">
+
+                <h1 data-status-request=""  data-user-id="${element.id}" onclick="addPeople_in_discover(event)"
+                  class="button sty-subtitle-low-font-size sty-btn-addFriend-discover-sect sty-btn-single-discover-sect"
+                >
+                  Add Friend
+                </h1>
+              </div>
+            </div>
+          </div>`;
+          discoverPeople_container.appendChild(discover_people_section);
+        });
+      }
+      ini_discoverPeople();
+
+      function addPeople_in_discover(event) {
+        let target = event.currentTarget;
+        let user_id = target.getAttribute("data-user-id");
+        //console.log(`Person ID: ${user_id}`);
+        let trg_status_req = target.getAttribute("data-status-request");
+        if (trg_status_req == "") {
+          target.setAttribute("data-status-request", "Request");
+          target.textContent = "Request..";
+          target.classList.remove("sty-btn-addFriend-discover-sect");
+          target.classList.add("sty-btn-addFriend-discover-sect--Request");
+
+          let response = fetch(`/diyconnect/people/add/${user_id}`, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+            mode: "same-origin",
+          })
+            .then((res) => {
+              return res.json();
+            })
+            .then((msg) => {
+              console.log(msg);
+              //window.location.href = `/${msg.redirect_url}`;
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          target.setAttribute("data-status-request", "");
+          target.textContent = "Add Friend";
+          target.classList.remove("sty-btn-addFriend-discover-sect--Request");
+          target.classList.add("sty-btn-addFriend-discover-sect");
+
+          let response = fetch(`/diyconnect/people/delete/${user_id}`, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+            mode: "same-origin",
+          })
+            .then((res) => {
+              return res.json();
+            })
+            .then((msg) => {
+              console.log(msg);
+
+              //window.location.href = `/${msg.redirect_url}`;
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      }
+      //Initialized Friend Request
+      function ini_FriendRequest() {
+        let friendRequest_container = document.getElementById(
+          "friendRequest_container"
+        );
+        let response = fetch("{% url 'main:peopleFriendRequest_get' %}", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+        })
+          .then((res) => {
+            return res.json();
+          })
+          .then((msg) => {
+            //console.log("THIS IS GATHERED DATA FRIEND REQUEST");
+            // console.log(msg.FriendRequest);
+
+            let friendRequest_section = document.createElement("div");
+            msg.FriendRequest.forEach((element) => {
+              //console.log(element);
+              friendRequest_section.innerHTML += `
+             <div class="columns is-vcentered">
+            <div class="column">
+                 <div class="profile-img">
+             <img src ="${element.Profile}" class='profile-img' >
+                </div>
+            </div>
+            <div class="column">
+              <h1
+                class="sty-header-names sty-font-family-roboto has-text-left mb-3"
+              >
+               ${element.username}
+              </h1>
+              <div class="sty-center-single-btn">
+                <div class="button sty-icon" data-username="${element.username}" data-user-id ="${element.id}" id ="friend_request_delete_icon_${element.id}" onclick ="mdl_f_deleteFriendRequest_btn(event)">
+                      <ion-icon name="trash"></ion-icon>
+                    </div>
+
+                <h1 data-user-id ="${element.id}" data-user-accept-status="" onclick ="friendRequest_accept(event)"
+                  class="button sty-btn-single-friendRequest-sect sty-btn-friendRequest-sect sty-subtitle-low-font-size"
+                >
+                  Accept
+                </h1>
+              </div>
+            </div>
+          </div>`;
+            });
+            friendRequest_container.appendChild(friendRequest_section);
+            //window.location.href = `/${msg.redirect_url}`;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      ini_FriendRequest();
+
+      function friendRequest_accept(event) {
+        let target = event.currentTarget;
+        let user_id = target.getAttribute("data-user-id");
+        let friend_request_delete_icon = document.getElementById(
+          `friend_request_delete_icon_${user_id}`
+        );
+        let trg_accept_status = target.getAttribute("data-user-accept-status");
+        if (trg_accept_status == "") {
+          target.textContent = "Accepted....";
+          target.setAttribute("data-user-accept-status", "Accepted");
+          friend_request_delete_icon.style.display = "none";
+          let response = fetch(
+            `/diyconnect/people/friendRequest/accepted/${user_id}`,
+            {
+              method: "POST",
+              headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+              },
+              mode: "same-origin",
+            }
+          )
+            .then((res) => {
+              return res.json();
+            })
+            .then((msg) => {
+              console.log(msg);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          let response = fetch(
+            `/diyconnect/people/friendRequest/pending/${user_id}`,
+            {
+              method: "POST",
+              headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+              },
+              mode: "same-origin",
+            }
+          )
+            .then((res) => {
+              return res.json();
+            })
+            .then((msg) => {
+              console.log(msg);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+          target.textContent = "Accept";
+          target.setAttribute("data-user-accept-status", "");
+          friend_request_delete_icon.style.display = "block";
+        }
+      }
+
+      // MODAL DELETE FRIEND REQUEST MODAL
+      let mdl_friendRequestWarning = document.getElementById(
+        "mdl_friendRequestWarning"
+      );
+      let mdl_friendRequest_body = document.getElementById(
+        "mdl_friendRequest_body"
+      );
+
+      let inp_user_ID_friendDeleteRequest = document.getElementById(
+        "inp_user_ID_friendDeleteRequest"
+      );
+
+      function mdl_f_deleteFriendRequest_close() {
+        mdl_friendRequestWarning.classList.remove("is-active");
+      }
+      function mdl_f_deleteFriendRequest_btn(event) {
+        let target = event.currentTarget;
+        let user_id = target.getAttribute("data-user-id");
+        let username = target.getAttribute("data-username");
+        mdl_friendRequest_body.textContent = `Are you sure you want to delete friend request of ${username}`;
+        //console.log(`User ID: ${user_id}`);
+        mdl_friendRequestWarning.classList.add("is-active");
+        inp_user_ID_friendDeleteRequest.value = `${user_id}`;
+      }
+
+      function mdl_btn_submit_deleteFriendRequest() {
+        let userId = inp_user_ID_friendDeleteRequest.value;
+
+        let response = fetch(`/diyconnect/people/delete/${userId}`, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+        })
+          .then((res) => {
+            return res.json();
+          })
+          .then((msg) => {
+            console.log(msg);
+            window.location.reload();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      function ini_friends() {
+        let friendContainer = document.getElementById("friendContainer");
+        let friendSection = document.createElement("div");
+        let response = fetch("{% url 'main:peopleFriends' %}", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+        })
+          .then((res) => {
+            return res.json();
+          })
+          .then((msg) => {
+            msg.FriendList.forEach((element) => {
+              friendSection.innerHTML += `
+               <div class="columns is-vcentered">
+            <div class="column">
+             <div class="profile-img">
+             <img src ="${element.Profile}" class='profile-img' >
+                </div>
+            </div>
+            <div class="column">
+              <h1
+                class="sty-header-names sty-font-family-roboto mb-3 has-text-centered"
+              >
+                ${element.username}
+              </h1>
+              <div class="columns is-vcentered">
+                <div class="column">
+                  <div class="sty-center-single-btn">
+                    <div id="btn_remove_friend-${element.id}" data-user-id="${element.id}" data-username="${element.username}" onclick="open_removeFriend_mdl(event)"
+                      class="button sty-btn-single-friend-sect sty-btn-friend-sect sty-subtitle-low-font-size"
+                    >
+                      Remove Friend
+                    </div>
+                  </div>
+                </div>
+                <div class="column" id="msg-icon-container-${element.id}">
+                  <h1 class="button sty-icon"  >
+                    <ion-icon name="chatbubble-ellipses"></ion-icon>
+                  </h1>
+                </div>
+              </div>
+            </div>
+          </div>`;
+            });
+            friendContainer.appendChild(friendSection);
+            // console.log(msg);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      ini_friends();
+      let inp_user_ID_friendRemove = document.getElementById(
+        "inp_user_ID_friendRemove"
+      );
+      let mdl_removeFriend_body = document.getElementById(
+        "mdl_removeFriend_body"
+      );
+      let mdl_RemoveFriend = document.getElementById("mdl_RemoveFriend");
+      function close_removeFriend_mdl() {
+        mdl_RemoveFriend.classList.remove("is-active");
+      }
+      function open_removeFriend_mdl(event) {
+        mdl_RemoveFriend.classList.add("is-active");
+        let target = event.currentTarget;
+        let user_id = target.getAttribute("data-user-id");
+        let username = target.getAttribute("data-username");
+        mdl_removeFriend_body.textContent = `Do you want to remove your connection between ${username}??`;
+        inp_user_ID_friendRemove.value = user_id;
+      }
+
+      function mdl_btn_submit_deleteFriend() {
+        let inp_user_ID_friendRemove = document.getElementById(
+          "inp_user_ID_friendRemove"
+        ).value;
+        let msg_icon_remove_element = document.getElementById(
+          `msg-icon-container-${inp_user_ID_friendRemove}`
+        );
+        let btn_remove_friend = document.getElementById(
+          `btn_remove_friend-${inp_user_ID_friendRemove}`
+        );
+        btn_remove_friend.textContent = "Removed...";
+
+        msg_icon_remove_element.style.display = "none";
+
+        let response = fetch(
+          `/diyconnect/people/delete/${inp_user_ID_friendRemove}`,
+          {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+            mode: "same-origin",
+          }
+        )
+          .then((res) => {
+            return res.json();
+          })
+          .then((msg) => {
+            console.log(msg);
+            close_removeFriend_mdl();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      // Initialized Friends list
       //{% endblock scripts %}
     </script>
   </body>

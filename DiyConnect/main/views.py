@@ -2,11 +2,13 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse
 import json
 from django.contrib.auth.hashers import check_password
-from .models import UserSites, UserPost, UserPost_BLOB
+from .models import UserSites, UserPost, UserPost_BLOB, Friendships
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 import time
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.db.models.functions import Random
+from django.db.models import Q
 # Create your views here.
 
 
@@ -95,7 +97,7 @@ def authentication_ADD(request):
         #get_user_data = request.POST.get("UserDataPrep")
         bio = request.POST.get("bio")
         get_user_data = json.loads(request.POST.get('UserDataPrep'))
-        print(get_user_data)
+        #print(get_user_data)
         u = UserSites()
         #lastID = UserSites.objects.values('ID').last()
         #u.ID = lastID['ID'] + 1
@@ -106,6 +108,7 @@ def authentication_ADD(request):
         u.profile_picture = get_image_file
         u.city_or_municipality = get_user_data['municipality_or_city']
         u.username = get_user_data['username']
+        u.subdivision = get_user_data['subdivision']
         u.bio = bio
         u.save() 
            
@@ -116,7 +119,8 @@ def authentication_ADD(request):
         print(bio)
         """
         
-        return JsonResponse({"msg": "Request Complete"}, status=200)
+        return JsonResponse({"msg": "New user created complete."
+        ""}, status=200)
 
     return JsonResponse({"error": "Invalid request"}, status=400)
 
@@ -188,7 +192,7 @@ def postRoleChange(request):
 
 def postGet(request,lastest_post, role_post):
   
-   
+    #print(role_post)
     timeout = 30
     start_time = time.time()
     # = UserPost.objects.filter(user_role_type = role_post )
@@ -196,12 +200,13 @@ def postGet(request,lastest_post, role_post):
     while time.time() - start_time < timeout:
             try:
                 new_posts = UserPost.objects.filter(user_role_type=role_post).order_by("-modified_at")[lastest_post]
-                print(new_posts)
+                #print(new_posts)
         
                 if new_posts:
                     lastest_post +=1  # Update latest post ID
                     get_blob_info  = UserPost_BLOB.objects.filter(USER_POST_ID = new_posts).order_by('position')
                     item = get_blob_info.first().blob.url
+                 
                     return JsonResponse({
                 'new_posts':{
                     'id': new_posts.ID,
@@ -211,13 +216,16 @@ def postGet(request,lastest_post, role_post):
                     'user': new_posts.USER_ID.ID, 
                     'username': new_posts.USER_ID.username,
                     'user_location':{'subdivision':new_posts.USER_ID.subdivision, 'city_or_municipality': new_posts.USER_ID.city_or_municipality}, 
-                                  
+                    'profile_urls': new_posts.USER_ID.profile_picture.url if new_posts.USER_ID.profile_picture else None,
+
                     'blob_url': [item.blob.url for item in get_blob_info],
+                  
                     
                     
                 },  # Convert queryset to list
                 'latest_post_count': lastest_post
             })
+         
                 time.sleep(2)
 
             except:
@@ -376,11 +384,124 @@ def Messages(request):
     return render(request, 'main/subpages/messages/messages.html',context)
 
 
-
+#people
 def people(request):
     context ={}
     return render(request,'main/subpages/people/people.html', context)
+def peopleFriendRequest_get(request):
+    context =[]
+    received_request = Friendships.objects.filter(RECEIVER_ID=request.user, status ='pending')
+    for user in received_request:
+        context.append({
+                "id": user.REQUESTER_ID.ID,
+                "username":user.REQUESTER_ID.username,
+                 "Profile": user.REQUESTER_ID.profile_picture.url if user.REQUESTER_ID.profile_picture else "",
+                 "status": user.status,
+             
+            })
+    #print("requestFriend")
+    return JsonResponse({"msg": "Friend request sent successfully", "FriendRequest": context}, status=200)
 
+def peopleFriendRequest_accepted(request, user_id):
+    #print("this is friend request accepted")
+    requester_user = UserSites.objects.get(ID=user_id)
+    accept_request= Friendships.objects.get(RECEIVER_ID =request.user, REQUESTER_ID =requester_user)
+    #print(accept_request)
+    accept_request.status ="accepted" 
+    accept_request.save()
+
+    return JsonResponse({"msg": "This is for friend request accepted"}, status=200)
+
+def peopleFriendRequest_pending(request, user_id):
+    requester_user = UserSites.objects.get(ID=user_id)
+    reject_request= Friendships.objects.get(RECEIVER_ID =request.user, REQUESTER_ID =requester_user)
+    reject_request.status ="pending" 
+    reject_request.save()
+    #print("this is friend request rejected")
+    return JsonResponse({"msg": "This is for friend request rejected"}, status=200)
+
+
+def peopleGetDiscover(request):
+    try:
+        users = UserSites.objects.exclude(ID = request.user.ID).order_by(Random())
+        context =[]
+        for user in users:
+            get_not_friends = Friendships.objects.filter(    Q(REQUESTER_ID=request.user, RECEIVER_ID=user) | Q(REQUESTER_ID=user, RECEIVER_ID=request.user)).first()
+            if get_not_friends is None:
+                    context.append({
+                    "id": user.ID,
+                    "username":user.username,
+                        "Profile": user.profile_picture.url if user.profile_picture else ""
+                    
+                })
+                    if(len(context)>=5):
+                        break
+
+        #print(context)
+        #print("this is for peopleget")
+        return JsonResponse({"msg": "Discover friends list retrieved successfully.","DiscoverPeople": context}, status=200)
+    except Exception as e:
+        return JsonResponse({"msg": "An error occurred while retrieving the people to discover"}, status=500)
+
+
+def peopleAdd(request, user_id):
+    try:
+
+        if(request.method =="POST"):
+            getUser_requester_request = request.user
+            getUser_receiver_request = UserSites.objects.get(ID=user_id)
+            #print(f'${getUser_receiver_request}, {getUser_requester_request}')
+            f = Friendships()
+            f.RECEIVER_ID = getUser_receiver_request
+            f.REQUESTER_ID = getUser_requester_request
+            f.save()
+            #print("this is for people add")
+            return JsonResponse({"msg": "Friend request sent successfully."}, status=200)
+        else:
+            return JsonResponse({"msg": "Invalid request method."}, status=500)
+    except Exception as e:
+        #print(f"Error in add_friend_request: {e}")  # helpful for debugging
+        return JsonResponse({"msg": "An error occurred while sending the friend request."}, status=500)
+
+def peopleDelete(request, user_id):
+    try:
+        if(request.method =="POST"):
+            remove_friend_request = Friendships.objects.filter(    Q(REQUESTER_ID=request.user, RECEIVER_ID=user_id) | Q(REQUESTER_ID=user_id, RECEIVER_ID=request.user)).first()
+            remove_friend_request.delete()
+            #print("this is for delete method")
+            return JsonResponse({"msg": "Friend removed successfully."}, status=200)
+        else:
+            return JsonResponse({"msg": "Invalid request method."}, status=500)
+    except Exception as e:
+        #print(f"Error in add_delete_friend_request: {e}")  # helpful for debugging
+        return JsonResponse({"msg": "An error occurred while delete the friend status."}, status=500)
+
+def peopleFriends(request):
+    
+    if(request.method =="POST"):
+        context =[]
+        friends_list = Friendships.objects.filter(status="accepted").filter(Q(REQUESTER_ID=request.user) | Q(RECEIVER_ID=request.user))
+        
+        #print(friends_list)
+        if not friends_list.exists():
+            friends_list = None  # or [] if you prefer an empty list
+        else:
+            friends_profiles = []
+            for friendship in friends_list:
+                if friendship.REQUESTER_ID == request.user:
+                    friends_profiles.append(friendship.RECEIVER_ID.ID)
+                else:
+                    friends_profiles.append(friendship.REQUESTER_ID.ID)
+            for data in friends_profiles:
+                user = UserSites.objects.get(ID = data)
+                context.append({
+                "id": user.ID,
+                "username":user.username,
+                 "Profile": user.profile_picture.url if user.profile_picture else ""
+             
+            })
+        #print("this is for people Friends")
+        return JsonResponse({"msg": "Friends list retrieved successfully.","FriendList": context}, status=200)
 
 def profile_user(request, username):
     check_owner_post = False

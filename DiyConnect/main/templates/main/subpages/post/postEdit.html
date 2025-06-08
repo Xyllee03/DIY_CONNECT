@@ -10,7 +10,27 @@
 
     <style>
       /*{% block styles %}*/
-
+      @media (max-width: 768px) {
+        .sty-header-big-font-size {
+          font-size: 30px !important;
+        }
+        .sty-subtitle-low-font-size-mobile {
+          font-size: 13px !important;
+          padding-bottom: 2rem;
+          padding-top: 2rem;
+        }
+        #desc_onchange {
+          font-size: 10px;
+        }
+        .sty-inp-IN-image {
+          height: 330px !important;
+          width: 90vw !important;
+        }
+        .sty-inp-postAdd-image {
+          height: 330px !important;
+          width: 90vw !important;
+        }
+      }
       /* {% endblock styles %}*/
     </style>
   </head>
@@ -62,11 +82,11 @@
               Pick role you stated...
             </h1>
           </div>
-          <div class="columns is-0">
+          <div class="columns is-0 is-mobile">
             <div class="column">
               <h1
                 id="sty_choice_role"
-                class="sty-subtitle-low-font-size sty-font-family-roboto sty-role"
+                class="sty-subtitle-low-font-size sty-font-family-roboto sty-role sty-subtitle-low-font-size-mobile"
                 onclick="role_post_desc()"
               >
                 Contributor
@@ -75,7 +95,7 @@
             <div class="column">
               <h1
                 id="sty_choice_role"
-                class="sty-subtitle-low-font-size sty-font-family-roboto sty-role"
+                class="sty-subtitle-low-font-size sty-font-family-roboto sty-role sty-subtitle-low-font-size-mobile"
                 onclick="role_post_desc()"
               >
                 Innovator
@@ -84,7 +104,7 @@
             <div class="column">
               <h1
                 id="sty_choice_role"
-                class="sty-subtitle-low-font-size sty-font-family-roboto sty-role"
+                class="sty-subtitle-low-font-size sty-font-family-roboto sty-role sty-subtitle-low-font-size-mobile"
                 onclick="role_post_desc()"
               >
                 Collector
@@ -98,7 +118,7 @@
             value="{{ post_data.user_role_type }}"
             hidden
           />
-          <div class="columns is-vcentered">
+          <div class="columns is-vcentered is-mobile">
             <div class="column is-2">
               <h1 class="sty-icon-info">
                 <ion-icon name="information-circle"></ion-icon>
@@ -156,19 +176,22 @@
     <script>
       //{% block scripts %}
 
-      let usr_all_end_opt = document.getElementById("usr_all_end_opt");
-      let btn_create = document.createElement("div");
+      let usr_all_end_opt = document.querySelectorAll("#usr_all_end_opt");
+
       let err_msg = document.getElementById("err_msg");
 
       //let selectedFile_compiled = null;
       // INTIALIZE THE COMPONENT
-      btn_create.classList.add("button");
-      btn_create.classList.add("sty-subtitle-low-font-size");
-      btn_create.classList.add("sty-font-family-roboto");
-      btn_create.classList.add("sty-btn-post-component");
-      btn_create.textContent = "POST";
-      btn_create.id = "btn_submit_modify";
-      usr_all_end_opt.appendChild(btn_create);
+      usr_all_end_opt.forEach((element) => {
+        let btn_create = document.createElement("div");
+        btn_create.classList.add("button");
+        btn_create.classList.add("sty-subtitle-low-font-size");
+        btn_create.classList.add("sty-font-family-roboto");
+        btn_create.classList.add("sty-btn-post-component");
+        btn_create.textContent = "POST";
+        btn_create.id = "btn_submit_modify";
+        element.appendChild(btn_create);
+      });
       // INITIALIZED
 
       function role_initialized() {
@@ -201,13 +224,21 @@
         sty_choice_role[i].classList.add("sty-role-selected");
       }
       role_initialized();
-      let usr_all_bck_opt_label = document.getElementById(
-        "usr_all_bck_opt_label"
+      let usr_all_bck_opt_label = document.querySelectorAll(
+        "#usr_all_bck_opt_label"
       );
-      usr_all_bck_opt_label.textContent = "Edit";
+
+      usr_all_bck_opt_label.forEach((element) => {
+        element.textContent = "Edit";
+      });
       let get_link = document.getElementById("get_link");
-      let usr_all_bck_opt_ref = document.getElementById("usr_all_bck_opt_ref");
-      usr_all_bck_opt_ref.href = get_link.getAttribute("data-url");
+      let usr_all_bck_opt_ref = document.querySelectorAll(
+        "#usr_all_bck_opt_ref"
+      );
+
+      usr_all_bck_opt_ref.forEach((element) => {
+        element.href = get_link.getAttribute("data-url");
+      });
 
       function role_post_desc() {
         let sty_choice_role = document.querySelectorAll("#sty_choice_role");
@@ -369,41 +400,45 @@
         }
         return data;
       }
-      let btn_submit_modify = document.getElementById("btn_submit_modify");
-      btn_submit_modify.addEventListener("click", () => {
-        let form_data = Validate();
-        if (!form_data) {
-          return;
-        }
-        let get_post_id = document
-          .getElementById("get_post_id")
-          .getAttribute("data-url");
-        /*
-        CHECKING FORM DATA CONTENTS      */
-        console.log("FormData contents:");
-        form_data.forEach((value, key) => {
-          console.log(`${key}:`, value);
-        });
 
-        let response = fetch(`/post/edit/save/${get_post_id}`, {
-          method: "POST",
-          headers: {
-            "X-CSRFToken": getCookie("csrftoken"),
-          },
-          mode: "same-origin",
-          body: form_data,
-        })
-          .then((res) => {
-            return res.json();
-          })
-          .then((msg) => {
-            console.log(msg);
-            //  window.location.href = `/${msg.redirect_url}`;
-          })
-          .catch((err) => {
-            console.log(err);
+      let btn_submit_modify = document.querySelectorAll("#btn_submit_modify");
+      btn_submit_modify.forEach((element) => {
+        element.addEventListener("click", () => {
+          let form_data = Validate();
+          if (!form_data) {
+            return;
+          }
+          let get_post_id = document
+            .getElementById("get_post_id")
+            .getAttribute("data-url");
+          /*
+        CHECKING FORM DATA CONTENTS      */
+          console.log("FormData contents:");
+          form_data.forEach((value, key) => {
+            console.log(`${key}:`, value);
           });
+
+          let response = fetch(`/post/edit/save/${get_post_id}`, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+            mode: "same-origin",
+            body: form_data,
+          })
+            .then((res) => {
+              return res.json();
+            })
+            .then((msg) => {
+              console.log(msg);
+              window.location.href = `${msg.redirect_url}`;
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
       });
+
       //{% endblock scripts %}
     </script>
   </body>

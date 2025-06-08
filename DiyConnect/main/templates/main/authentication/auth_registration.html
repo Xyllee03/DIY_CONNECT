@@ -18,7 +18,7 @@
     <!-- //prettier-ignore -->
     <div class="container container-bkg">
       <div class="columns is-vcentered">
-        <div class="column">
+        <div class="column logo-mobile">
           <div class="has-text-left">
             <a class="button" href="{% url 'main:authentication_login' %}">
               DIY CONNECT LOGO
@@ -26,7 +26,9 @@
           </div>
         </div>
         <div class="column">
-          <h1 class="has-text-right sty-size-sub-header sty-sty-auth-header">
+          <h1
+            class="has-text-right has-text-centered-mobile sty-size-sub-header sty-sty-auth-header"
+          >
             Registration Form
           </h1>
         </div>
@@ -36,8 +38,8 @@
       <form>
         <div class="columns is-vcentered">
           <div class="column has-text-centered">
-            <div class="columns is-vcentered">
-              <div class="column">
+            <div class="columns is-vcentered is-mobile">
+              <div class="column is-4-mobile">
                 <h1 class="sty-sty-auth-label sty-size-auth-label">
                   First Name:
                 </h1>
@@ -52,8 +54,8 @@
                 </div>
               </div>
             </div>
-            <div class="columns is-vcentered">
-              <div class="column">
+            <div class="columns is-vcentered is-mobile">
+              <div class="column is-4-mobile">
                 <h1 class="sty-sty-auth-label sty-size-auth-label">
                   Last Name :
                 </h1>
@@ -68,22 +70,22 @@
                 </div>
               </div>
             </div>
-            <div class="columns is-vcentered">
-              <div class="column">
+            <div class="columns is-vcentered is-mobile">
+              <div class="column is-4-mobile">
                 <h1 class="sty-sty-auth-label sty-size-auth-label">Email:</h1>
               </div>
               <div class="column">
                 <div>
                   <input
-                    type="text"
+                    type="email"
                     class="input is-medium sty-sty-inp-border"
                     id="inp_email"
                   />
                 </div>
               </div>
             </div>
-            <div class="columns is-vcentered">
-              <div class="column">
+            <div class="columns is-vcentered is-mobile">
+              <div class="column is-4-mobile">
                 <h1 class="sty-sty-auth-label sty-size-auth-label">
                   Municipality or City:
                 </h1>
@@ -91,9 +93,7 @@
               <!-- //// CSS ISSUE /////-->
               <div class="column">
                 <div>
-                  <div
-                    class="select is-medium sty-sty-inp-border sty_inp_dropdown"
-                  >
+                  <div class="select is-medium sty_inp_dropdown">
                     <select id="inp_municipality">
                       <option value="Bacoor">Bacoor</option>
                     </select>
@@ -101,8 +101,8 @@
                 </div>
               </div>
             </div>
-            <div class="columns is-vcentered">
-              <div class="column">
+            <div class="columns is-vcentered is-mobile">
+              <div class="column is-4-mobile">
                 <h1 class="sty-sty-auth-label sty-size-auth-label">
                   Barangay:
                 </h1>
@@ -119,8 +119,8 @@
                 </div>
               </div>
             </div>
-            <div class="columns is-vcentered">
-              <div class="column">
+            <div class="columns is-vcentered is-mobile">
+              <div class="column is-4-mobile">
                 <h1 class="sty-sty-auth-label sty-size-auth-label">
                   Subdivision
                 </h1>
@@ -141,8 +141,8 @@
             </div>
           </div>
           <div class="column has-text-centered">
-            <div class="columns is-vcentered">
-              <div class="column">
+            <div class="columns is-vcentered is-mobile">
+              <div class="column is-4-mobile">
                 <h1 class="sty-sty-auth-label sty-size-auth-label">
                   Username:
                 </h1>
@@ -157,8 +157,8 @@
                 </div>
               </div>
             </div>
-            <div class="columns is-vcentered">
-              <div class="column">
+            <div class="columns is-vcentered is-mobile">
+              <div class="column is-4-mobile">
                 <h1 class="sty-sty-auth-label sty-size-auth-label">
                   Password :
                 </h1>
@@ -173,8 +173,8 @@
                 </div>
               </div>
             </div>
-            <div class="columns is-vcentered">
-              <div class="column">
+            <div class="columns is-vcentered is-mobile">
+              <div class="column is-4-mobile">
                 <h1 class="sty-sty-auth-label sty-size-auth-label">
                   Re-type Password :
                 </h1>
@@ -212,9 +212,10 @@
         let json_data = Validate();
 
         if (!json_data) {
-          console.log("There is an error in fields");
+          //console.log("There is an error in fields");
           return;
         }
+        //console.log(json_data);
         // Check Json data
         // console.log(json_data);
 
@@ -274,9 +275,13 @@
           inp_retype_password.trim() !== "" &&
           inp_subdivision.trim() !== ""
         ) {
+          emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (inp_retype_password !== inp_password) {
             err_msg.textContent =
               "Your password and re-type password doesn't match. Please change it before proceeding.";
+            return false;
+          } else if (!emailRegex.test(inp_email)) {
+            err_msg.textContent = "Check the content of your email validity.";
             return false;
           }
         } else {

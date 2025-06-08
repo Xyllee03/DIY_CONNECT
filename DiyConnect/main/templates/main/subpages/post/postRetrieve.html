@@ -24,10 +24,44 @@
         font-size: 38px;
         color: #ffffff;
       }
+      .sty-sect-opt-icon:hover {
+        cursor: pointer !important;
+      }
       .sty-sect-opt {
         font-size: 40px;
         color: #ffffff;
         border: solid #ffffff 1px;
+      }
+
+      /* Mobile */
+      @media (max-width: 768px) {
+        .sty-header-big-font-size {
+          font-size: 30px !important;
+        }
+        .sty-subtitle-low-font-size-mobile {
+          font-size: 13px !important;
+          padding-bottom: 2rem;
+          padding-top: 2rem;
+        }
+
+        .sty-inp-postAdd-image {
+          height: 330px !important;
+          width: 90vw !important;
+        }
+
+        .sty-sect-opt-icon {
+          font-size: 30px;
+          padding-left: 1rem !important;
+          padding-right: 1rem !important;
+        }
+        .sty-sect-opt {
+          font-size: 30px;
+          padding-left: 1rem !important;
+          padding-right: 1rem !important;
+        }
+        #desc_onchange {
+          font-size: 10px;
+        }
       }
       /*{% endblock styles %}*/
     </style>
@@ -76,8 +110,8 @@
             <!-- //prettier-ignore -->
           </div>
 
-          <div class="columns mt-5 is-vcentered sty-sect-cl-opt">
-            <div class="column">
+          <div class="columns mt-5 is-vcentered sty-sect-cl-opt is-mobile">
+            <div class="column is-3-mobile">
               <h1 class="px-6 sty-sect-opt-icon">
                 <ion-icon name="chatbox-ellipses"></ion-icon>
               </h1>
@@ -85,7 +119,7 @@
             <div class="column sty-sect-opt px-6">
               <h1 class="">Request</h1>
             </div>
-            <div class="column">
+            <div class="column is-3-mobile">
               <h1
                 class="px-6 sty-sect-opt-icon"
                 data-url="/post/specific/{{ post_data.ID }}"
@@ -140,7 +174,7 @@
             value="{{ post_data.user_role_type }}"
             hidden
           />
-          <div class="columns is-vcentered">
+          <div class="columns is-vcentered is-mobile">
             <div class="column is-2">
               <h1 class="sty-icon-info">
                 <ion-icon name="information-circle"></ion-icon>
@@ -157,7 +191,7 @@
           </div>
         </div>
         <div class="column">
-          <div class="columns is-vcentered">
+          <div class="columns is-vcentered is-mobile">
             <div class="column is-2">
               <ion-icon name="person-circle"></ion-icon>
             </div>
@@ -215,10 +249,19 @@
     <script>
       //{% block scripts %}
       // GIVEN
-      let usr_all_bck_opt_ref = document.getElementById("usr_all_bck_opt_ref");
+      let usr_all_bck_opt_ref = document.querySelectorAll(
+        "#usr_all_bck_opt_ref"
+      );
       let get_link = document.getElementById("get_link");
-      usr_all_bck_opt_label.textContent = "Retrieve Post";
-      usr_all_bck_opt_ref.href = get_link.getAttribute("data-url");
+      usr_all_bck_opt_ref.forEach((element) => {
+        element.href = get_link.getAttribute("data-url");
+      });
+      let usr_all_bck_opt_label = document.querySelectorAll(
+        "#usr_all_bck_opt_label"
+      );
+      usr_all_bck_opt_label.forEach((element) => {
+        element.textContent = "Retrieve Post";
+      });
 
       function role_initialized() {
         let i = 0;

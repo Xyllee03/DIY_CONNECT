@@ -22,6 +22,15 @@ urlpatterns = [
     
     #People
  path('diyconnect/people/', views.people,  name="people"),
+ path('diyconnect/people/friends', views.peopleFriends,  name="peopleFriends"),
+ path('diyconnect/people/discover', views.peopleGetDiscover, name ='peopleGetDiscover'),
+ path('diyconnect/people/friendRequest', views.peopleFriendRequest_get, name ='peopleFriendRequest_get'),
+ path('diyconnect/people/friendRequest/accepted/<int:user_id>', views.peopleFriendRequest_accepted, name ='peopleFriendRequest_accepted'),
+  path('diyconnect/people/friendRequest/pending/<int:user_id>', views.peopleFriendRequest_pending, name ='peopleFriendRequest_pending'),
+ path('diyconnect/people/add/<int:user_id>', views.peopleAdd, name ='peopleAdd'),
+ path('diyconnect/people/delete/<int:user_id>', views.peopleDelete, name ='peopleDelete'),
+ 
+ 
     #Search
     path('diyconnect/search/<str:search_item>', views.postSearch,  name="postSearch"),
 

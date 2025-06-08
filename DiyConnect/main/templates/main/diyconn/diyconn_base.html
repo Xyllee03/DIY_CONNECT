@@ -16,9 +16,9 @@
     />
     <style>
       /*
-        {% block styles %}
-        {% endblock styles%}
-        */
+            {% block styles %}
+            {% endblock styles%}
+            */
       .sty-h-navbar-role {
         font-size: 24px;
         color: #ffffff !important;
@@ -82,6 +82,67 @@
         font-weight: 600;
         background-color: #283618;
         font-size: 25px;
+      }
+      .sty-navbar-desktop {
+        display: block;
+      }
+      .sty-navbar-mobile {
+        display: none;
+      }
+
+      .profile-img-circle {
+        width: 64px;
+        height: 64px;
+        object-fit: cover; /* ensures the image covers the box without distortion */
+        border-radius: 50%;
+      }
+
+      @media (max-width: 768px) {
+        /* Navbar Mobile start*/
+        .sty-navbar-desktop {
+          display: none;
+        }
+        .sty-navbar-mobile {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .sty-navbar-icons-mobile {
+          color: white;
+
+          font-size: 32px;
+        }
+        .sty-navbar-icons-mobile-profile {
+          color: white;
+
+          font-size: 40px;
+        }
+        .sty-mobile-selected-role {
+          background-color: #283618;
+          color: white;
+        }
+        /* MENU */
+        .sty-mobile-navbar-icons-btn {
+          font-size: 20px;
+          background-color: #283618;
+          color: white;
+        }
+
+        .sty_btn_mobile_dropdown_selected_role {
+          background-color: #283618;
+          border: 0px;
+          color: white;
+        }
+        .sty_choices_menu_icons {
+          font-size: 20px;
+          text-align: left;
+        }
+        .sty-change-width-menu-bar {
+          width: 200px !important; /* or any desired width */
+          min-width: unset !important; /* optional: unset Bulma's min-wi
+            }
+            /* Navbar Mobile end*/
+        }
       }
     </style>
   </head>
@@ -207,6 +268,62 @@
         }
         //event.target.classList.remove("sty-role-not-selected");
         event.target.classList.add("sty-h-role-is-selected");
+
+        let json_data = { role: get_hidden_post_role.value };
+        let response = fetch("{% url 'main:postRoleChange' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+          body: JSON.stringify(json_data),
+        })
+          .then((res) => {
+            return res.json();
+          })
+          .then((msg) => {
+            console.log(msg);
+            window.location.reload();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      //MOBILE
+      function btn_mobile_dropdown(event) {
+        let target = event.currentTarget;
+
+        if (target.classList.contains("is-active")) {
+          target.classList.remove("is-active");
+          console.log("rem");
+        } else {
+          target.classList.add("is-active");
+        }
+      }
+
+      let get_all_role_elements_mobile = document.querySelectorAll(
+        ".select-role-item-mobile"
+      );
+
+      function navbar_role_change_mobile() {
+        let get_hidden_post_role = document.getElementById("hidden_post_role");
+        get_all_role_elements_mobile.forEach((element) => {
+          element.classList.remove("sty-mobile-selected-role");
+        });
+        let role_check = event.target.textContent.replace(/\s+/g, "");
+        if (role_check === "Contributor") {
+          navbar_role_show.textContent = "Contributor";
+          get_hidden_post_role.value = "Contributor";
+        } else if (role_check === "Innovator") {
+          navbar_role_show.textContent = "Innovator";
+          get_hidden_post_role.value = "Innovator";
+        } else if (role_check === "Collector") {
+          navbar_role_show.textContent = "Collector";
+          get_hidden_post_role.value = "Collector";
+        }
+        //event.target.classList.remove("sty-role-not-selected");
+        event.target.classList.add("sty-mobile-selected-role");
 
         let json_data = { role: get_hidden_post_role.value };
         let response = fetch("{% url 'main:postRoleChange' %}", {

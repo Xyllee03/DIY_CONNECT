@@ -12,6 +12,7 @@
       /* {% block styles %}*/
       .sty-sect-cl-opt {
         background-color: #283618;
+        width: 100%;
       }
       .sty-sect-opt {
         font-size: 40px;
@@ -38,10 +39,13 @@
         font-size: 38px;
         color: #ffffff;
       }
+      .sty-sect-opt-icon:hover {
+        cursor: pointer;
+      }
       .sty-inp-postAdd-image {
         background-color: #d9d9d9;
-        height: 600px;
-        width: 560px;
+        height: 600px !important;
+        width: 560px !important;
 
         padding-left: 80px;
         padding-right: 80px;
@@ -72,6 +76,65 @@
         cursor: pointer;
       }
 
+      /* MOBILE */
+      @media (max-width: 768px) {
+        .sty-sect-opt-icon {
+          background-color: #283618;
+          font-size: 30px;
+        }
+        .sty-sect-opt {
+          font-size: 17px;
+        }
+        .sty-mobile-profile-section {
+          display: none;
+        }
+        .sty-mobile-post-header {
+          font-size: 20px;
+        }
+        .sty-inp-postAdd-image {
+          background-color: #d9d9d9;
+          height: 290px !important;
+          width: 100vw !important;
+          margin: 0px 0px 0px 0px;
+        }
+        .icon_rem_padding {
+          padding-left: 0 !important;
+          padding-right: 0 !important;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100% !important;
+          height: 100%; /* optional but helpful */
+          text-align: center;
+        }
+        #postContainer {
+          width: 100% !important;
+          max-width: 100vw !important;
+        }
+
+        .side-column {
+          width: 100% !important;
+        }
+        .section {
+          padding-left: 0px;
+          padding-right: 0px;
+          width: 100vw !important;
+        }
+        .sty-sect-cl-opt {
+          width: 100vw !important;
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+          padding-left: 0 !important;
+          padding-right: 0 !important;
+        }
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          overflow-x: hidden; /* prevents unwanted horizontal scroll */
+        }
+      }
       /* {% endblock styles %} */
     </style>
   </head>
@@ -177,6 +240,45 @@
       }
       Initilized();
 
+      function Initilized_mobile() {
+        let ini_mobile_dropdown_btn_selected_role = document.getElementById(
+          "mobile_dropdown_btn_selected_role"
+        );
+        let ini_get_all_role_elements = document.querySelectorAll(
+          ".select-role-item-mobile"
+        );
+        let ini_navbar_role_show = document.getElementById("navbar_role_show");
+        let ini_get_hidden_post_role =
+          document.getElementById("hidden_post_role");
+        ini_get_all_role_elements.forEach((element) => {
+          element.classList.remove("sty-mobile-selected-role");
+        });
+        let role_check = ini_get_hidden_post_role.value;
+
+        if (role_check === "Contributor") {
+          ini_navbar_role_show.textContent = "Contributor";
+          // ini_get_hidden_post_role.value = "Contributor";
+          ini_get_all_role_elements[1].classList.add(
+            "sty-mobile-selected-role"
+          );
+          ini_mobile_dropdown_btn_selected_role.innerText = "Contributor";
+        } else if (role_check === "Innovator") {
+          ini_navbar_role_show.textContent = "Innovator";
+          //ini_get_hidden_post_role.value = "Innovator";
+          ini_get_all_role_elements[0].classList.add(
+            "sty-mobile-selected-role"
+          );
+          ini_mobile_dropdown_btn_selected_role.innerText = "Innovator";
+        } else if (role_check === "Collector") {
+          ini_navbar_role_show.textContent = "Collector";
+          // ini_get_hidden_post_role.value = "Collector";
+          ini_get_all_role_elements[2].classList.add(
+            "sty-mobile-selected-role"
+          );
+          ini_mobile_dropdown_btn_selected_role.innerText = "Collector";
+        }
+      }
+      Initilized_mobile();
       // IF WORKS IT WORK
       let hidden_last_post_value = document.getElementById(
         "hidden_last_post_value"
@@ -189,6 +291,7 @@
         let response = await fetch(
           `/post/get/${hidden_last_post_value}/${hidden_post_role}`
         );
+
         try {
           let data = await response.json();
 
@@ -205,39 +308,68 @@
           div_newPost.innerHTML = `
       <div class="section is-medium">
              <div class="columns is-vcentered has-text-centered">
-               <div class="column">
-                  <div class="columns is-vcentered">
+               <div class="column side-column">
+                  <div class="columns is-vcentered sty-mobile-profile-section ">
                 <div class="column is-2">
-                  <ion-icon name="person-circle"></ion-icon>
+         
+  <img class="is-rounded profile-img-circle" src="${
+    data.new_posts.profile_urls
+  }" />
+
                 </div>
                 <div class="column has-text-left sty-mdl-msg">
                   <h1 style="font-weight: 700">${data.new_posts.username}</h1>
-                  <h1>${data.new_posts.date_modified}</h1>
-                  <h1><ion-icon name="location"></ion-icon> ${data.new_posts.user_location.subdivision} ${data.new_posts.user_location.city_or_municipality}</h1>
+                <h1>${new Date(data.new_posts.date_modified).toLocaleDateString(
+                  "en-US",
+                  { year: "numeric", month: "long", day: "numeric" }
+                )}</h1>
+                  <h1><ion-icon name="location"></ion-icon> ${
+                    data.new_posts.user_location.subdivision
+                  } ${data.new_posts.user_location.city_or_municipality}</h1>
                 </div>
               </div>
-                 <h1 class="sty-sect-header">     ${data.new_posts.title}</h1>
+                 <h1 class="sty-sect-header sty-mobile-post-header">     ${
+                   data.new_posts.title
+                 }</h1>
                  <h1 class="sty-sect-desc">
+                             <p>
                    ${data.new_posts.description}
+                   </p>
+                      <br>   
+                     <p>
+                Author:   ${data.new_posts.username} at: ${new Date(
+            data.new_posts.date_modified
+          ).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })} 
+                   </p>
                  </h1>
-                 <div class="columns mt-5 is-vcentered sty-sect-cl-opt">
-                   <div class="column">
-                     <h1 class="px-6 sty-sect-opt-icon sty-sect-msg-opt" onclick=btnUsermsg_post() data-user-id=${data.new_posts.user} >
+                 <div class="columns mt-5 is-vcentered sty-sect-cl-opt is-mobile">
+                   <div class="column has-text-centered ">
+                     <h1 class="px-6 icon_rem_padding  sty-sect-opt-icon sty-sect-msg-opt" onclick="btnUsermsg_post()" data-user-id="${
+                       data.new_posts.user
+                     }" >
                        <ion-icon name="chatbox-ellipses"></ion-icon>
                      </h1>
                    </div>
-                   <div class="column sty-sect-opt px-6">
+                   <div class="column sty-sect-opt px-6  ">
                      <h1 class="">Request</h1>
                    </div>
-                   <div class="column">
-                     <h1 class="px-6 sty-sect-opt-icon" data-url="/post/specific/${data.new_posts.id}"  onclick="copyLinkPost(event)">
-                       <ion-icon name="share-outline"></ion-icon>
+                   <div class="column sty-sect-opt-icon has-text-centered">
+                     <h1 class="px-6 icon_rem_padding  "data-url="/post/specific/${
+                       data.new_posts.id
+                     }"  onclick="copyLinkPost(event)">
+<ion-icon name="share-outline"></ion-icon>
                      </h1>
                    </div>
                  </div>
                </div>
-               <div class="column">
-                 <div class="sty-inp-img-container sty-inp-postAdd-image " id='inp_img_container_${data.latest_post_count}'>
+               <div class="column  ">
+                 <div class="sty-inp-img-container sty-inp-postAdd-image " id='inp_img_container_${
+                   data.latest_post_count
+                 }'>
                    <img alt="" src= "" />
                  </div>
                </div>
@@ -291,7 +423,7 @@
         } catch (err) {
           setTimeout(fetchNewPost, 5000);
           console.log(err);
-          console.log("error has been handled");
+          console.log("There is no new post.");
         }
 
         // Get the lastest count

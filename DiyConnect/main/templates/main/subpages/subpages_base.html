@@ -160,6 +160,39 @@
       font-size: 20px;
       font-weight: 500;
     }
+    .sty-navbar-mobile {
+      display: none !important;
+    }
+    .sty-navbar-desktop {
+      display: flex;
+    }
+
+    /* Mobile */
+
+    @media (max-width: 768px) {
+      .sty-navbar-desktop {
+        display: none;
+      }
+      .sty-navbar-mobile {
+        display: flex !important;
+      }
+      .sty-nav-fix {
+        height: 50px;
+      }
+      .sty-bk-font-size {
+        display: flex;
+        align-items: center;
+        font-size: 15px;
+      }
+
+      .sty-btn-post-component {
+        width: 100px;
+        height: 25px;
+        color: #283618;
+        background-color: #fefae0;
+        font-size: 15px;
+      }
+    }
   </style>
   <body>
     {% include './misc/navbar_sub.html' %}

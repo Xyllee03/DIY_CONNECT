@@ -1,15 +1,11 @@
 <nav
-  class="navbar sty-h-navbar-bkg is-fixed-top"
+  class="navbar sty-h-navbar-bkg is-fixed-top sty-navbar-desktop"
   role="navigation"
   aria-label="main navigation"
 >
   <div class="container">
-    <!--
     <div class="navbar-brand">
-      <a class="navbar-item">
-        <h1>DIY CONNECT</h1>
-      </a>
-
+      <!--
       <a
         role="button"
         class="navbar-burger"
@@ -22,8 +18,9 @@
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </a>
+      -->
     </div>
--->
+
     <div id="navbarBasicExample" class="navbar-menu">
       <div class="navbar-start">
         <div class="navbar-item has-dropdown is-hoverable">
@@ -96,6 +93,142 @@
           <h1>{{ username }}</h1>
         </a>
         <a class="navbar-item sty-h-navbar-profileImage">
+          <ion-icon name="person-circle"></ion-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- Navbar mobile start 
+<nav
+  class="navbar sty-h-navbar-bkg sty-navbar-mobile"
+  role="navigation"
+  aria-label="main navigation"
+>
+  <div class="container">
+    <div class="columns is-mobile is-vcentered">
+      <div class="column is-2">
+        <h1 class="sty-navbar-icons-mobile has-text-centered">
+          <ion-icon name="notifications"></ion-icon>
+        </h1>
+      </div>
+      <div class="column has-text-centered">
+        <div class="dropdown" onclick="btn_mobile_dropdown(event)">
+          <div class="dropdown-trigger">
+            <button class="button">
+              <span id="mobile_dropdown_btn_selected_role"
+                >Dropdown button</span
+              >
+            </button>
+          </div>
+
+          <div class="dropdown-menu">
+            <div class="dropdown-content">
+              <h1
+                class="dropdown-item select-role-item-mobile"
+                onclick="navbar_role_change_mobile()"
+              >
+                Innovator
+              </h1>
+              <h1
+                class="dropdown-item select-role-item-mobile"
+                onclick="navbar_role_change_mobile()"
+              >
+                Contributor
+              </h1>
+              <h1
+                class="dropdown-item select-role-item-mobile is-active"
+                onclick="navbar_role_change_mobile()"
+              >
+                Collector
+              </h1>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column is-2">
+        <h1 class="sty-navbar-icons-mobile-profile has-text-centered">
+          <ion-icon name="person-circle"></ion-icon>
+        </h1>
+      </div>
+    </div>
+  </div>
+</nav>
+ Navbar mobile end-->
+
+<nav
+  class="navbar sty-h-navbar-bkg sty-navbar-mobile"
+  role="navigation"
+  aria-label="main navigation"
+>
+  <div class="container">
+    <div class="columns is-mobile is-vcentered">
+      <div class="column is-2">
+        <div class="dropdown" onclick="btn_mobile_dropdown(event)">
+          <div class="dropdown-trigger">
+            <button class="button sty-mobile-navbar-icons-btn">
+              <ion-icon name="menu-outline"></ion-icon>
+            </button>
+          </div>
+
+          <div class="dropdown-menu">
+            <div class="dropdown-content">
+              <h1 class="dropdown-item sty_choices_menu_icons">
+                <ion-icon name="people"></ion-icon> People
+              </h1>
+              <a
+                href="{% url 'main:postAdd' %}"
+                class="dropdown-item sty_choices_menu_icons"
+              >
+                <ion-icon name="add-circle"></ion-icon> Add Post
+              </a>
+              <h1 class="dropdown-item sty_choices_menu_icons">
+                <ion-icon name="notifications"></ion-icon> Notification
+              </h1>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column has-text-centered">
+        <div class="dropdown" onclick="btn_mobile_dropdown(event)">
+          <div class="dropdown-trigger">
+            <button class="button sty_btn_mobile_dropdown_selected_role">
+              <span id="mobile_dropdown_btn_selected_role"
+                >Dropdown button</span
+              >
+              &nbsp; <ion-icon name="caret-down-outline"></ion-icon>
+            </button>
+          </div>
+
+          <div class="dropdown-menu">
+            <div class="dropdown-content">
+              <h1
+                class="dropdown-item select-role-item-mobile"
+                onclick="navbar_role_change_mobile()"
+              >
+                Innovator
+              </h1>
+              <h1
+                class="dropdown-item select-role-item-mobile"
+                onclick="navbar_role_change_mobile()"
+              >
+                Contributor
+              </h1>
+              <h1
+                class="dropdown-item select-role-item-mobile is-active"
+                onclick="navbar_role_change_mobile()"
+              >
+                Collector
+              </h1>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column is-2">
+        <a
+          class="sty-navbar-icons-mobile-profile has-text-centered"
+          href="{% url 'main:profile_user' username=username %}"
+        >
           <ion-icon name="person-circle"></ion-icon>
         </a>
       </div>

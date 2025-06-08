@@ -10,6 +10,7 @@
   </head>
   <style>
     /*{% block styles %} */
+
     .sty-sect-cl-opt {
       background-color: #283618;
     }
@@ -59,6 +60,9 @@
     .sty-sect-opt-icon {
       font-size: 38px;
       color: #ffffff;
+    }
+    .sty-sect-opt-icon:hover {
+      cursor: pointer !important;
     }
     .sty-inp-postAdd-image {
       background-color: #d9d9d9;
@@ -114,6 +118,54 @@
       width: 100%;
       display: flex;
       justify-content: center;
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .sty-mdl-msg {
+        font-size: 16px;
+      }
+
+      .sty-header-big-font-size {
+        font-size: 30px !important;
+      }
+      .sty-subtitle-low-font-size-mobile {
+        font-size: 13px !important;
+        padding-bottom: 2rem;
+        padding-top: 2rem;
+      }
+
+      .sty-inp-postAdd-image {
+        height: 330px !important;
+        width: 90vw !important;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        overflow-x: hidden; /* prevents unwanted horizontal scroll */
+      }
+      .section {
+        padding: 0px 0px 0px 0px !important;
+      }
+
+      .sty-sect-header {
+        font-size: 20px;
+      }
+      .sty-sect-desc {
+        font-size: 20px;
+      }
+
+      .sty-sect-opt-icon {
+          font-size: 30px;
+          padding-left: 1rem !important;
+          padding-right: 1rem !important;
+        }
+        .sty-sect-opt {
+          font-size: 30px;
+          padding-left: 1rem !important;
+          padding-right: 1rem !important;
     }
     /*{% endblock styles %} */
   </style>
@@ -228,13 +280,21 @@
     <script>
       //{% block scripts %}
       // GIVEN
-      let usr_all_bck_opt_ref = document.getElementById("usr_all_bck_opt_ref");
-      usr_all_bck_opt_ref.href = get_link.getAttribute("data-url");
-      let usr_all_bck_opt_label = document.getElementById(
-        "usr_all_bck_opt_label"
+      let usr_all_bck_opt_ref = document.querySelectorAll(
+        "#usr_all_bck_opt_ref"
+      );
+      let get_link = document.getElementById("get_link");
+      usr_all_bck_opt_ref.forEach((element) => {
+        element.href = get_link.getAttribute("data-url");
+      });
+
+      let usr_all_bck_opt_label = document.querySelectorAll(
+        "#usr_all_bck_opt_label"
       );
       let get_username = document.getElementById("get_username");
-      usr_all_bck_opt_label.textContent = "Viewing " + get_username.textContent;
+      usr_all_bck_opt_label.forEach((element) => {
+        element.textContent = "Viewing " + get_username.textContent;
+      });
 
       let postContainer = document.getElementById("postContainer");
       async function getProfilePost() {
@@ -253,7 +313,7 @@
             <div class="section is-medium">
                    <div class="columns is-vcentered has-text-centered">
                      <div class="column">
-                        <div class="columns is-vcentered">
+                        <div class="columns is-vcentered is-mobile">
                       <div class="column is-2">
                         <ion-icon name="person-circle"></ion-icon>
                       </div>
@@ -267,7 +327,7 @@
                        <h1 class="sty-sect-desc">
                          ${data.description}
                        </h1>
-                       <div class="columns mt-5 is-vcentered sty-sect-cl-opt">
+                       <div class="columns mt-5 is-vcentered sty-sect-cl-opt is-mobile">
                          <div class="column">
                            <h1 class="px-6 sty-sect-opt-icon sty-sect-msg-opt" onclick=btnUsermsg_post() data-user-id=${data.userID} >
                              <ion-icon name="chatbox-ellipses"></ion-icon>
