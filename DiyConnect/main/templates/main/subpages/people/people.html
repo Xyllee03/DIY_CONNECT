@@ -81,6 +81,13 @@
         max-width: 100%;
         object-fit: cover;
       }
+      .profile-img img {
+        display: inline-block;
+        width: 270px !important;
+        height: 270px !important;
+
+        object-fit: cover;
+      }
       #friendRequest_container {
         height: 50vh;
         overflow-y: auto;
@@ -89,7 +96,7 @@
         scroll-behavior: smooth;
       }
       #friendContainer {
-        height: 50vh;
+        height: 80vh;
         overflow-y: auto;
         overflow-x: hidden;
 
@@ -118,6 +125,51 @@
         background-color: #283618;
         font-size: 25px;
       }
+
+      @media (max-width: 768px) {
+        .sty-header-names {
+          font-size: 20px;
+        }
+        .sty-btn-single-discover-sect {
+          padding-left: 20px;
+          padding-right: 20px;
+          padding-top: 10px;
+          padding-bottom: 10px;
+        }
+        .sty-subtitle-low-font-size {
+          font-size: 16px !important;
+        }
+        .profile-img {
+          text-align: center;
+        }
+
+        .profile-img img {
+          display: inline-block;
+          width: 150px !important;
+          height: 150px !important;
+
+          object-fit: cover;
+        }
+        .sty-btn-single-friendRequest-sect {
+          width: 100%;
+          padding-top: 10px;
+          padding-bottom: 10px;
+        }
+        .sty-icon {
+          font-size: 25px;
+          margin-right: 3px;
+        }
+        .sty-mdl-head {
+          font-size: 25px;
+        }
+        .sty-mdl-msg {
+          font-size: 16px;
+        }
+        .sty-mg-btm-mobile {
+          margin-bottom: 1rem;
+        }
+      }
+
       /* {% endblock styles %}*/
     </style>
   </head>
@@ -156,6 +208,8 @@
           -->
           <!-- DISCOVER END (PEOPLE-->
         </div>
+        <div class="sty-mg-btm-mobile"></div>
+
         <div class="column">
           <h1 class="sty-header-display-section sty-font-family-montserrat">
             Friend Request
@@ -218,7 +272,7 @@
           </div>
           -->
           <!-- FRIEND REQUEST END -->
-
+          <div class="sty-mg-btm-mobile"></div>
           <h1 class="sty-header-display-section sty-font-family-montserrat">
             Friends
           </h1>
@@ -362,15 +416,20 @@
         //
 
         let get_link = document.getElementById("get_link");
-        let usr_all_bck_opt_ref = document.getElementById(
-          "usr_all_bck_opt_ref"
+        let usr_all_bck_opt_ref = document.querySelectorAll(
+          "#usr_all_bck_opt_ref"
         );
+        usr_all_bck_opt_ref.forEach((element) => {
+          element.href = get_link.getAttribute("data-url");
+        });
 
-        usr_all_bck_opt_ref.href = get_link.getAttribute("data-url");
-        let usr_all_bck_opt_label = document.getElementById(
-          "usr_all_bck_opt_label"
+        let usr_all_bck_opt_label = document.querySelectorAll(
+          "#usr_all_bck_opt_label"
         );
-        usr_all_bck_opt_label.textContent = "People";
+        usr_all_bck_opt_label.forEach((element) => {
+          element.textContent = "People";
+        });
+
         //let get_search_item = document.getElementById("get_search_item");
         //let usr_all_end_opt = document.getElementById("usr_all_end_opt");
 
@@ -396,7 +455,7 @@
         people_data.DiscoverPeople.forEach((element) => {
           //console.log(element);
           discover_people_section.classList.add("discover-people-contatiner");
-          discover_people_section.innerHTML += ` <div class="columns is-vcentered">
+          discover_people_section.innerHTML += ` <div class="columns is-vcentered is-mobile is-gapless-mobile">
             <div class="column">
               <div class="profile-img">
              <img src ="${element.Profile}" class='profile-img' >
@@ -493,12 +552,12 @@
           .then((msg) => {
             //console.log("THIS IS GATHERED DATA FRIEND REQUEST");
             // console.log(msg.FriendRequest);
-
+            //console.log(msg);
             let friendRequest_section = document.createElement("div");
             msg.FriendRequest.forEach((element) => {
               //console.log(element);
               friendRequest_section.innerHTML += `
-             <div class="columns is-vcentered">
+             <div class="columns is-vcentered is-mobile">
             <div class="column">
                  <div class="profile-img">
              <img src ="${element.Profile}" class='profile-img' >
@@ -585,7 +644,7 @@
             });
           target.textContent = "Accept";
           target.setAttribute("data-user-accept-status", "");
-          friend_request_delete_icon.style.display = "block";
+          friend_request_delete_icon.style.display = "flex";
         }
       }
 
@@ -651,8 +710,8 @@
           .then((msg) => {
             msg.FriendList.forEach((element) => {
               friendSection.innerHTML += `
-               <div class="columns is-vcentered">
-            <div class="column">
+               <div class="columns is-vcentered is-mobile">
+            <div class="column is-4-mobile">
              <div class="profile-img">
              <img src ="${element.Profile}" class='profile-img' >
                 </div>
@@ -663,22 +722,20 @@
               >
                 ${element.username}
               </h1>
-              <div class="columns is-vcentered">
-                <div class="column">
+          
+             
                   <div class="sty-center-single-btn">
                     <div id="btn_remove_friend-${element.id}" data-user-id="${element.id}" data-username="${element.username}" onclick="open_removeFriend_mdl(event)"
                       class="button sty-btn-single-friend-sect sty-btn-friend-sect sty-subtitle-low-font-size"
                     >
                       Remove Friend
                     </div>
-                  </div>
-                </div>
-                <div class="column" id="msg-icon-container-${element.id}">
-                  <h1 class="button sty-icon"  >
+              
+                    <h1 class="button sty-icon" id="msg-icon-container-${element.id}"  >
                     <ion-icon name="chatbubble-ellipses"></ion-icon>
-                  </h1>
-                </div>
-              </div>
+                    </h1>
+                  </div>
+        
             </div>
           </div>`;
             });

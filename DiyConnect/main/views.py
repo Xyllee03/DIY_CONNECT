@@ -2,13 +2,16 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse
 import json
 from django.contrib.auth.hashers import check_password
-from .models import UserSites, UserPost, UserPost_BLOB, Friendships
+from .models import UserSites, UserPost, UserPost_BLOB, Friendships, UserMessages, MessageStatus,TaskRequest,Review
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 import time
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.db.models.functions import Random
-from django.db.models import Q
+from django.db.models import Q, Max, OuterRef, Subquery, F,Case, When,Exists
+from django.db import models
+
+
 # Create your views here.
 
 
@@ -32,13 +35,10 @@ def authentication_base(request):
 
 def authentication_login(request):
     if(request.method =="POST"):
-        data = json.loads(request.body)
-        #print(data['username'])
-
+        data = json.loads(request.body)    
         try:
             u_check = UserSites.objects.filter(username=data['username']).first()
-            #print("this is login")
-            #print(u_check)
+           
             """
             print("Input Password:", data['password'])
             print("Stored Hashed Password:", u_check.password)
@@ -49,8 +49,6 @@ def authentication_login(request):
             if(check_password(data['password'], u_check.password)):
                 user = authenticate(request, username=data['username'], password=data['password'])
                 login(request, user)  # Log the user in
-                #print(request.user)
-                #print(request.user.is_authenticated)
                 request.session["RolesPostFilter"] = 'Innovator'
                 return JsonResponse({"msg": "User has been retrieve", "redirect_url": "/diyconnect/home/"}, status=200)
             else:
@@ -68,36 +66,26 @@ def authentication_registration(request):
 
 def authentication_preLoad(request):
     if request.method =="POST":
-        data = json.loads(request.body)
-        #print(data)
-        
+        data = json.loads(request.body)        
         u_check = UserSites.objects.filter(username = data['username']).exists()
         if(u_check):
-            return JsonResponse({"error": "The username has been used."}, status=400)
-        
+            return JsonResponse({"error": "The username has been used."}, status=400)        
         request.session["Pre_User_Profile"] = data
-        return JsonResponse({"Profile": "Request Sent", "redirect_url": "/authentication/profile/" }, status=200)
-    
+        return JsonResponse({"Profile": "Request Sent", "redirect_url": "/authentication/profile/" }, status=200)    
     return JsonResponse({"error": "Invalid request"}, status=400)
     
 def authentication_profile(request):
-    #print("this is authentication profile")
     user_data = request.session.get("Pre_User_Profile", {})
-   #print(user_data)
     context ={
         "UserPreData": user_data
     }
     return render(request,'main/authentication/auth_registrationProfile.html', context)
 
-
-
 def authentication_ADD(request):
     if(request.method =="POST"):
         get_image_file = request.FILES.get("ImageFile")
-        #get_user_data = request.POST.get("UserDataPrep")
         bio = request.POST.get("bio")
         get_user_data = json.loads(request.POST.get('UserDataPrep'))
-        #print(get_user_data)
         u = UserSites()
         #lastID = UserSites.objects.values('ID').last()
         #u.ID = lastID['ID'] + 1
@@ -110,8 +98,7 @@ def authentication_ADD(request):
         u.username = get_user_data['username']
         u.subdivision = get_user_data['subdivision']
         u.bio = bio
-        u.save() 
-           
+        u.save()           
         # Check if data pass server
         """        
         print(get_image_file)
@@ -128,10 +115,10 @@ def authentication_logout(request):
     logout(request)
     return redirect("/authentication/login/")
 
-
 # DIY CONNECT APP
 @login_required
 def home(request):
+   
     get_role_post_filter = request.session.get("RolesPostFilter")
     get_username = request.user.username
     
@@ -142,7 +129,7 @@ def home(request):
 def postGet_specific(request,post_id):
      post = UserPost.objects.filter(ID=post_id).first()
      get_post_blobs = UserPost_BLOB.objects.filter(USER_POST_ID=post)
-     print(get_post_blobs)
+     #print(get_post_blobs)
      if post is None:
          post = False
      context={"post_data":post,
@@ -191,8 +178,6 @@ def postRoleChange(request):
         return JsonResponse({"msg": "Changing Item Post"}, status=200)
 
 def postGet(request,lastest_post, role_post):
-  
-    #print(role_post)
     timeout = 30
     start_time = time.time()
     # = UserPost.objects.filter(user_role_type = role_post )
@@ -200,7 +185,6 @@ def postGet(request,lastest_post, role_post):
     while time.time() - start_time < timeout:
             try:
                 new_posts = UserPost.objects.filter(user_role_type=role_post).order_by("-modified_at")[lastest_post]
-                #print(new_posts)
         
                 if new_posts:
                     lastest_post +=1  # Update latest post ID
@@ -341,7 +325,7 @@ def postEdit(request, post_id):
 
 def postEditSave(request, post_id):
     if(request.method=="POST"):
-        print(request.FILES)
+       
         get_post = UserPost.objects.get(ID=post_id)
 
         role = request.POST.get("role")
@@ -352,10 +336,10 @@ def postEditSave(request, post_id):
         get_post.title = title
         get_post.save()
         if not request.FILES:
-            print("There are no uploaded files")
+            
             return JsonResponse({"msg": "Saving Modifying Post (no images)", "redirect_url": "/diyconnect/home/"}, status=200)
 
-        print("FILES RECEIVED:", request.FILES)
+        #print("FILES RECEIVED:", request.FILES)
 
         # Optional: delete previous blobs
         UserPost_BLOB.objects.filter(USER_POST_ID=get_post).delete()
@@ -375,14 +359,255 @@ def postEditSave(request, post_id):
 
 
 #messages
+def MessageMobile(request):
+    context= {}
+    
+    return render(request, 'main/subpages/messages/mobile-conversations/mobile-conversation.html',context)
+@login_required
+def MessageMobileConversationContent(request, user_id):
+    u = UserSites.objects.get(ID=user_id)
+    
+    context ={
+        "user":u
+    }
+    return render(request, 'main/subpages/messages/mobile-conversations/mobile-conversation-content.html',context)
+
+
+@login_required
 def Messages(request):
+    data_user_id = request.session.get("selectedMessage")
     if(request.method =="POST"):
         data = json.loads(request.body)
-        print(data)
+       
 
-    context ={}
+    context ={"id":data_user_id}
     return render(request, 'main/subpages/messages/messages.html',context)
+@login_required
+def MessagesGet(request):
+    selected_message = request.session.get("selectedMessage")
+    if(request.method=="POST"):
+        """
+        context =[]
+        earliest = UserMessages.objects.filter(
+    USER_SENDER_ID=request.user,
+    USER_RECIPIENT_ID=OuterRef('USER_RECIPIENT_ID')
+).order_by('created_at')
+     
+        messages_owner = UserMessages.objects.filter(
+    USER_SENDER_ID=request.user,
+    created_at=Subquery(earliest.values('created_at')[:1])
+)
+        earliest2 = UserMessages.objects.filter(
+    USER_SENDER_ID=OuterRef('USER_SENDER_ID'),
+    USER_RECIPIENT_ID=request.user
+).order_by('created_at')
+     
+        messages_owner2 = UserMessages.objects.filter(
+    USER_RECIPIENT_ID=request.user,
+    created_at=Subquery(earliest2.values('created_at')[:1])
+)
+       #messages_owner= UserMessages.objects.filter(USER_SENDER_ID = request.user).order_by("created_at").distinct("USER_RECIPIENT_ID")
+        print(messages_owner)
+        for messages_own in messages_owner:
+            context.append({
+                "id": messages_own.ID,
+                "created_at":messages_own.created_at,
+                 "status":messages_own.status ,
+                 "user_id":messages_own.USER_RECIPIENT_ID.ID,
+                 "message_text": messages_own.message_text,
+                 "username":messages_own.USER_RECIPIENT_ID.username,
+                  "Profile": messages_own.USER_RECIPIENT_ID.profile_picture.url if messages_own.USER_RECIPIENT_ID.profile_picture else "",
+            })
 
+        for messages_own in messages_owner2:
+            context.append({
+                "id": messages_own.ID,
+                "created_at":messages_own.created_at,
+                 "status":messages_own.status ,
+                 "user_id":messages_own.USER_SENDER_ID.ID,
+                 "message_text": messages_own.message_text,
+                 "username":messages_own.USER_SENDER_ID.username,
+                  "Profile": messages_own.USER_SENDER_ID.profile_picture.url if messages_own.USER_SENDER_ID.profile_picture else "",
+            })
+        """
+
+        user = request.user
+
+        # Get distinct user IDs the current user has chatted with
+        conversation_users = UserMessages.objects.filter(
+            Q(USER_SENDER_ID=user) | Q(USER_RECIPIENT_ID=user)
+        ).exclude(
+            Q(USER_SENDER_ID=user, USER_RECIPIENT_ID=user)  # avoid self-conversations
+        ).annotate(
+            other_user_id=Case(
+                When(USER_SENDER_ID=user, then=F('USER_RECIPIENT_ID')),
+                default=F('USER_SENDER_ID'),
+                output_field=models.IntegerField()
+            )
+        ).values('other_user_id').distinct()
+
+        # Now get latest message per each "other user"
+        context = []
+        
+        for row in conversation_users:
+            other_user_id = row['other_user_id']
+
+            latest_msg = UserMessages.objects.filter(
+                Q(USER_SENDER_ID=user, USER_RECIPIENT_ID_id=other_user_id) |
+                Q(USER_SENDER_ID_id=other_user_id, USER_RECIPIENT_ID=user)
+            ).order_by('-created_at').first()
+
+            other_user = latest_msg.USER_SENDER_ID if latest_msg.USER_SENDER_ID != user else latest_msg.USER_RECIPIENT_ID
+            #print(f"ID {latest_msg.USER_SENDER_ID}. Target: {request.user.ID}")
+            if(latest_msg.USER_SENDER_ID == request.user):
+                position = "right"
+            else:
+                position= "left"
+           
+          
+
+
+
+            context.append({
+                "id": latest_msg.ID,
+                "created_at": latest_msg.created_at,
+                "status": latest_msg.status,
+                "user_id": other_user.ID,
+                "message_text": latest_msg.message_text,
+                "username": other_user.username,
+                "position_conversation": position,
+                "Profile": other_user.profile_picture.url if other_user.profile_picture else "",
+             
+            })
+        return JsonResponse({"msg": "Messages Data Retrieve Successfully","messages": context, "selected_message":selected_message}, status=200)
+
+def MessageConversationGet(request,sender_id):
+    request.session["selectedMessage"] =sender_id
+    if(request.method =="POST"):
+     
+        get_receiver = UserSites.objects.get(ID = sender_id)
+        conversations = UserMessages.objects.filter(
+        Q(USER_SENDER_ID=request.user, USER_RECIPIENT_ID=get_receiver, message_text__isnull=False) |
+        Q(USER_SENDER_ID=get_receiver, USER_RECIPIENT_ID=request.user, message_text__isnull=False)
+    ).order_by("created_at")
+        context =[]
+    
+        if(not conversations):
+    
+            return JsonResponse({"msg": "Messages Data Retrieve Successfully","messages": context}, status=200)
+        for conversation in conversations:
+            if(conversation.USER_SENDER_ID ==get_receiver):
+                position = "left"
+
+            else:
+                position = "right"
+            details = None
+            if(conversation.status==MessageStatus.REQUEST or conversation.status== MessageStatus.CANCELLED or conversation.status== MessageStatus.FULFILLED):
+
+                get_blob_details = conversation.message_text
+                post_id_str = get_blob_details.split(" - ")[0]
+                details = UserPost.objects.filter(ID=post_id_str).first()
+              
+            context.append({
+                        "id": conversation.ID,
+                        "created_at":conversation.created_at,
+                        "status":conversation.status ,
+                        "message_text": conversation.message_text,
+                        # For Checking purposes must be removed when developement
+                        "username":conversation.USER_RECIPIENT_ID.username,
+                        "position_conversation": position,
+                           "blob_details": {
+                    "id": details.ID,
+                    "title": details.title
+                }if details else None
+                        })
+
+        return JsonResponse({"msg": "Messages Data Retrieve Successfully","messages": context, "conversation_username":get_receiver.username}, status=200)
+        
+
+def MessageConvesationAdd(request, receiver_id):
+    if(request.method =="POST"):
+        request.session["selectedMessage"] = receiver_id
+        lastID =UserMessages.objects.values('ID').last()
+        data = json.loads(request.body)
+      
+        sender = UserSites.objects.get(ID=request.user.ID)
+        reciever = UserSites.objects.get(ID=receiver_id)
+        messages = UserMessages()
+        messages.ID = lastID['ID'] + 1
+        messages.USER_SENDER_ID = sender
+        messages.USER_RECIPIENT_ID = reciever
+        messages.message_text =data['message']
+        messages.save()
+        return JsonResponse({"msg": "Messages Data Retrieve Successfully"}, status=200)
+        
+
+
+def MessageAdd(request, receiver_id):
+    if(request.method =="POST"):
+        get_receiver = UserSites.objects.get(ID = receiver_id)
+       
+        check_exist_conversation = UserMessages.objects.filter(
+    Q(USER_SENDER_ID=request.user, USER_RECIPIENT_ID=get_receiver, message_text__isnull=False) |
+    Q(USER_SENDER_ID=get_receiver, USER_RECIPIENT_ID=request.user, message_text__isnull=False)
+).order_by("created_at")
+        if(not check_exist_conversation): 
+            u = UserMessages()
+            u.USER_SENDER_ID = request.user
+            u.USER_RECIPIENT_ID = get_receiver
+            u.message_text = None
+            u.save()
+        #context =[]
+        return JsonResponse({"msg": "Messages created successfully", "redirect_url":"/diyconn/messages/"}, status=200)
+
+
+#Message Request
+def MessageAddRequest(request,receiver_id):
+    try: 
+        if(request.method =="POST"):
+            
+            get_receiver = UserSites.objects.get(ID = receiver_id)
+            data = json.loads(request.body)
+            post_id = data["post_id"]
+            get_post_data = UserPost.objects.filter(ID= post_id).first()
+
+            check_request_pending = TaskRequest.objects.filter(USER_FULLFILL_REQUEST = request.user,USER_RECIEVE_REQUEST=get_receiver,POST_ID=get_post_data).first()
+            #print(data)
+            #print(check_request_pending)
+  
+            if check_request_pending==None:
+                
+                u = UserMessages()
+                u.USER_SENDER_ID = request.user
+                u.USER_RECIPIENT_ID = get_receiver
+                u.message_text = f'{get_post_data.ID} - {get_post_data.title}'
+                u.status ="request"
+                u.save()
+                lastID = UserMessages.objects.values('ID').last()
+
+                
+                t = TaskRequest()
+                t.POST_ID = get_post_data
+                t.USER_FULLFILL_REQUEST = request.user
+                t.USER_RECIEVE_REQUEST =  get_receiver
+                t.accepted = True
+                t.conversation_id = lastID["ID"]
+                t.save()
+                #print("working")
+                return JsonResponse({"msg": "Request Added"}, status=200)
+            else:
+               
+                return JsonResponse({"msg": "Request is existed"}, status=200)
+          
+            # For Message
+            
+         
+            # For Request 
+        
+                
+            
+    except:
+        return JsonResponse({"msg": "Request Error"}, status=500)
 
 #people
 def people(request):
@@ -399,14 +624,13 @@ def peopleFriendRequest_get(request):
                  "status": user.status,
              
             })
-    #print("requestFriend")
+    
     return JsonResponse({"msg": "Friend request sent successfully", "FriendRequest": context}, status=200)
 
 def peopleFriendRequest_accepted(request, user_id):
-    #print("this is friend request accepted")
+  
     requester_user = UserSites.objects.get(ID=user_id)
     accept_request= Friendships.objects.get(RECEIVER_ID =request.user, REQUESTER_ID =requester_user)
-    #print(accept_request)
     accept_request.status ="accepted" 
     accept_request.save()
 
@@ -417,7 +641,6 @@ def peopleFriendRequest_pending(request, user_id):
     reject_request= Friendships.objects.get(RECEIVER_ID =request.user, REQUESTER_ID =requester_user)
     reject_request.status ="pending" 
     reject_request.save()
-    #print("this is friend request rejected")
     return JsonResponse({"msg": "This is for friend request rejected"}, status=200)
 
 
@@ -437,8 +660,7 @@ def peopleGetDiscover(request):
                     if(len(context)>=5):
                         break
 
-        #print(context)
-        #print("this is for peopleget")
+       
         return JsonResponse({"msg": "Discover friends list retrieved successfully.","DiscoverPeople": context}, status=200)
     except Exception as e:
         return JsonResponse({"msg": "An error occurred while retrieving the people to discover"}, status=500)
@@ -455,7 +677,6 @@ def peopleAdd(request, user_id):
             f.RECEIVER_ID = getUser_receiver_request
             f.REQUESTER_ID = getUser_requester_request
             f.save()
-            #print("this is for people add")
             return JsonResponse({"msg": "Friend request sent successfully."}, status=200)
         else:
             return JsonResponse({"msg": "Invalid request method."}, status=500)
@@ -482,7 +703,7 @@ def peopleFriends(request):
         context =[]
         friends_list = Friendships.objects.filter(status="accepted").filter(Q(REQUESTER_ID=request.user) | Q(RECEIVER_ID=request.user))
         
-        #print(friends_list)
+    
         if not friends_list.exists():
             friends_list = None  # or [] if you prefer an empty list
         else:
@@ -505,14 +726,82 @@ def peopleFriends(request):
 
 def profile_user(request, username):
     check_owner_post = False
+    get_user_id=''
     if(request.user.username == username):
         check_owner_post= True
+        get_user_id = request.user.ID
+    else:
+        get_user = UserSites.objects.filter(username=username).first()
+        get_user_id = get_user.ID
+    
     context ={
         "username":username,
         "Check_owner_post":check_owner_post,
+        "get_id_user":get_user_id,
     }
     return render(request,'main/subpages/profile/profileView.html', context)
 
 
+#TASKREQUEST
+
+def request_fulfiller_cancelled(request):
+    if(request.method =="POST"):
+        try:
+            data = json.loads(request.body)
+            get_taskRequest =TaskRequest.objects.get(POST_ID=data['post_id'],conversation_id =data['conversation_id'])
+            get_conversation = UserMessages.objects.get(ID=data['conversation_id'])
+            get_conversation.status = MessageStatus.CANCELLED
+            get_conversation.save()
+            get_taskRequest.delete()
+
+            return JsonResponse({"msg": "Fulfilling Request Cancelled"}, status=200)
+        except:
+            return JsonResponse({"msg": "Internal Error"}, status=500)
 
 
+
+# ADDED REVIEW AND REQUEST COMPLETED
+def request_receiver_completed(request):
+    if(request.method =="POST"):
+    
+        data = json.loads(request.body)
+        print(data)
+    
+        get_taskRequest =TaskRequest.objects.get(POST_ID=data['post_id'],conversation_id =data['conversation_id'])
+        get_conversation = UserMessages.objects.get(ID=data['conversation_id'])
+  
+        get_taskRequest.accepted =True
+        get_taskRequest.completed=True
+   
+        
+        r = Review()
+        r.post_title =get_taskRequest.POST_ID.title
+        r.USER_FULLFILL_REQUEST= get_taskRequest.USER_FULLFILL_REQUEST
+        r.USER_RECIEVE_REQUEST= request.user
+        r.stars = data['rate']
+        r.comment =data['comment']
+        
+        get_conversation.status =MessageStatus.FULFILLED
+
+        print("this is complete request")
+        r.save()
+        get_conversation.save() 
+        get_taskRequest.save()
+        return JsonResponse({"msg": "Request Task Has been Fulfilled"}, status=200)
+
+
+
+
+#Reviews
+
+def reviews(request, user_id):
+    context ={}
+    get_user = UserSites.objects.get(ID = user_id)
+    get_reviews_user = Review.objects.filter(USER_FULLFILL_REQUEST = get_user)
+    print(get_reviews_user)
+    context ={
+    "user": get_user,
+    "reviews": get_reviews_user
+    }
+    print("this is for review")
+    return render(request,'main/subpages/reviews/review.html', context)

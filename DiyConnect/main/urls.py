@@ -37,21 +37,34 @@ urlpatterns = [
     #POST
       path('post/getRoleChange/', views.postRoleChange,  name="postRoleChange"),
       path('post/add/', views.postAdd,  name="postAdd"),
-            path('post/specific/<int:post_id>', views.postGet_specific,  name="postGet_specific"),
+            path('post/specific/<int:post_id>', views.postGet_specific,  name="postGet_specific"),   #FINALIZED
       path('post/edit/save/<int:post_id>', views.postEditSave,  name="postEditSave"),
       path('post/edit/<int:post_id>', views.postEdit,  name="postEdit"),
       path('post/get/<int:lastest_post>/<str:role_post>', views.postGet,  name="postGet"),
         path('post/delete/<int:post_id>/', views.postDelete,  name="postGet"),
 
       path('post/profile/get/<str:username>/', views.postGet_profile, name="postGet_profile"),
+
+    #Conversations
+        path('diyconn/conversation/get/<int:sender_id>', views.MessageConversationGet,  name="MessageConversationGet"),
+          path('diyconn/conversation/add/<int:receiver_id>', views.MessageConvesationAdd,  name="MessageConvesationAdd"),
     #Messages
-      path('diyconn/messages/', views.Messages,  name="Messages"),
+ path('diyconn/messages/mobile', views.MessageMobile,  name="MessageMobile"),
+  path('diyconn/messages/mobile/get/<int:user_id>', views.MessageMobileConversationContent,  name="MessageMobileConversationContent"),
+  path('diyconn/messages/', views.Messages,  name="Messages"),
+  path('diyconn/messages/get', views.MessagesGet,  name="MessagesGet"),
+  path('diyconn/messages/add/<int:receiver_id>', views.MessageAdd,  name="MessageAdd"),
+  path('diyconn/messages/request/add/<int:receiver_id>', views.MessageAddRequest,  name="MessageAdd"),
 
   #Profile
     path('diyconn/profile/get/<str:username>/', views.profile_user, name ="profile_user"),
-  
+  #Request Task
+    path('diyconn/request/fullfiller/cancelled/', views.request_fulfiller_cancelled, name ="request_fulfiller_cancelled"),
+       path('diyconn/request/receiver/completed/', views.request_receiver_completed, name ="request_receiver_completed"),
 
       #INITIALIZED
         path('Initialized/cookies/', views.set_csrf_token,  name="set_csrf_token"),
-    
+  
+  #Reviews
+   path('diyconn/reviews/<int:user_id>', views.reviews,  name="reviews"),
 ]

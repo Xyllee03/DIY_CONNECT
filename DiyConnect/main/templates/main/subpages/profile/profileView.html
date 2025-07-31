@@ -119,6 +119,13 @@
       display: flex;
       justify-content: center;
     }
+    .sty-sect-review-icon {
+      font-size: 40px;
+      color: white;
+
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
 
     /* MOBILE */
     @media (max-width: 768px) {
@@ -158,14 +165,22 @@
       }
 
       .sty-sect-opt-icon {
-          font-size: 30px;
-          padding-left: 1rem !important;
-          padding-right: 1rem !important;
-        }
-        .sty-sect-opt {
-          font-size: 30px;
-          padding-left: 1rem !important;
-          padding-right: 1rem !important;
+        font-size: 30px;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
+      .sty-sect-opt {
+        font-size: 30px;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
+      .sty-sect-review-icon {
+        font-size: 20px;
+        color: white;
+        padding-top: 1rem !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
     }
     /*{% endblock styles %} */
   </style>
@@ -176,6 +191,7 @@
     <!-- //prettier-ignore -->
 
     <h1 id="get_username" hidden>{{ username }}</h1>
+    <h1 id="get_id_user" hidden>{{ get_id_user }}</h1>
 
     <div id="get_link" data-url="{% url 'main:diyconn_home' %}" hidden></div>
     <div id="get_check_owner_post" data-url="{{ Check_owner_post }}"></div>
@@ -280,21 +296,40 @@
     <script>
       //{% block scripts %}
       // GIVEN
-      let usr_all_bck_opt_ref = document.querySelectorAll(
-        "#usr_all_bck_opt_ref"
-      );
-      let get_link = document.getElementById("get_link");
-      usr_all_bck_opt_ref.forEach((element) => {
-        element.href = get_link.getAttribute("data-url");
-      });
 
-      let usr_all_bck_opt_label = document.querySelectorAll(
-        "#usr_all_bck_opt_label"
-      );
-      let get_username = document.getElementById("get_username");
-      usr_all_bck_opt_label.forEach((element) => {
-        element.textContent = "Viewing " + get_username.textContent;
-      });
+      function Initialized() {
+        let usr_all_bck_opt_ref = document.querySelectorAll(
+          "#usr_all_bck_opt_ref"
+        );
+        let get_link = document.getElementById("get_link");
+        usr_all_bck_opt_ref.forEach((element) => {
+          element.href = get_link.getAttribute("data-url");
+        });
+
+        let usr_all_bck_opt_label = document.querySelectorAll(
+          "#usr_all_bck_opt_label"
+        );
+        let get_username = document.getElementById("get_username");
+        usr_all_bck_opt_label.forEach((element) => {
+          element.textContent = "Viewing " + get_username.textContent;
+        });
+
+        let usr_all_end_opt = document.querySelectorAll("#usr_all_end_opt");
+        usr_all_end_opt.forEach((element) => {
+          element.innerHTML = `<ion-icon name="newspaper" class="sty-sect-review-icon"></ion-icon>`;
+        });
+        let get_id_user = document.getElementById("get_id_user");
+        let usr_all_end_opt_ref = document.querySelectorAll(
+          "#usr_all_end_opt_ref"
+        );
+
+        usr_all_end_opt_ref.forEach((element) => {
+          element.href = `/diyconn/reviews/${get_id_user.textContent}`;
+        });
+        //console.log(usr_all_end_opt_ref);
+      }
+
+      Initialized();
 
       let postContainer = document.getElementById("postContainer");
       async function getProfilePost() {

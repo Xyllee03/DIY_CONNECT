@@ -1,0 +1,462 @@
+{% extends '../../subpages_base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=
+    , initial-scale=1.0"
+    />
+    {% block title %}
+    <title>Conversation</title>
+    {% endblock title %}
+    <style>
+      /* {% block styles %} */
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        overflow-x: hidden; /* prevents unwanted horizontal scroll */
+      }
+
+      .sty-recipient-msg {
+        background-color: #d9d9d9;
+        color: black;
+        border-radius: 12px;
+      }
+
+      .sty-sender-msg {
+        background-color: #283618;
+        color: #fefae0;
+        border-radius: 12px;
+      }
+
+      .before-container-conversation {
+        height: 65vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #container-conversation {
+        flex-grow: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .sty-conversation-text {
+        font-size: 10px;
+        font-family: "Hind Madurai", sans-serif;
+        padding: 1rem;
+      }
+      .hero-body {
+        padding-top: 4px !important;
+        padding-bottom: 4px !important;
+      }
+      .sty-btn-send-msg {
+        font-size: 16px;
+        background-color: #283618;
+        color: white;
+      }
+
+      .message-input-container {
+        position: relative;
+        padding: 0.5rem;
+        border-top: 1px solid #ccc;
+      }
+
+      #inp_message {
+        width: 100%;
+        max-height: 6em; /* ~4 rows */
+        overflow-y: auto;
+        resize: none;
+        line-height: 1.5em;
+        padding: 0.5em;
+        font-size: 1rem;
+      }
+
+      /* Request Right */
+      .sty-container-request-right {
+        background-color: #283618;
+        color: #d9d9d9;
+        margin-left: 1rem;
+        margin-right: 1rem;
+        border-radius: 12px;
+      }
+
+      .sty-container-request-text-right {
+        color: #ffffff;
+        font-size: 20px;
+        font-family: "Hind Madurai", sans-serif;
+      }
+      .sty-container-header-request-right {
+        font-size: 36px;
+        color: #ffffff;
+        font-family: "Montserrat", sans-serif;
+        font-optical-sizing: auto;
+        font-style: normal;
+        font-weight: 600;
+      }
+      .sty-request-btn-accept-right {
+        background-color: #ffffff;
+        color: #283618;
+        font-size: 20px;
+        font-family: "Hind Madurai", sans-serif;
+        font-weight: 700;
+      }
+
+      /* {% endblock styles %} */
+    </style>
+  </head>
+  <body>
+    <!-- prettier-ignore -->
+    {% block content %}
+    <!-- //prettier-ignore -->
+
+    <!-- 
+    <div id="container-conversation">
+      <div class="sty-conversation-text sty-recipient-msg has-text-centered">
+        Get Started to find a connection right now
+      </div>
+    </div>
+    -->
+    <div class="before-container-conversation">
+      <div id="container-conversation">
+        <!--
+        <div class="columns is-mobile">
+          <div class="column is-1"></div>
+          <div class="column sty-sender-msg">
+            <h1>This is from a message</h1>
+          </div>
+        </div>
+        <div class="columns is-mobile">
+          <div class="column is-1"></div>
+          <div class="column sty-sender-msg">
+            <h1>This is from a message</h1>
+          </div>
+        </div>
+        <div class="columns is-mobile">
+          <div class="column sty-recipient-msg">
+            <h1>This is from a message</h1>
+          </div>
+          <div class="column is-2"></div>
+        </div>
+        -->
+      </div>
+    </div>
+    <div class="columns is-vcentered is-mobile mt-4 is-1">
+      <div class="column">
+        <div class="message-input-container">
+          <textarea
+            class="input fixed-input"
+            placeholder="Type a message..."
+            id="inp_message"
+            rows="1"
+            style="max-height: 6em; overflow-y: auto; resize: none"
+          ></textarea>
+        </div>
+      </div>
+      <div class="column is-3">
+        <div
+          id="btn_sent_conversation"
+          class="button is-small sty-btn-send-msg is-rounded"
+          onclick="btn_MessageSent(event)"
+        >
+          send
+        </div>
+      </div>
+    </div>
+    <div
+      id="get_link"
+      data-url="{% url 'main:MessageMobile' %}"
+      data-user="{{ user.username }}"
+      data-user-ID="{{ user.ID }}"
+      hidden
+    ></div>
+
+    <!-- MODAL REQUEST (START) -->
+    <div class="modal" id="mdl_request">
+      <div class="modal-background" onclick="mdl_request_close()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p
+            class="modal-card-title sty-mdl-head has-text-centered"
+            id="inp_mdl_header"
+          ></p>
+          <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body has-text-centered">
+          <h1 class="sty-mdl-msg" id="inp_mdl_body_text"></h1>
+        </section>
+        <!-- Data Container (HIDDEN) -->
+        <input type="text" name="" id="inp_post_id" hidden />
+        <input type="text" name="" id="inp_conversation_id" hidden />
+        <input type="text" name="" id="inp_username" hidden />
+        <input type="text" name="" id="inp_rate" hidden />
+        <!-- Data Container (HIDDEN) -->
+        <footer class="modal-card-foot">
+          <div class="sty-mdl-footer-btn">
+            <a class="button sty-mdl-btn-submit" id="btn_mdl_submit">
+              Continue
+            </a>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <!-- MODAL REQUEST (END) -->
+    <!-- prettier-ignore -->
+    {% endblock content %}
+    <!-- //prettier-ignore -->
+
+    <script>
+      // {% block scripts %}
+
+      function Initialized() {
+        let get_link = document.getElementById("get_link");
+        let usr_all_bck_opt_ref = document.querySelectorAll(
+          "#usr_all_bck_opt_ref"
+        );
+
+        usr_all_bck_opt_ref.forEach((element) => {
+          element.href = get_link.getAttribute("data-url");
+        });
+
+        let usr_all_bck_opt_label = document.querySelectorAll(
+          "#usr_all_bck_opt_label"
+        );
+
+        let get_username = get_link.getAttribute("data-user");
+        usr_all_bck_opt_label.forEach((element) => {
+          element.textContent = `Conversation with ${get_username}`;
+        });
+      }
+      Initialized();
+
+      window.addEventListener("resize", function () {
+        if (window.innerWidth > 768) {
+          console.log("this is mobile view");
+          window.location.href = "{% url 'main:Messages' %}";
+        }
+      });
+
+      function scrollConversationToBottom() {
+        const box = document.getElementById("container-conversation");
+        if (!box) return;
+        box.scrollTop = box.scrollHeight;
+      }
+      async function getConversation(user_id, username = "") {
+        let container_conversation = document.getElementById(
+          "container-conversation"
+        );
+
+        /*MESSAGE DESIGN START (TRIAL)
+        let query_all_msg = document.querySelectorAll(".query_all_msg");
+        console.log(query_all_msg);
+        query_all_msg.forEach((element) => {
+          let get_single_element_user_id = element.getAttribute("data-user-id");
+          console.log(`elemenet id${get_single_element_user_id} -- ${user_id}`);
+          if (get_single_element_user_id != user_id) {
+            element.classList.remove("sty-msg-notselected-conversation");
+            element.classList.add("sty-msg-selected-conversation");
+          } else {
+            element.classList.remove("sty-msg-selected-conversation");
+            element.classList.add("sty-msg-notselected-conversation");
+          }
+        });
+
+         MESSAGE DESIGN END (TRIAL)*/
+        container_conversation.innerHTML = "";
+
+        try {
+          let conversation_section = document.createElement("div");
+          let response = await fetch(`/diyconn/conversation/get/${user_id}`, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+            mode: "same-origin",
+          });
+          let data = await response.json();
+          console.log(data);
+          let msg_arr = data.messages;
+          let get_link = document.getElementById("get_link");
+          let target_user_id = get_link.getAttribute("data-user-id");
+          let btn_sent_conversation = document.getElementById(
+            "btn_sent_conversation"
+          );
+          btn_sent_conversation.setAttribute("data-user-id", target_user_id);
+          if (msg_arr.length <= 0) {
+            let get_link_username = get_link.getAttribute("data-user");
+            conversation_section.innerHTML += `<div class="sty-conversation-text sty-recipient-msg has-text-centered">
+                  You can start with conversation with ${get_link_username}</div>`;
+            container_conversation.appendChild(conversation_section);
+          } else {
+            msg_arr.forEach((element) => {
+              if (
+                (element.status == "request" ||
+                  element.status == "fulfilled") &&
+                element.position_conversation == "right"
+              ) {
+                //console.log(JSON.stringify(element, null, 2));
+                conversation_section.innerHTML += `
+                      <div class="sty-container-request-right has-text-centered">
+                    <h1 class="sty-container-header-request-right">
+                    ${element.blob_details.title}
+                    </h1>
+                    <h1 class="sty-container-request-text-right mb-1">
+                You ask to fulfill the request of ${data.conversation_username}
+                    </h1>
+                    <button data-title-post="${
+                      element.blob_details.title
+                    }" data-post-id ="${
+                  element.blob_details.id
+                }" data-conversation-id="${element.id}" class="button    ${
+                  element.status === "request"
+                    ? "sty-request-btn-accept-right"
+                    : "sty-request-btn-accept-right-fulfilled"
+                }"       ${
+                  element.status === "request"
+                    ? "onclick=mdl_fullfill_request_cancel(event)"
+                    : ""
+                } >
+              ${
+                element.status === "request"
+                  ? "Request Accepted"
+                  : "Request Fulfilled"
+              }
+                    </button>
+                  </div>
+                  <div class="columns is-vcentered is-mobile">
+                    <div class="column is-1"></div>
+                    <div class="column is-1">
+                      <h1 class="has-text-centered sty-icon-info">
+                        <ion-icon name="information-circle"></ion-icon>
+                      </h1>
+                    </div>
+                    <div class="column">
+                      <h1 class="sty-info-request">
+
+                         ${
+                           element.status === "request"
+                             ? "Please make sure that you received your materials before pressing the request fulfilled button"
+                             : "Request is being fulfilled. Great job on completing the user's request!"
+                         }
+                        
+                      </h1>
+                    </div>
+                    <div class="column is-1"></div>
+                  </div>`;
+              } else if (element.position_conversation == "left") {
+                conversation_section.innerHTML += `
+                      <div class="columns is-mobile">
+                  <div class="column">
+                    <h1 class="sty-conversation-text sty-recipient-msg">
+                      ${element.message_text}
+                    </h1>
+                  </div>
+                  <div class="column is-1"></div>
+                </div>`;
+              } else if (element.position_conversation == "right") {
+                conversation_section.innerHTML += `    <div class="columns is-mobile">
+                  <div class="column is-1"></div>
+                  <div class="column">
+                    <h1 class="sty-conversation-text sty-sender-msg">
+                      ${element.message_text}
+                    </h1>
+                  </div>`;
+              } else {
+                console.log("err occur");
+              }
+            });
+            container_conversation.appendChild(conversation_section);
+            scrollConversationToBottom();
+          }
+        } catch (err) {
+          console.error("Error fetching messages:", err);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        let get_data = document.getElementById("get_link");
+        let get_user_data_ID = get_data.getAttribute("data-user-ID");
+
+        getConversation(get_user_data_ID); // initial load
+
+        // Pass a function, don't call it immediately
+        setInterval(() => {
+          getConversation(get_user_data_ID);
+        }, 5000);
+      });
+
+      function btn_MessageSent(event) {
+        let target = event.currentTarget;
+        let get_user_id = target.getAttribute("data-user-id");
+
+        let inp_message_dom = document.getElementById("inp_message");
+        let inp_message = inp_message_dom.value;
+        if (inp_message == "") {
+          return;
+        }
+        if (get_user_id == null) {
+          return;
+        }
+        let form_data = {
+          message: inp_message,
+        };
+
+        let response = fetch(`/diyconn/conversation/add/${get_user_id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+          body: JSON.stringify(form_data),
+        })
+          .then((res) => {
+            return res.json();
+          })
+          .then((msg) => {
+            console.log(msg);
+            inp_message_dom.value = "";
+
+            //selectedMessageConversation((id = get_user_id));
+            getConversation(get_user_id);
+            //window.location.href = `/${msg.redirect_url}`;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+
+      const textarea = document.getElementById("inp_message");
+      const container = document.querySelector(
+        ".before-container-conversation"
+      );
+      textarea.addEventListener("input", () => {
+        textarea.style.height = "auto";
+        textarea.style.height = Math.min(textarea.scrollHeight, 96) + "px"; // 96px ≈ 4 lines
+      });
+
+      //Request Cancel
+
+      function mdl_fullfill_request_cancel(event) {
+        let get_target = event.target;
+        let get_title_post = get_target.getAttribute("data-title-post");
+        let get_post_id = get_target.getAttribute("data-post-id");
+        let get_msg_id = get_target.getAttribute("data-conversation-id");
+        inp_post_id.value = get_post_id;
+        inp_conversation_id.value = get_msg_id;
+        btn_mdl_submit.setAttribute("onclick", "fullfill_request_cancelled()");
+        mdl_request.classList.add("is-active");
+        inp_mdl_header.textContent = `Remove Fulfill Request`;
+        inp_mdl_body_text.innerHTML = `<p>Do you want to remove you request about:<h1 style="font-weight:700"> ${get_title_post} </h1></p>
+              <p> this will result a deleting the request</p>`;
+      }
+      // {% endblock scripts %}
+    </script>
+  </body>
+</html>

@@ -16,6 +16,13 @@ class FriendStatus(models.TextChoices):
     PENDING= 'pending', 'Pending'
     ACCEPTED= 'accepted','Accepted'
     REJECTED = 'rejected','Rejected'
+class MessageStatus(models.TextChoices):
+    SENT= 'sent', 'Sent'
+    DELIVERED= 'delivered','Delivered'
+    SEEN = 'seen','Seen'
+    REQUEST = 'request', 'Request'
+    CANCELLED ='cancelled','Cancelled'
+    FULFILLED= 'fulfilled','Fulfilled'
 
 
 
@@ -150,11 +157,31 @@ class UserMessages(models.Model):
     USER_SENDER_ID = models.ForeignKey(UserSites, on_delete=models.CASCADE, related_name='sent_messages')
     USER_RECIPIENT_ID = models.ForeignKey(UserSites, on_delete=models.CASCADE, related_name='received_messages')
     created_at= models.DateTimeField(auto_now_add=True)
+
+    message_text = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=20, choices=MessageStatus.choices, default=MessageStatus.SENT)
+  
+
     
 
-class Conversation(models.Model):
+#Request 
+
+   
+
+class TaskRequest(models.Model):
+    ID= models.AutoField(primary_key=True)
+    POST_ID= models.ForeignKey(UserPost,on_delete=models.CASCADE)
+    USER_FULLFILL_REQUEST = models.ForeignKey(UserSites, on_delete=models.CASCADE, related_name='target_request_user')
+    USER_RECIEVE_REQUEST= models.ForeignKey(UserSites, on_delete=models.CASCADE, related_name='fullfill_request_user')
+    conversation_id= models.IntegerField()
+    accepted = models.BooleanField(default=False)
+    completed = models.BooleanField(default=False)
+
+
+class Review(models.Model):
     ID = models.AutoField(primary_key=True)
-    messages = models.TextField()
-    blob = models.ImageField(blank=True, null=True)
-    timeStamp = models.DateTimeField(auto_now=True)
-    USERS_MESSAGES_ID = models.ForeignKey(UserMessages, on_delete=models.CASCADE)
+    post_title = models.TextField()
+    USER_FULLFILL_REQUEST = models.ForeignKey(UserSites, on_delete=models.CASCADE, related_name='target_review_user')
+    USER_RECIEVE_REQUEST= models.ForeignKey(UserSites, on_delete=models.CASCADE, related_name='fullfill_review_user')
+    stars = models.IntegerField()
+    comment = models.TextField()

@@ -135,7 +135,10 @@
         }
         .sty_choices_menu_icons {
           font-size: 20px;
-          text-align: left;
+
+          display: flex;
+          align-items: center;
+          justify-content: left;
         }
         .sty-change-width-menu-bar {
           width: 200px !important; /* or any desired width */
@@ -233,7 +236,7 @@
       }
       //given
       let mdl_logout = document.getElementById("mdl_logout");
-      let navAll_logout = document.getElementById("navAll_logout");
+      //let navAll_logout = document.getElementById("navAll_logout");
       let btn_mdl_logout = document.getElementById("btn_mdl_logout");
       let navbar_role_show = document.getElementById("navbar_role_show");
       let trial_role = document.getElementById("trial_role"); //CHANGE THIS FOR PROPER
@@ -241,9 +244,15 @@
       let get_all_role_elements = document.querySelectorAll(
         "#nav_getElement_choice_role"
       );
+
+      /*
       navAll_logout.addEventListener("click", () => {
         mdl_logout.classList.add("is-active");
       });
+      */
+      function mdl_f_logout_open() {
+        mdl_logout.classList.add("is-active");
+      }
 
       function mdl_f_logout_close() {
         mdl_logout.classList.remove("is-active");

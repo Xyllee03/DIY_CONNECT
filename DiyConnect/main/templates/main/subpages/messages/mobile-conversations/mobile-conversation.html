@@ -1,0 +1,215 @@
+{% extends '../../subpages_base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}
+    <title>Mobile-Conversation</title>
+    {% endblock title %}
+
+    <style>
+      /* {% block styles %} */
+
+      .sty-msg-people-header {
+        font-size: 20px;
+        font-family: "Roboto", sans-serif;
+      }
+      .sty-msg-people-subtitle {
+        font-size: 15px;
+        font-family: "Hind Madurai", sans-serif;
+      }
+
+      /*
+      .sty-left-side-sect {
+        border-left: solid 5px #283618;
+        height: 85vh;
+      }*/
+
+      .profile-img-circle {
+        width: 64px;
+        height: 64px;
+        object-fit: cover; /* ensures the image covers the box without distortion */
+        border-radius: 50%;
+      }
+      .sty-conversation-text {
+        font-size: 20px;
+        font-family: "Hind Madurai", sans-serif;
+        padding: 1rem;
+      }
+      .sty-recipient-msg {
+        background-color: #d9d9d9;
+        color: black;
+        border-radius: 12px;
+      }
+      .sty-sender-msg {
+        background-color: #283618;
+        color: #fefae0;
+        border-radius: 12px;
+      }
+      .sty-left-side-sect {
+        border-left: solid 5px #283618;
+        height: 85vh;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+      }
+
+      .sty-msg-notselected-conversation {
+        background-color: white;
+        color: black;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+      }
+      .sty-msg-notselected-conversation:hover {
+        background-color: #283618;
+        color: #fefae0;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        overflow-x: hidden; /* prevents unwanted horizontal scroll */
+      }
+      /* {% endblock styles %} */
+    </style>
+  </head>
+  <body>
+    <!-- prettier-ignore -->
+    {% block content %}
+
+    <div class="container">
+      <div id="container-messages"></div>
+    </div>
+
+    <div id="get_link" data-url="{% url 'main:diyconn_home' %}" hidden></div>
+
+    <!--
+    <div
+      class="columns is-vcentered sty-msg-notselected-conversation query_all_msg is-mobile"
+    >
+      <div class="column is-4 has-text-centered">
+        <h1>--- Profile--</h1>
+      </div>
+      <div class="column">
+        <h1 class="sty-msg-people-header">RecycleKing_92</h1>
+        <h1 class="sty-msg-people-subtitle">
+          Payment sent! Please confirm once received.
+        </h1>
+      </div>
+    </div>
+
+    <div
+      class="columns is-vcentered sty-msg-notselected-conversation query_all_msg is-mobile"
+    >
+      <div class="column is-4 has-text-centered">
+        <h1>--- Profile--</h1>
+      </div>
+      <div class="column">
+        <h1 class="sty-msg-people-header">PlasticHunterX</h1>
+        <h1 class="sty-msg-people-subtitle">
+          Payment sent! Please confirm once received.
+        </h1>
+      </div>
+    </div>
+    -->
+    {% endblock content %}
+    <!-- //prettier-ignore -->
+
+    <script>
+      //{% block scripts %}
+
+      // INITIALIZED
+      function Initialized() {
+        let get_link = document.getElementById("get_link");
+        let usr_all_bck_opt_ref = document.querySelectorAll(
+          "#usr_all_bck_opt_ref"
+        );
+
+        usr_all_bck_opt_ref.forEach((element) => {
+          element.href = get_link.getAttribute("data-url");
+        });
+
+        let usr_all_bck_opt_label = document.querySelectorAll(
+          "#usr_all_bck_opt_label"
+        );
+        usr_all_bck_opt_label.forEach((element) => {
+          element.textContent = "Messages";
+        });
+      }
+      Initialized();
+      window.addEventListener("resize", function () {
+        if (window.innerWidth > 768) {
+          console.log("this is mobile view");
+          window.location.href = "{% url 'main:Messages' %}";
+        }
+      });
+
+      async function MessageInitialized() {
+        try {
+          let response = await fetch("{% url 'main:MessagesGet' %}", {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": getCookie("csrftoken"),
+            },
+            mode: "same-origin",
+          });
+          let data = await response.json();
+          console.log(data);
+          let msg_arr_length = data.messages.length;
+          let container_messages =
+            document.getElementById("container-messages");
+          container_messages.innerHTML = ``;
+          let msg_section = document.createElement("div");
+          if (msg_arr_length <= 0) {
+            msg_section.innerHTML = `<div class="has-text-centered"> <h1> There is no conversation data  </h1> </div>`;
+            container_messages.appendChild(msg_section);
+          } else {
+            data.messages.forEach((element) => {
+              msg_section.innerHTML += ` <a href ="/diyconn/messages/mobile/get/${
+                element.user_id
+              }"
+                  class="columns is-mobile is-vcentered query_all_msg sty-msg-notselected-conversation"
+                  data-user-id="${element.user_id}"
+                   data-username="${element.username}"
+                >
+                  <div class="column is-4 has-text-centered">
+                   <img class ="profile-img-circle" src ="${element.Profile}">
+                  </div>
+                  <div class="column">
+                    <h1 class="sty-msg-people-header">${element.username}</h1>
+                    <h1 class="sty-msg-people-subtitle">
+      ${
+        element.message_text === null
+          ? `You can start your conversation with ${element.username}`
+          : element.position_conversation === "right"
+          ? `You: ${element.message_text}`
+          : element.position_conversation === "left"
+          ? `${element.username}: ${element.message_text}`
+          : `${element.message_text}` // <-- fallback/else
+      }        </h1>
+                    </h1>
+                  </div>
+                </a>`;
+            });
+            container_messages.appendChild(msg_section);
+          }
+          if (data.selected_message != null) {
+          }
+        } catch (err) {
+          console.error("Error fetching messages:", err);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        MessageInitialized(); // initial load
+        setInterval(MessageInitialized, 5000); // every 5 seconds
+      });
+
+      //{% endblock scripts%}
+    </script>
+  </body>
+</html>

@@ -72,6 +72,13 @@
           <h1>
             <ion-icon name="add-circle"></ion-icon></h1
         ></a>
+        <a
+          class="navbar-item sty-h-navbar-icons"
+          href="{% url 'main:Messages' %}"
+        >
+          <h1 class="">
+            <ion-icon name="chatbubble-ellipses"></ion-icon></h1
+        ></a>
         <div class="navbar-item">
           <input
             type="text"
@@ -83,7 +90,11 @@
       </div>
 
       <div class="navbar-end">
-        <a class="navbar-item sty-h-navbar-icons" id="navAll_logout">
+        <a
+          class="navbar-item sty-h-navbar-icons"
+          id="navAll_logout"
+          onclick="mdl_f_logout_open()"
+        >
           <ion-icon name="power"></ion-icon>
         </a>
         <a
@@ -173,17 +184,41 @@
 
           <div class="dropdown-menu">
             <div class="dropdown-content">
-              <h1 class="dropdown-item sty_choices_menu_icons">
-                <ion-icon name="people"></ion-icon> People
-              </h1>
+              <a
+                href="{% url 'main:people'%}"
+                class="dropdown-item sty_choices_menu_icons"
+              >
+                <ion-icon name="people"></ion-icon>&nbsp; People
+              </a>
               <a
                 href="{% url 'main:postAdd' %}"
                 class="dropdown-item sty_choices_menu_icons"
               >
-                <ion-icon name="add-circle"></ion-icon> Add Post
+                <ion-icon name="add-circle"></ion-icon>&nbsp; Add Post
+              </a>
+              <a
+                href="{% url 'main:profile_user' username=username %}"
+                class="dropdown-item sty_choices_menu_icons"
+              >
+                <ion-icon name="person"></ion-icon>&nbsp; Profile
+              </a>
+
+              <a
+                href="{% url 'main:Messages'%}"
+                class="dropdown-item sty_choices_menu_icons"
+              >
+             <ion-icon name="chatbox-ellipses"></ion-icon></ion-icon>&nbsp; Messages
               </a>
               <h1 class="dropdown-item sty_choices_menu_icons">
-                <ion-icon name="notifications"></ion-icon> Notification
+                <ion-icon name="notifications"></ion-icon> &nbsp; Notification
+              </h1>
+              <h1
+                href="{% url 'main:profile_user' username=username %}"
+                class="dropdown-item sty_choices_menu_icons"
+                style="color: red"
+                onclick="onclick=mdl_f_logout_open()"
+              >
+                <ion-icon name="power"></ion-icon>&nbsp; Logout
               </h1>
             </div>
           </div>

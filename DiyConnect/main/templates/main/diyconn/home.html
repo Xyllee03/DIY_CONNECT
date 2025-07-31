@@ -75,7 +75,28 @@
       .sty-sect-msg-opt:hover {
         cursor: pointer;
       }
+      /* FOR VIEWING IMAGES */
+      .nav-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 2rem;
+        background: rgba(255, 255, 255, 0.6);
+        border: none;
+        z-index: 10;
+      }
 
+      .left-arrow {
+        left: 10px;
+      }
+
+      .right-arrow {
+        right: 10px;
+      }
+
+      .nav-arrow:hover {
+        background: rgba(255, 255, 255, 0.9);
+      }
       /* MOBILE */
       @media (max-width: 768px) {
         .sty-sect-opt-icon {
@@ -133,6 +154,32 @@
           padding: 0;
           width: 100%;
           overflow-x: hidden; /* prevents unwanted horizontal scroll */
+        }
+        .nav-arrow {
+          font-size: 1.5rem; /* Slightly smaller for mobile */
+          top: 45%;
+          padding: 0.3rem 0.6rem;
+          background: rgba(255, 255, 255, 0.8);
+        }
+
+        .left-arrow {
+          left: 5px; /* Tighter margin */
+        }
+
+        .right-arrow {
+          right: 5px;
+        }
+
+        #mdl_viewImage_element {
+          max-width: 90vw;
+          max-height: 70vh;
+          object-fit: contain;
+          margin: auto;
+        }
+
+        .modal-close {
+          top: 5px;
+          right: 5px;
         }
       }
       /* {% endblock styles %} */
@@ -203,6 +250,77 @@
       </div>
         -->
     </div>
+    <!-- MODAL FOR IMAGE VIEW (START)-->
+    <div class="modal" id="mdl_imageView">
+      <button
+        onclick="previousViewImage()"
+        class="button is-white nav-arrow left-arrow"
+      >
+        ◀
+      </button>
+      <div class="modal-background" onclick="mdl_viewImageClose()"></div>
+
+      <div class="modal-content has-text-centered" style="position: relative">
+        <!-- Left Arrow -->
+
+        <!-- Image -->
+        <p class="image is-4by3">
+          <img
+            id="mdl_viewImage_element"
+            src="https://bulma.io/assets/images/placeholders/1280x960.png"
+            alt=""
+          />
+        </p>
+
+        <!-- Right Arrow -->
+      </div>
+
+      <button
+        onclick="mdl_viewImageClose()"
+        class="modal-close is-large"
+      ></button>
+      <button
+        onclick="nextViewImage()"
+        class="button is-white nav-arrow right-arrow"
+      >
+        ▶
+      </button>
+    </div>
+
+    <!-- MODAL FOR IMAGE VIEW (END)-->
+
+    <!-- MODAL FOR OPEN Request (STARt)-->
+    <div class="modal" id="mdl_Request">
+      <div class="modal-background" onclick="mdl_closeRequest()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title sty-mdl-head has-text-centered">
+            FulFill Request
+          </p>
+          <button
+            class="delete"
+            aria-label="close"
+            onclick="mdl_closeRequest()"
+          ></button>
+        </header>
+        <section class="modal-card-body has-text-centered">
+          <h1 class="sty-mdl-msg" id="mdl_content_request">
+            Do you want to fullfill the request of "<strong>
+              -- REQUEST NOTE -- </strong
+            >"
+          </h1>
+        </section>
+        <!-- Follow auth_registerationProfile to center the btn -->
+        <footer class="modal-card-foot">
+          <div class="sty-mdl-footer-btn">
+            <a class="button sty-mdl-btn-submit" id="btn_fulfill_request">
+              Accept</a
+            >
+          </div>
+        </footer>
+      </div>
+    </div>
+    <!-- MODAL FOR OPEN Request (END)-->
 
     <!-- prettier-ignore -->
     {% endblock content %}
@@ -297,7 +415,7 @@
 
           hidden_last_post_value = data.latest_post_count;
           // TESTING
-          console.log(data);
+          //console.log(data);
           // console.log(data.latest_post_count);
           setTimeout(fetchNewPost, 2000); // Calls again after 2 seconds
 
@@ -318,7 +436,11 @@
 
                 </div>
                 <div class="column has-text-left sty-mdl-msg">
-                  <h1 style="font-weight: 700">${data.new_posts.username}</h1>
+                  <a href="/diyconn/profile/get/${
+                    data.new_posts.username
+                  }/" style="font-weight: 700; color:black">${
+            data.new_posts.username
+          }</a>
                 <h1>${new Date(data.new_posts.date_modified).toLocaleDateString(
                   "en-US",
                   { year: "numeric", month: "long", day: "numeric" }
@@ -345,17 +467,26 @@
             day: "numeric",
           })} 
                    </p>
+                   <p>Location: ${data.new_posts.user_location.subdivision} - ${
+            data.new_posts.user_location.city_or_municipality
+          }</p>
                  </h1>
                  <div class="columns mt-5 is-vcentered sty-sect-cl-opt is-mobile">
                    <div class="column has-text-centered ">
-                     <h1 class="px-6 icon_rem_padding  sty-sect-opt-icon sty-sect-msg-opt" onclick="btnUsermsg_post()" data-user-id="${
+                     <a class="px-6 icon_rem_padding  sty-sect-opt-icon sty-sect-msg-opt" onclick="btnUsermsg_post(event)" data-user-id="${
                        data.new_posts.user
                      }" >
                        <ion-icon name="chatbox-ellipses"></ion-icon>
-                     </h1>
+                     </a>
                    </div>
                    <div class="column sty-sect-opt px-6  ">
-                     <h1 class="">Request</h1>
+                   <h1 onclick="mdl_openRequest(event,'${data.new_posts.title.replace(
+                     /'/g,
+                     "\\'"
+                   )}', '${data.new_posts.user}')" data-post-id=${
+            data.new_posts.id
+          }>Accept Request</h1>
+
                    </div>
                    <div class="column sty-sect-opt-icon has-text-centered">
                      <h1 class="px-6 icon_rem_padding  "data-url="/post/specific/${
@@ -366,7 +497,9 @@
                    </div>
                  </div>
                </div>
-               <div class="column  ">
+               <div class="column" onclick="mdl_viewImage('${
+                 data.new_posts.blob_url
+               }')">
                  <div class="sty-inp-img-container sty-inp-postAdd-image " id='inp_img_container_${
                    data.latest_post_count
                  }'>
@@ -428,7 +561,8 @@
 
         // Get the lastest count
       }
-      fetchNewPost();
+
+      document.addEventListener("DOMContentLoaded", fetchNewPost);
       //---''
 
       // SEARCH BAR
@@ -444,22 +578,17 @@
           window.location.href = `/diyconnect/search/${get_data_search}`;
         }
       });
-      function btnUsermsg_post() {
-        event.preventDefault();
-        get_user_id = event.target.getAttribute("data-user-id");
-        console.log(get_user_id);
-        json_data = {
-          user_id: get_user_id,
-        };
-        print(json_data);
-        let response = fetch("{% url 'main:Messages' %}", {
+      function btnUsermsg_post(event) {
+        get_user_id = event.currentTarget.getAttribute("data-user-id");
+        console.log(`msg link:${get_user_id}`);
+        //print(json_data);
+
+        let response = fetch(`/diyconn/messages/add/${get_user_id}`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
             "X-CSRFToken": getCookie("csrftoken"),
           },
           mode: "same-origin",
-          body: JSON.stringify(json_data),
         })
           .then((response) => {
             if (!response.ok) {
@@ -472,16 +601,12 @@
           })
           .then((res) => {
             console.log(res);
-            // window.location.href = res.redirect_url;
+            window.location.href = res.redirect_url;
           })
           .catch((err) => {
             console.log(err);
-            /*
-            console.log("Error:", err.error || "An unexpected error occurred");
 
-            let err_msg = document.getElementById("err_msg");
-            err_msg.textContent = `${err.error}`;
-            */
+            console.log("Error:", err.error || "An unexpected error occurred");
           });
       }
 
@@ -500,6 +625,104 @@
           .catch((err) => {
             console.error("Failed to copy:", err);
           });
+      }
+
+      // FOR MODAL VIEW IMAGE
+      let mdl_imageView = document.getElementById("mdl_imageView");
+      let mdl_viewImage_element = document.getElementById(
+        "mdl_viewImage_element"
+      );
+      let globalImageList = []; // Declare global variable
+
+      function mdl_viewImage(get_arr_image) {
+        globalImageList = get_arr_image.split(","); // Store to global variable
+        //console.log(globalImageList); // You can now use this globally
+
+        mdl_viewImage_element.src = globalImageList[0];
+        mdl_imageView.classList.add("is-active");
+      }
+      function nextViewImage() {
+        //console.log("Next Image");
+        //console.log(globalImageList);
+
+        let currentSrc = mdl_viewImage_element.src;
+        let currentIndex = globalImageList.findIndex((path) =>
+          currentSrc.endsWith(path)
+        );
+
+        if (currentIndex !== -1 && currentIndex + 1 < globalImageList.length) {
+          mdl_viewImage_element.src = globalImageList[currentIndex + 1];
+        }
+      }
+      function previousViewImage() {
+        let currentSrc = mdl_viewImage_element.src;
+        let currentIndex = globalImageList.findIndex((path) =>
+          currentSrc.endsWith(path)
+        );
+
+        if (currentIndex > 0) {
+          mdl_viewImage_element.src = globalImageList[currentIndex - 1];
+        }
+      }
+
+      let btn_fulfill_request = document.getElementById("btn_fulfill_request");
+      btn_fulfill_request.addEventListener("click", (event) => {
+        let get_user_id = event.target.getAttribute("data-user-id");
+        let get_post_id = event.target.getAttribute("data-post-id");
+        //console.log(get_user_id);
+        let json_data = {
+          post_id: get_post_id,
+        };
+        //console.log(json_data);
+
+        let response = fetch(`/diyconn/messages/request/add/${get_user_id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          body: JSON.stringify(json_data),
+          mode: "same-origin",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // If response status is not OK (400, 500, etc.), throw an error
+              return response.json().then((errData) => {
+                throw errData;
+              });
+            }
+            return response.json(); // Otherwise, parse the JSON response
+          })
+          .then((res) => {
+            mdl_closeRequest();
+            console.log(res);
+            alert(`${res.msg}`);
+          })
+          .catch((err) => {
+            console.log(err);
+
+            console.log("Error:", err.error || "An unexpected error occurred");
+          });
+      });
+      function mdl_viewImageClose() {
+        mdl_imageView.classList.remove("is-active");
+      }
+      let mdl_content_request = document.getElementById("mdl_content_request");
+      let mdl_Request = document.getElementById("mdl_Request");
+      function mdl_openRequest(event, content, id) {
+        console.log(id);
+
+        let target = event.currentTarget;
+        let get_post_id = target.getAttribute("data-post-id");
+        mdl_content_request.innerHTML = `Do you want to fulfill the request of "<strong style='font-weight:700; color:black'>${content}</strong>"?`;
+
+        mdl_Request.classList.add("is-active");
+        btn_fulfill_request.setAttribute("data-user-id", id);
+        btn_fulfill_request.setAttribute("data-post-id", get_post_id);
+      }
+
+      function mdl_closeRequest() {
+        mdl_Request.classList.remove("is-active");
       }
 
       //{% endblock scripts%}
