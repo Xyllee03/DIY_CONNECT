@@ -82,18 +82,18 @@
       .sty-container-request-right {
         background-color: #283618;
         color: #d9d9d9;
-        margin-left: 1rem;
-        margin-right: 1rem;
+        padding-bottom: 0.5rem;
+        padding-top: 0.5rem;
         border-radius: 12px;
       }
 
       .sty-container-request-text-right {
         color: #ffffff;
-        font-size: 20px;
+        font-size: 16px;
         font-family: "Hind Madurai", sans-serif;
       }
       .sty-container-header-request-right {
-        font-size: 36px;
+        font-size: 24px;
         color: #ffffff;
         font-family: "Montserrat", sans-serif;
         font-optical-sizing: auto;
@@ -103,9 +103,124 @@
       .sty-request-btn-accept-right {
         background-color: #ffffff;
         color: #283618;
+        font-size: 16px;
+        font-family: "Hind Madurai", sans-serif;
+        font-weight: 700;
+      }
+      .sty-request-btn-accept-right-fulfilled {
+        background-color: #ffffff;
+        color: #484747;
         font-size: 20px;
         font-family: "Hind Madurai", sans-serif;
         font-weight: 700;
+      }
+      .sty-request-btn-accept-right-fulfilled:hover {
+        cursor: default;
+      }
+
+      /* Request Left */
+      .sty-container-header-request-left {
+        font-size: 24px;
+        color: black;
+        font-family: "Montserrat", sans-serif;
+        font-optical-sizing: auto;
+        font-style: normal;
+        font-weight: 600;
+      }
+      .sty-container-request-left {
+        background-color: #d9d9d9;
+        padding-bottom: 0.5rem;
+        padding-top: 0.5rem;
+        border-radius: 12px;
+      }
+
+      .sty-container-request-text-left {
+        color: black;
+        font-size: 16px;
+        font-family: "Hind Madurai", sans-serif;
+      }
+      .sty-request-btn-accept-left {
+        background-color: #283618;
+        color: #fefae0;
+        font-size: 16px;
+        font-family: "Hind Madurai", sans-serif;
+        font-weight: 700;
+      }
+
+      .sty-request-btn-accept-left-fulfilled {
+        background-color: #52584b;
+        color: #fefae0;
+        font-size: 16px;
+        font-family: "Hind Madurai", sans-serif;
+        font-weight: 700;
+      }
+      .sty-request-btn-accept-left-fulfilled {
+        cursor: default;
+      }
+
+      /* FULL */
+
+      .sty-info-request {
+        color: black;
+        font-size: 12px;
+        font-weight: 800;
+        font-family: "Hind Madurai", sans-serif;
+      }
+
+      .sty-icon-info {
+        color: #75f94c;
+        font-size: 24px !important;
+      }
+
+      /* FOR MDL */
+      /* FOR MDL */
+      .sty-mdl-footer-btn {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+      .sty-mdl-head {
+        font-size: 24px;
+        font-weight: 800;
+        color: black;
+      }
+      .sty-mdl-msg {
+        font-size: 20px;
+        font-weight: 400;
+        color: black;
+      }
+      .sty-mdl-btn-submit {
+        color: #ffffff;
+        font-weight: 600;
+        background-color: #283618;
+        font-size: 25px;
+      }
+
+      .sty-mdl-comment-text-area {
+        font-size: 20px;
+        font-family: "Hind Madurai", sans-serif;
+        font-style: normal;
+        width: 340px;
+        height: 149px;
+        border: solid black 3px;
+      }
+      .sty-mdl-header-comment-section {
+        font-size: 40px;
+        font-family: "Montserrat", sans-serif;
+        font-optical-sizing: auto;
+        font-style: normal;
+        font-weight: 800;
+      }
+
+      .sty-star-rate-icon {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 25px;
+        color: #ccc;
+      }
+      .sty-star-rate-icon.active ion-icon {
+        color: gold !important;
       }
 
       /* {% endblock styles %} */
@@ -186,7 +301,11 @@
             class="modal-card-title sty-mdl-head has-text-centered"
             id="inp_mdl_header"
           ></p>
-          <button class="delete" aria-label="close"></button>
+          <button
+            class="delete"
+            aria-label="close"
+            onclick="mdl_request_close()"
+          ></button>
         </header>
         <section class="modal-card-body has-text-centered">
           <h1 class="sty-mdl-msg" id="inp_mdl_body_text"></h1>
@@ -313,7 +432,9 @@
                       element.blob_details.title
                     }" data-post-id ="${
                   element.blob_details.id
-                }" data-conversation-id="${element.id}" class="button    ${
+                }" data-conversation-id="${
+                  element.id
+                }" class="button is-small    ${
                   element.status === "request"
                     ? "sty-request-btn-accept-right"
                     : "sty-request-btn-accept-right-fulfilled"
@@ -330,7 +451,7 @@
                     </button>
                   </div>
                   <div class="columns is-vcentered is-mobile">
-                    <div class="column is-1"></div>
+                
                     <div class="column is-1">
                       <h1 class="has-text-centered sty-icon-info">
                         <ion-icon name="information-circle"></ion-icon>
@@ -347,7 +468,121 @@
                         
                       </h1>
                     </div>
-                    <div class="column is-1"></div>
+                 
+                  </div>`;
+              } else if (
+                (element.status == "request" ||
+                  element.status == "fulfilled") &&
+                element.position_conversation == "left"
+              ) {
+                conversation_section.innerHTML += `<div class="sty-container-request-left has-text-centered">
+                    <h1 class="sty-container-header-request-left">
+                    ${element.blob_details.title}
+                    </h1>
+                    <h1 class="sty-container-request-text-left mb-1">
+                    ${data.conversation_username} want to fulfill your request
+                    </h1>
+                    <button data-username="${
+                      data.conversation_username
+                    }" data-title-post="${
+                  element.blob_details.title
+                }" data-conversation-id="${element.id}" data-post-id ="${
+                  element.blob_details.id
+                }"  ${
+                  element.status === "request"
+                    ? "onclick=mdl_request_complete(event)"
+                    : ""
+                }  class="button is-small   ${
+                  element.status === "request"
+                    ? "sty-request-btn-accept-left"
+                    : "sty-request-btn-accept-left-fulfilled"
+                }">
+                   ${
+                     element.status === "request"
+                       ? "Request Completed"
+                       : "Request Fulfilled"
+                   }
+                    </button>
+                  </div>
+                  <div class="columns is-mobile is-vcentered">
+               
+                    <div class="column is-1">
+                      <h1 class="has-text-centered sty-icon-info">
+                        <ion-icon name="information-circle"></ion-icon>
+                      </h1>
+                    </div>
+                    <div class="column">
+                      <h1 class="sty-info-request">
+
+                           ${
+                             element.status === "request"
+                               ? "Please make sure that you received your materials before pressing the request fulfilled button"
+                               : "Request is being fulfilled. Good luck utilizing the materials!"
+                           }
+                    
+                      </h1>
+                    </div>
+           
+                  </div>`;
+              } else if (
+                element.status == "cancelled" &&
+                element.position_conversation == "right"
+              ) {
+                //console.log(JSON.stringify(element, null, 2));
+                conversation_section.innerHTML += `
+                      <div class="sty-container-request-right has-text-centered">
+                    <h1 class="sty-container-header-request-right">
+                    ${element.blob_details.title}
+                    </h1>
+                    <h1 class="sty-container-request-text-right mb-1">
+                You cancelled on fulfilling the request ${data.conversation_username}
+                    </h1>
+                    <button  data-title-post="${element.blob_details.title}" data-post-id ="${element.blob_details.id}" data-conversation-id="${element.id}" class="button sty-request-btn-accept-right is-small" onclick="mdl_fullfill_request_cancel(event)" disabled>
+                 Request Cancelled
+                    </button>
+                  </div>
+                  <div class="columns is-vcentered is-mobile">
+                  
+                    <div class="column is-1 ">
+                      <h1 class="has-text-centered sty-icon-info">
+                        <ion-icon name="information-circle"></ion-icon>
+                      </h1>
+                    </div>
+                    <div class="column">
+                      <h1 class="sty-info-request">
+                 You can still fulfill the request. Simply look for the post and try to fulfill the request again if it still exists.
+                      </h1>
+                    </div>
+                 
+                  </div>`;
+              } else if (
+                element.status == "cancelled" &&
+                element.position_conversation == "left"
+              ) {
+                conversation_section.innerHTML += `<div class="sty-container-request-left has-text-centered">
+                    <h1 class="sty-container-header-request-left">
+                    ${element.blob_details.title}
+                    </h1>
+                    <h1 class="sty-container-request-text-left mb-1">
+              ${data.conversation_username} has cancelled fulfilling your request.
+                    </h1>
+                    <button class="button is-small sty-request-btn-accept-left" style ="color:black" disabled>
+                  Cancelled
+                    </button>
+                  </div>
+                  <div class="columns is-vcentered is-mobile">
+                 
+                    <div class="column is-1 ">
+                      <h1 class="has-text-centered sty-icon-info">
+                        <ion-icon name="information-circle"></ion-icon>
+                      </h1>
+                    </div>
+                    <div class="column">
+                      <h1 class="sty-info-request">
+                        They can't fulfill your request at the moment. Please wait for someone else who may be willing to fulfill it.
+                      </h1>
+                    </div>
+              
                   </div>`;
               } else if (element.position_conversation == "left") {
                 conversation_section.innerHTML += `
@@ -455,6 +690,185 @@
         inp_mdl_header.textContent = `Remove Fulfill Request`;
         inp_mdl_body_text.innerHTML = `<p>Do you want to remove you request about:<h1 style="font-weight:700"> ${get_title_post} </h1></p>
               <p> this will result a deleting the request</p>`;
+      }
+      function fullfill_request_cancelled() {
+        //console.log("fullfill request_accepted");
+        json_data = {
+          post_id: inp_post_id.value,
+          conversation_id: inp_conversation_id.value,
+        };
+        let response = fetch(`{% url 'main:request_fulfiller_cancelled' %}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          body: JSON.stringify(json_data),
+          mode: "same-origin",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // If response status is not OK (400, 500, etc.), throw an error
+              return response.json().then((errData) => {
+                throw errData;
+              });
+            }
+            return response.json(); // Otherwise, parse the JSON response
+          })
+          .then((res) => {
+            mdl_request_close();
+            console.log(res);
+            let get_data = document.getElementById("get_link");
+            let get_user_data_ID = get_data.getAttribute("data-user-ID");
+
+            getConversation(get_user_data_ID); // initial load
+            //alert(`${res.msg}`);
+          })
+          .catch((err) => {
+            console.log(err);
+
+            console.log("Error:", err.error || "An unexpected error occurred");
+          });
+      }
+
+      // Request being fulfilled
+      function mdl_request_complete(event) {
+        let get_target = event.target;
+        let get_username = get_target.getAttribute("data-username");
+        let get_title_post = get_target.getAttribute("data-title-post");
+        let get_post_id = get_target.getAttribute("data-post-id");
+        let get_msg_id = get_target.getAttribute("data-conversation-id");
+        inp_post_id.value = get_post_id;
+        inp_conversation_id.value = get_msg_id;
+        inp_username.value = get_username;
+        btn_mdl_submit.setAttribute("onclick", "receiver_request_completed()");
+        //console.log("request_completed");
+        mdl_request.classList.add("is-active");
+        inp_mdl_header.textContent = `Complete Request`;
+        inp_mdl_body_text.innerHTML = `<p>Is your request has being fulfilled about:<h1 style="font-weight:700"> ${get_title_post} </h1></p>`;
+      }
+
+      function receiver_request_completed() {
+        json_data = {
+          post_id: inp_post_id.value,
+          conversation_id: inp_conversation_id.value,
+          username: inp_username.value,
+        };
+
+        mdl_reviews(json_data);
+        // mdl_request_close();
+      }
+
+      function mdl_reviews(data) {
+        mdl_request.classList.add("is-active");
+        btn_mdl_submit.setAttribute(
+          "onclick",
+          "reviews_and_request_completed()"
+        );
+        inp_mdl_header.textContent = `Review`;
+        inp_mdl_body_text.innerHTML = `<p class='sty-mdl-header-comment-section'> Please rate ${inp_username.value} on fulfilling your request </p>
+              <textarea placeholder ='comment..' class='sty-mdl-comment-text-area'id="inp_comment_rating"></textarea>
+          <div class='columns has-text-centered is-mobile' id="rating-stars">
+        <div class="column">
+          <button class="sty-star-rate-icon" data-value="1" onclick="stars(event)">
+            <ion-icon name="star"></ion-icon>
+          </button>
+        </div>
+        <div class="column">
+          <button class="sty-star-rate-icon" data-value="2" onclick="stars(event)">
+            <ion-icon name="star"></ion-icon>
+          </button>
+        </div>
+        <div class="column">
+          <button class="sty-star-rate-icon" data-value="3" onclick="stars(event)">
+            <ion-icon name="star"></ion-icon>
+          </button>
+        </div>
+        <div class="column">
+          <button class="sty-star-rate-icon" data-value="4" onclick="stars(event)">
+            <ion-icon name="star"></ion-icon>
+          </button>
+        </div>
+        <div class="column">
+          <button class="sty-star-rate-icon" data-value="5" onclick="stars(event)">
+            <ion-icon name="star"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+              `;
+      }
+      function mdl_request_close() {
+        inp_post_id.value = "";
+        inp_conversation_id.value = "";
+        inp_username.value = "";
+        inp_rate.value = "";
+
+        mdl_request.classList.remove("is-active");
+        btn_mdl_submit.setAttribute("onclick", "");
+      }
+
+      let selectedRating = 0;
+      function stars(event) {
+        get_target = event.currentTarget;
+        selectedRating = get_target.getAttribute("data-value");
+        inp_rate.value = selectedRating;
+        highlightStars(selectedRating);
+        console.log("Selected rating:", selectedRating);
+      }
+
+      function highlightStars(rating) {
+        let element_stars = document.querySelectorAll(".sty-star-rate-icon");
+        element_stars.forEach((star, i) => {
+          if (i < rating) {
+            star.classList.add("active");
+          } else {
+            star.classList.remove("active");
+          }
+        });
+      }
+      function reviews_and_request_completed() {
+        let inp_comment_rating = document.getElementById("inp_comment_rating");
+        json_data = {
+          post_id: inp_post_id.value,
+          conversation_id: inp_conversation_id.value,
+          rate: inp_rate.value,
+          comment: inp_comment_rating.value,
+        };
+        let response = fetch(`{% url 'main:request_receiver_completed' %}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          body: JSON.stringify(json_data),
+          mode: "same-origin",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // If response status is not OK (400, 500, etc.), throw an error
+              return response.json().then((errData) => {
+                throw errData;
+              });
+            }
+            return response.json(); // Otherwise, parse the JSON response
+          })
+          .then((res) => {
+            mdl_request_close();
+            console.log(res);
+            let get_data = document.getElementById("get_link");
+            let get_user_data_ID = get_data.getAttribute("data-user-ID");
+
+            getConversation(get_user_data_ID); // initial load
+            //alert(`${res.msg}`);
+          })
+          .catch((err) => {
+            console.log(err);
+
+            console.log("Error:", err.error || "An unexpected error occurred");
+          });
+
+        console.log("review_submit");
       }
       // {% endblock scripts %}
     </script>

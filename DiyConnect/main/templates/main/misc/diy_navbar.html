@@ -51,6 +51,13 @@
             >
               Collector
             </a>
+               <a
+              class="navbar-item sty-h-navbar-role-items"
+              id="nav_getElement_choice_role"
+              onclick="navbar_role_change()"
+            >
+              Showcase
+            </a>
           </div>
         </div>
 
@@ -101,7 +108,7 @@
           class="navbar-item sty-h-navbar-profileName"
           href="{% url 'main:profile_user' username=username %}"
         >
-          <h1>{{ username }}</h1>
+          <h1 id="get_navbar_username">{{ username }}</h1>
         </a>
         <a class="navbar-item sty-h-navbar-profileImage">
           <ion-icon name="person-circle"></ion-icon>
@@ -255,6 +262,12 @@
               >
                 Collector
               </h1>
+                 <h1
+                class="dropdown-item select-role-item-mobile is-active"
+                onclick="navbar_role_change_mobile()"
+              >
+               Showcase
+              </h1>
             </div>
           </div>
         </div>
@@ -270,3 +283,4 @@
     </div>
   </div>
 </nav>
+

@@ -45,6 +45,9 @@ urlpatterns = [
 
       path('post/profile/get/<str:username>/', views.postGet_profile, name="postGet_profile"),
 
+      #POST LIKE
+       path('post/like/add/', views.postLikeAdd, name="postLikeAdd"),
+
     #Conversations
         path('diyconn/conversation/get/<int:sender_id>', views.MessageConversationGet,  name="MessageConversationGet"),
           path('diyconn/conversation/add/<int:receiver_id>', views.MessageConvesationAdd,  name="MessageConvesationAdd"),

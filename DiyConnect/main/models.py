@@ -11,6 +11,7 @@ class UserSiteRole(models.TextChoices):
     CONTRIBUTOR = 'contributor', 'Contributor'
     COLLECTOR = 'collector', 'Collector'
     GUEST = 'guest', 'Guest'
+    SHOWCASE='showcase','Showcase'
 
 class FriendStatus(models.TextChoices):
     PENDING= 'pending', 'Pending'
@@ -128,6 +129,7 @@ class UserPost(models.Model):
     title = models.CharField(max_length=120)
     share_url = models.CharField(max_length=250, blank=True, null=True)
     user_role_type = models.CharField(max_length=50)
+    likes = models.IntegerField(default=0)
 
 
 class UserPost_BLOB(models.Model):
@@ -185,3 +187,11 @@ class Review(models.Model):
     USER_RECIEVE_REQUEST= models.ForeignKey(UserSites, on_delete=models.CASCADE, related_name='fullfill_review_user')
     stars = models.IntegerField()
     comment = models.TextField()
+
+class PostLike(models.Model):
+    user = models.ForeignKey(UserSites, on_delete=models.CASCADE)
+    post = models.ForeignKey(UserPost, on_delete=models.CASCADE)
+    liked_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'post')  # Prevent double likes

@@ -354,6 +354,10 @@
           ini_navbar_role_show.textContent = "Collector";
           // ini_get_hidden_post_role.value = "Collector";
           ini_get_all_role_elements[2].classList.add("sty-h-role-is-selected");
+        } else if (role_check === "Showcase") {
+          ini_navbar_role_show.textContent = "Showcase";
+          // ini_get_hidden_post_role.value = "Collector";
+          ini_get_all_role_elements[3].classList.add("sty-h-role-is-selected");
         }
       }
       Initilized();
@@ -394,6 +398,13 @@
             "sty-mobile-selected-role"
           );
           ini_mobile_dropdown_btn_selected_role.innerText = "Collector";
+        } else if (role_check === "Showcase") {
+          ini_navbar_role_show.textContent = "Showcase";
+          // ini_get_hidden_post_role.value = "Collector";
+          ini_get_all_role_elements[3].classList.add(
+            "sty-mobile-selected-role"
+          );
+          ini_mobile_dropdown_btn_selected_role.innerText = "Showcase";
         }
       }
       Initilized_mobile();
@@ -415,7 +426,7 @@
 
           hidden_last_post_value = data.latest_post_count;
           // TESTING
-          //console.log(data);
+          console.log(data.new_posts);
           // console.log(data.latest_post_count);
           setTimeout(fetchNewPost, 2000); // Calls again after 2 seconds
 
@@ -480,12 +491,24 @@
                      </a>
                    </div>
                    <div class="column sty-sect-opt px-6  ">
-                   <h1 onclick="mdl_openRequest(event,'${data.new_posts.title.replace(
-                     /'/g,
-                     "\\'"
-                   )}', '${data.new_posts.user}')" data-post-id=${
-            data.new_posts.id
-          }>Accept Request</h1>
+                    
+                     <h1 
+    onclick="${
+      data.new_posts.role_post === "Showcase"
+        ? `postLike(event)`
+        : `mdl_openRequest(event, '${data.new_posts.title.replace(
+            /'/g,
+            "\\'"
+          )}', '${data.new_posts.user}')`
+    }" 
+    data-post-id="${data.new_posts.id}"
+  >
+    ${
+      data.new_posts.role_post === "Showcase"
+        ? `Like: ${data.new_posts.like}`
+        : "Accept Request"
+    }
+  </h1>
 
                    </div>
                    <div class="column sty-sect-opt-icon has-text-centered">
@@ -723,6 +746,30 @@
 
       function mdl_closeRequest() {
         mdl_Request.classList.remove("is-active");
+      }
+
+      function ini_alert() {
+        let get_navbar_username = document.getElementById(
+          "get_navbar_username"
+        );
+
+        let rawUsername = get_navbar_username.innerText.trim(); // get the text inside <h1>
+        let cleanUsername = rawUsername.replace(/\s+/g, ""); // remove all whitespace
+
+        console.log(cleanUsername); // this will log username without spaces
+        if (cleanUsername == "guest") {
+          alert(
+            "To fully utilize the features of this platform, please create an account or log in."
+          );
+        }
+      }
+
+      ini_alert();
+
+      //POST LIKE
+      function postLike(event) {
+        let target = event.currentTarget;
+        console.log("this is like post");
       }
 
       //{% endblock scripts%}

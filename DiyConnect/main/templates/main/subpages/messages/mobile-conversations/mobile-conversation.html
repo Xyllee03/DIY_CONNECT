@@ -67,6 +67,12 @@
         background-color: #283618;
         color: #fefae0;
       }
+      .sty-msg-selected-conversation {
+        background-color: #283618;
+        color: #fefae0;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+      }
       html,
       body {
         margin: 0;
@@ -172,7 +178,11 @@
               msg_section.innerHTML += ` <a href ="/diyconn/messages/mobile/get/${
                 element.user_id
               }"
-                  class="columns is-mobile is-vcentered query_all_msg sty-msg-notselected-conversation"
+                  class="columns is-mobile is-vcentered query_all_msg ${
+                    element.user_id === data.selected_message
+                      ? "sty-msg-selected-conversation"
+                      : "sty-msg-notselected-conversation"
+                  }"
                   data-user-id="${element.user_id}"
                    data-username="${element.username}"
                 >

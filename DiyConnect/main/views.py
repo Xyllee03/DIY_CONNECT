@@ -116,16 +116,26 @@ def authentication_logout(request):
     return redirect("/authentication/login/")
 
 # DIY CONNECT APP
-@login_required
+
 def home(request):
    
-    get_role_post_filter = request.session.get("RolesPostFilter")
-    get_username = request.user.username
-    
+    get_role_post_filter = request.session.get("RolesPostFilter", "Innovator")
+    if request.user.is_authenticated:
+        get_username = request.user.username
+    else:
+        get_username = "guest"
     context ={"username": get_username,"role_post_filter":get_role_post_filter}
     return render(request,'main/diyconn/home.html', context)
 
 # POST
+
+def postLikeAdd(request):
+    print("this is for post add")
+    context={}
+    return JsonResponse({"msg": "Checking if there is a post", "items":context}, status=200)
+    
+
+
 def postGet_specific(request,post_id):
      post = UserPost.objects.filter(ID=post_id).first()
      get_post_blobs = UserPost_BLOB.objects.filter(USER_POST_ID=post)
@@ -163,7 +173,7 @@ def postGet_profile(request, username):
                 "date_modified": post.modified_at,
                 "blobs": blob_list,
                 "user_ID":post.USER_ID.ID,
-               
+                
             })
 
     
@@ -203,6 +213,8 @@ def postGet(request,lastest_post, role_post):
                     'profile_urls': new_posts.USER_ID.profile_picture.url if new_posts.USER_ID.profile_picture else None,
 
                     'blob_url': [item.blob.url for item in get_blob_info],
+                    "role_post":role_post,
+                    "like": new_posts.likes
                   
                     
                     
@@ -271,8 +283,6 @@ def postAdd(request):
     context ={}
     return render(request,'main/subpages/post/postAdd.html', context)
 
-
-
 def postSearch(request, search_item):
     #print(search_item)
     get_innovator = UserPost.objects.filter(title__icontains=search_item, user_role_type ="Innovator")
@@ -301,14 +311,14 @@ def postSearch(request, search_item):
     }
     return render(request,'main/subpages/search/search.html', context)
 
-
+@login_required
 def postDelete(request, post_id):
     #print("this is for delete post")
     get_post = UserPost.objects.get(ID = post_id)
     get_post.delete()
     return JsonResponse({"msg": "Deleting Post", "redirect_url":"/diyconnect/home/"}, status=200)
 
-
+@login_required
 def postEdit(request, post_id):
 
 
@@ -322,7 +332,7 @@ def postEdit(request, post_id):
     }
     return render(request,'main/subpages/post/postEdit.html',context)
 
-
+@login_required
 def postEditSave(request, post_id):
     if(request.method=="POST"):
        
@@ -365,10 +375,14 @@ def MessageMobile(request):
     return render(request, 'main/subpages/messages/mobile-conversations/mobile-conversation.html',context)
 @login_required
 def MessageMobileConversationContent(request, user_id):
+    request.session["selectedMessage"] =user_id
+    selected_message = request.session.get("selectedMessage")
     u = UserSites.objects.get(ID=user_id)
     
     context ={
-        "user":u
+        "user":u,
+        "selected_messages":selected_message,
+        
     }
     return render(request, 'main/subpages/messages/mobile-conversations/mobile-conversation-content.html',context)
 
@@ -610,6 +624,7 @@ def MessageAddRequest(request,receiver_id):
         return JsonResponse({"msg": "Request Error"}, status=500)
 
 #people
+@login_required
 def people(request):
     context ={}
     return render(request,'main/subpages/people/people.html', context)
