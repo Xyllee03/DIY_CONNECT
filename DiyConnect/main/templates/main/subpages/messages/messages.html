@@ -285,7 +285,9 @@
           </div>
         </div>
         <div class="column sty-left-side-sect">
+          
           <div id="container-conversation">
+            <div class="has-text-centered sty-conversation-text "> Example Conversation</div>
             <!--
             <div
               class="sty-conversation-text sty-recipient-msg has-text-centered"
@@ -445,7 +447,7 @@
           });
           let data = await response.json();
           //console.log("WKWKWKWKKWKWKWKKWKWKKWWKWK");
-          //console.log(data);
+         
           let msg_arr_length = data.messages.length;
           let container_messages =
             document.getElementById("container-messages");
@@ -455,7 +457,9 @@
             msg_section.innerHTML = `<div class="has-text-centered"> <h1> There is no conversation data  </h1> </div>`;
             container_messages.appendChild(msg_section);
           } else {
+
             data.messages.forEach((element) => {
+              
               msg_section.innerHTML += ` <div
                         class="columns is-mobile is-vcentered query_all_msg ${
                           data.selected_message == element.user_id
@@ -481,10 +485,22 @@
                 ? `You can start your conversation with ${element.username}`
                 : element.status === "request" &&
                   element.position_conversation === "right"
-                ? `You: You ask to fulfill the request`
+                ? `You: You ask to fulfill the request.`
                 : element.status === "request" &&
                   element.position_conversation === "left"
-                ? `${element.name}: Trying to fulfill your request`
+                ? `${element.username}: Trying to fulfill your request.`
+                : element.status === "cancelled" &&
+                  element.position_conversation === "left"
+                ? `${element.username}: Has cancel on fulfilling your request.`
+                  : element.status === "cancelled" &&
+                  element.position_conversation === "right"
+                ? `You: cancel on fulfilling someone request`
+                 : element.status === "fulfilled" &&
+                  element.position_conversation === "right"
+                ? `You: fulfilled the request.`
+                 : element.status === "fulfilled" &&
+                  element.position_conversation === "left"
+                ? `${element.username}: Has completed your request.`
                 : element.position_conversation === "right"
                 ? `You: ${element.message_text}`
                 : element.position_conversation === "left"
@@ -829,7 +845,7 @@
             inp_message_dom.value = "";
             MessageInitialized();
             //selectedMessageConversation((id = get_user_id));
-            getConversation(get_user_id);
+           // getConversation(get_user_id);
             //window.location.href = `/${msg.redirect_url}`;
           })
           .catch((err) => {

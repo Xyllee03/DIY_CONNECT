@@ -175,6 +175,7 @@
             container_messages.appendChild(msg_section);
           } else {
             data.messages.forEach((element) => {
+              console.log(element)
               msg_section.innerHTML += ` <a href ="/diyconn/messages/mobile/get/${
                 element.user_id
               }"
@@ -192,15 +193,33 @@
                   <div class="column">
                     <h1 class="sty-msg-people-header">${element.username}</h1>
                     <h1 class="sty-msg-people-subtitle">
-      ${
-        element.message_text === null
-          ? `You can start your conversation with ${element.username}`
-          : element.position_conversation === "right"
-          ? `You: ${element.message_text}`
-          : element.position_conversation === "left"
-          ? `${element.username}: ${element.message_text}`
-          : `${element.message_text}` // <-- fallback/else
-      }        </h1>
+       ${
+              element.message_text === null
+                ? `You can start your conversation with ${element.username}`
+                : element.status === "request" &&
+                  element.position_conversation === "right"
+                ? `You: You ask to fulfill the request.`
+                : element.status === "request" &&
+                  element.position_conversation === "left"
+                ? `${element.username}: Trying to fulfill your request.`
+                : element.status === "cancelled" &&
+                  element.position_conversation === "left"
+                ? `${element.username}: Has cancel on fulfilling your request.`
+                  : element.status === "cancelled" &&
+                  element.position_conversation === "right"
+                ? `You: cancel on fulfilling someone request`
+                 : element.status === "fulfilled" &&
+                  element.position_conversation === "right"
+                ? `You: fulfilled the request.`
+                 : element.status === "fulfilled" &&
+                  element.position_conversation === "left"
+                ? `${element.username}: Has completed your request.`
+                : element.position_conversation === "right"
+                ? `You: ${element.message_text}`
+                : element.position_conversation === "left"
+                ? `${element.username}: ${element.message_text}`
+                : `${element.message_text}` // <-- fallback/else
+            }   </h1>
                     </h1>
                   </div>
                 </a>`;

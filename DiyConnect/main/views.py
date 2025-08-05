@@ -200,7 +200,7 @@ def postGet(request,lastest_post, role_post):
                     lastest_post +=1  # Update latest post ID
                     get_blob_info  = UserPost_BLOB.objects.filter(USER_POST_ID = new_posts).order_by('position')
                     item = get_blob_info.first().blob.url
-                 
+                   
                     return JsonResponse({
                 'new_posts':{
                     'id': new_posts.ID,
@@ -214,7 +214,9 @@ def postGet(request,lastest_post, role_post):
 
                     'blob_url': [item.blob.url for item in get_blob_info],
                     "role_post":role_post,
-                    "like": new_posts.likes
+                    "like": new_posts.likes,
+                   "ownership_post": new_posts.USER_ID == request.user
+
                   
                     
                     
@@ -479,7 +481,7 @@ def MessagesGet(request):
                 position= "left"
            
           
-
+        
 
 
             context.append({
@@ -491,6 +493,7 @@ def MessagesGet(request):
                 "username": other_user.username,
                 "position_conversation": position,
                 "Profile": other_user.profile_picture.url if other_user.profile_picture else "",
+               
              
             })
         return JsonResponse({"msg": "Messages Data Retrieve Successfully","messages": context, "selected_message":selected_message}, status=200)

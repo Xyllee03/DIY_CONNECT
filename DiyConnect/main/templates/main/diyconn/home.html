@@ -494,6 +494,8 @@
                     
                      <h1 
     onclick="${
+     data.new_posts.ownership_post=== true
+                ? ``:
       data.new_posts.role_post === "Showcase"
         ? `postLike(event)`
         : `mdl_openRequest(event, '${data.new_posts.title.replace(
@@ -502,12 +504,18 @@
           )}', '${data.new_posts.user}')`
     }" 
     data-post-id="${data.new_posts.id}"
+  
+
+   
   >
     ${
+   data.new_posts.ownership_post=== true
+                ? `Posted`:
       data.new_posts.role_post === "Showcase"
         ? `Like: ${data.new_posts.like}`
         : "Accept Request"
     }
+    
   </h1>
 
                    </div>
