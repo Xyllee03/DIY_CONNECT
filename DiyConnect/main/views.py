@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse
 import json
 from django.contrib.auth.hashers import check_password
-from .models import UserSites, UserPost, UserPost_BLOB, Friendships, UserMessages, MessageStatus,TaskRequest,Review
+from .models import UserSites, UserPost, UserPost_BLOB, Friendships, UserMessages, MessageStatus,TaskRequest,Review,PostLike
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 import time
@@ -130,12 +130,29 @@ def home(request):
 # POST
 
 def postLikeAdd(request):
-    print("this is for post add")
-    context={}
-    return JsonResponse({"msg": "Checking if there is a post", "items":context}, status=200)
-    
+    if(request.method =="POST"):
+        data = json.loads(request.body)
+        print(data)
+        get_userPost= UserPost.objects.get(ID=data['post_id'])
+        p = PostLike()
+        p.user =request.user
+        p.post = get_userPost
+        p.save()
+        
+       
+        
+        return JsonResponse({"msg": "Liked Post"}, status=200)
+        
 
 
+def postLikeRemoved(request):
+    data = json.loads(request.body)
+    print(data)
+    get_userPost= UserPost.objects.get(ID=data['post_id'])
+    get_likePost = PostLike.objects.get(post = get_userPost, user =request.user)
+    get_likePost.delete()
+    print("removed liked")
+    return JsonResponse({"msg": "Liked Post"}, status=200)
 def postGet_specific(request,post_id):
      post = UserPost.objects.filter(ID=post_id).first()
      get_post_blobs = UserPost_BLOB.objects.filter(USER_POST_ID=post)
@@ -197,10 +214,16 @@ def postGet(request,lastest_post, role_post):
                 new_posts = UserPost.objects.filter(user_role_type=role_post).order_by("-modified_at")[lastest_post]
         
                 if new_posts:
+                    total_likes =0
                     lastest_post +=1  # Update latest post ID
                     get_blob_info  = UserPost_BLOB.objects.filter(USER_POST_ID = new_posts).order_by('position')
                     item = get_blob_info.first().blob.url
-                   
+                    
+                    get_likes_filter = PostLike.objects.filter(post =new_posts)
+                    already_liked = PostLike.objects.filter(post=new_posts, user=request.user).exists()
+                    for like in get_likes_filter:
+                        total_likes+=1
+                       
                     return JsonResponse({
                 'new_posts':{
                     'id': new_posts.ID,
@@ -214,7 +237,8 @@ def postGet(request,lastest_post, role_post):
 
                     'blob_url': [item.blob.url for item in get_blob_info],
                     "role_post":role_post,
-                    "like": new_posts.likes,
+                    "like": total_likes,
+                    "already_liked":already_liked,
                    "ownership_post": new_posts.USER_ID == request.user
 
                   

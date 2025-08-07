@@ -496,8 +496,10 @@
     onclick="${
      data.new_posts.ownership_post=== true
                 ? ``:
-      data.new_posts.role_post === "Showcase"
-        ? `postLike(event)`
+      data.new_posts.role_post === "Showcase" && data.new_posts.already_liked == false
+        ? `postLikeAdd(event)`:
+      data.new_posts.role_post === "Showcase" && data.new_posts.already_liked == true
+        ? `postlikeRemoved(event)`
         : `mdl_openRequest(event, '${data.new_posts.title.replace(
             /'/g,
             "\\'"
@@ -511,8 +513,10 @@
     ${
    data.new_posts.ownership_post=== true
                 ? `Posted`:
-      data.new_posts.role_post === "Showcase"
-        ? `Like: ${data.new_posts.like}`
+ data.new_posts.role_post === "Showcase" && data.new_posts.already_liked == false
+        ? `Like: ${data.new_posts.like}`:
+      data.new_posts.role_post === "Showcase" && data.new_posts.already_liked == true
+        ? `Liked: ${data.new_posts.like}`
         : "Accept Request"
     }
     
@@ -775,10 +779,88 @@
       ini_alert();
 
       //POST LIKE
-      function postLike(event) {
+      function postLikeAdd(event) {
         let target = event.currentTarget;
-        console.log("this is like post");
+        let get_post_id = target.getAttribute("data-post-id")
+           let json_data = {
+          post_id: get_post_id,
+        };
+        console.log(json_data)
+          let response = fetch(`/post/like/add/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+           body: JSON.stringify(json_data),
+          mode: "same-origin",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // If response status is not OK (400, 500, etc.), throw an error
+              return response.json().then((errData) => {
+                throw errData;
+              });
+            }
+            return response.json(); // Otherwise, parse the JSON response
+          })
+          .then((res) => {
+            console.log(res);
+            const str = target.textContent;
+            const number = str.match(/\d+/)[0];  // Returns "123" as a string
+            const num = parseInt(number, 10);    // Converts to number
+            target.textContent = `Liked: ${num +1}`
+            target.setAttribute("onclick","postlikeRemoved(event)")
+           // window.location.href = res.redirect_url;
+          })
+          .catch((err) => {
+            console.log(err);
+
+            console.log("Error:", err.error || "An unexpected error occurred");
+          });
+
       }
+      function postlikeRemoved(event){
+     let target = event.currentTarget;
+        let get_post_id = target.getAttribute("data-post-id")
+           let json_data = {
+          post_id: get_post_id,
+        };
+        console.log(json_data)
+          let response = fetch(`/post/like/removed/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+           body: JSON.stringify(json_data),
+          mode: "same-origin",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // If response status is not OK (400, 500, etc.), throw an error
+              return response.json().then((errData) => {
+                throw errData;
+              });
+            }
+            return response.json(); // Otherwise, parse the JSON response
+          })
+          .then((res) => {
+            console.log(res);
+           const str = target.textContent;
+            const number = str.match(/\d+/)[0];  // Returns "123" as a string
+            const num = parseInt(number, 10);    // Converts to number
+            target.textContent = `Like: ${num -1}`
+            target.setAttribute("onclick","postLikeAdd(event)")
+           // window.location.href = res.redirect_url;
+          })
+          .catch((err) => {
+            console.log(err);
+
+            console.log("Error:", err.error || "An unexpected error occurred");
+          });
+      }
+      
 
       //{% endblock scripts%}
     </script>

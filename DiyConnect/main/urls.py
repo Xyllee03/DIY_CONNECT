@@ -47,6 +47,7 @@ urlpatterns = [
 
       #POST LIKE
        path('post/like/add/', views.postLikeAdd, name="postLikeAdd"),
+         path('post/like/removed/', views.postLikeRemoved, name="postLikeRemoved"),
 
     #Conversations
         path('diyconn/conversation/get/<int:sender_id>', views.MessageConversationGet,  name="MessageConversationGet"),
@@ -70,4 +71,6 @@ urlpatterns = [
   
   #Reviews
    path('diyconn/reviews/<int:user_id>', views.reviews,  name="reviews"),
+
+ 
 ]
