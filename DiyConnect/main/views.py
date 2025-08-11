@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse
 import json
 from django.contrib.auth.hashers import check_password
-from .models import UserSites, UserPost, UserPost_BLOB, Friendships, UserMessages, MessageStatus,TaskRequest,Review,PostLike
+from .models import UserSites, UserPost, UserPost_BLOB, Friendships, UserMessages, MessageStatus,TaskRequest,Review,PostLike,FriendStatus
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 import time
@@ -166,9 +166,11 @@ def postGet_specific(request,post_id):
 
 def postGet_profile(request, username):
    
-
+    check_owner_user = False
     user_profile = UserSites.objects.get(username=username)
     user_list_post = UserPost.objects.filter(USER_ID = user_profile).order_by('-modified_at')
+    if(request.user==user_profile):
+        check_owner_user =True
     context = []
     for post in user_list_post:
             blobs = UserPost_BLOB.objects.filter(USER_POST_ID=post).order_by('position')
@@ -190,7 +192,7 @@ def postGet_profile(request, username):
                 "date_modified": post.modified_at,
                 "blobs": blob_list,
                 "user_ID":post.USER_ID.ID,
-                
+                "check_owner_user":check_owner_user               
             })
 
     
@@ -604,7 +606,9 @@ def MessageAdd(request, receiver_id):
 
 #Message Request
 def MessageAddRequest(request,receiver_id):
+       
     try: 
+
         if(request.method =="POST"):
             
             get_receiver = UserSites.objects.get(ID = receiver_id)
@@ -613,8 +617,8 @@ def MessageAddRequest(request,receiver_id):
             get_post_data = UserPost.objects.filter(ID= post_id).first()
 
             check_request_pending = TaskRequest.objects.filter(USER_FULLFILL_REQUEST = request.user,USER_RECIEVE_REQUEST=get_receiver,POST_ID=get_post_data).first()
-            #print(data)
-            #print(check_request_pending)
+            print(data)
+            print(check_request_pending)
   
             if check_request_pending==None:
                 
@@ -769,6 +773,52 @@ def peopleFriends(request):
 def profile_user(request, username):
     check_owner_post = False
     get_user_id=''
+
+    user_details = UserSites.objects.get(username=username)
+    get_user_number_post_contributor = UserPost.objects.filter(USER_ID=user_details, user_role_type ="Contributor").count()
+    get_user_number_post_innovator = UserPost.objects.filter(USER_ID=user_details, user_role_type ="Innovator").count()
+    get_user_number_post_collector = UserPost.objects.filter(USER_ID=user_details, user_role_type ="Collector").count()
+
+    avg_rating_contributor = avg_rating_collector = avg_rating_innovator=0
+    arr_avg_contributor, arr_avg_collector, arr_avg_innovator = [], [], []
+    get_reviews = Review.objects.filter(USER_FULLFILL_REQUEST = user_details)
+    user = UserSites.objects.get(username=username)
+    friend_status = ""
+    get_friendship = Friendships.objects.filter(    Q(REQUESTER_ID=request.user, RECEIVER_ID=user) | Q(REQUESTER_ID=user, RECEIVER_ID=request.user)).first()
+  
+    if(request.user==user):
+        friend_status="user_owner"
+        #print("same_value")
+    elif(get_friendship ==None):
+        friend_status="no_relationship"
+        #print("no realtionsship")
+    elif(get_friendship.status == FriendStatus.ACCEPTED):
+        friend_status="accepted"
+        #print("FriendACCEPTED")
+    elif(get_friendship.status ==FriendStatus.PENDING and get_friendship.REQUESTER_ID ==request.user):
+        friend_status ="pending"
+        #print("Waiting to accept")
+    elif(get_friendship.status == FriendStatus.PENDING and get_friendship.RECEIVER_ID):
+        friend_status ="accept_request"
+        #print("you can accept his friend request")
+    
+    for review in get_reviews:
+      
+        u = UserPost.objects.get(title= review.post_title)
+        #print(u.user_role_type)
+        if(u.user_role_type == "Contributor"):
+            arr_avg_contributor.append(review.stars)
+        elif(u.user_role_type == "Collector"):
+            arr_avg_collector.append(review.stars)
+        elif(u.user_role_type == "innovator"):
+            arr_avg_innovator.append(review.stars)
+    
+    avg_rating_contributor = sum(arr_avg_contributor) / len(arr_avg_contributor) if arr_avg_contributor else 0
+    avg_rating_collector = sum(arr_avg_collector) / len(arr_avg_collector) if arr_avg_collector else 0
+    avg_rating_innovator = sum(arr_avg_innovator) / len(arr_avg_innovator) if arr_avg_innovator else 0
+
+   
+        
     if(request.user.username == username):
         check_owner_post= True
         get_user_id = request.user.ID
@@ -780,6 +830,15 @@ def profile_user(request, username):
         "username":username,
         "Check_owner_post":check_owner_post,
         "get_id_user":get_user_id,
+        "user_details":user_details,
+        "number_post_contributor":get_user_number_post_contributor,
+        "number_post_innovator":get_user_number_post_innovator,
+        "number_post_collector":get_user_number_post_collector,
+        "avg_rating_contributor": round(avg_rating_contributor),
+        "avg_rating_collector": round(avg_rating_collector),
+        "avg_rating_innovator":round(avg_rating_innovator),
+        "friend_status":friend_status,
+
     }
     return render(request,'main/subpages/profile/profileView.html', context)
 

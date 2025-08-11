@@ -118,7 +118,7 @@ class UserSites(AbstractBaseUser,PermissionsMixin,BaseUserManager):
             self.set_password(self.password) 
         super().save(*args, **kwargs)
     def __str__(self):
-        return f"{self.username} - {self.get_role_display()}"  
+        return f"{self.ID} - {self.get_role_display()}"  
     
 
 class UserPost(models.Model):
