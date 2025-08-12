@@ -56,6 +56,25 @@
       padding: 40px;
       border-radius: 16px;
     }
+      .sty-profile-pic-search {
+      height: 120px;
+      width: 120px; /* fixed to match height for a perfect circle */
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto; /* centers the whole circle in its container */
+    }
+
+    .sty-profile-pic-search img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover; /* ensures image fills circle without distortion */
+    }
+    .sty-white-remove-link-color{
+      color: white;
+    }
     /* {% endblock styles %}*/
   </style>
   <body>
@@ -75,10 +94,12 @@
       {% for Innovator in Innovator_post %}
         <!-- //prettier-ignore -->
 
-        <div class="columns is-vcentered">
+        <a class="columns is-vcentered sty-white-remove-link-color " href="/post/specific/{{ Innovator.ID }}">
           <div class="column is-2"></div>
           <div class="column is-2">
-            <h1>--PROFILE-PIC--</h1>
+             <div class="sty-profile-pic-search">
+           <img src="{{ Innovator.USER_ID.profile_picture.url }}" alt="" >
+           </div>
           </div>
           <div class="column">
             <div>
@@ -91,10 +112,13 @@
               <h1 class="sty-subtitle-lower-font-size sty-font-family-hind">
                 {{ Innovator.description }}
               </h1>
+           
+              <h1 class="has-text-right">by: {{ Innovator.USER_ID.username }}</h1>
+       
             </div>
           </div>
           <div class="column is-2"></div>
-        </div>
+        </a>
 
         <!-- prettier-ignore -->
         {% endfor %} {% else %}
@@ -116,10 +140,12 @@
       {% for Contributor in Contributor_post %}
         <!-- //prettier-ignore -->
 
-        <div class="columns is-vcentered">
+        <a class="columns is-vcentered sty-white-remove-link-color"  href="/post/specific/{{ Contributor.ID }}">
           <div class="column is-2"></div>
           <div class="column is-2">
-            <h1>--PROFILE-PIC--</h1>
+            <div class="sty-profile-pic-search">
+            <img src="{{ Contributor.USER_ID.profile_picture.url }}" alt="">
+            </div>
           </div>
           <div class="column">
             <div>
@@ -132,10 +158,11 @@
               <h1 class="sty-subtitle-lower-font-size sty-font-family-hind">
                 {{ Contributor.description }}
               </h1>
+              <h1 class="has-text-right">by: {{ Contributor.USER_ID.username }}</h1>
             </div>
           </div>
           <div class="column is-2"></div>
-        </div>
+        </a>
 
         <!-- prettier-ignore -->
         {% endfor %} {% else %}
@@ -158,10 +185,13 @@
       {% for Collector in Collector_post %}
         <!-- //prettier-ignore -->
 
-        <div class="columns is-vcentered">
+        <a class="columns is-vcentered sty-white-remove-link-color" href="/post/specific/{{ Collector.ID }}">
           <div class="column is-2"></div>
           <div class="column is-2">
-            <h1>--PROFILE-PIC--</h1>
+             <div class="sty-profile-pic-search">
+                 <img src="{{ Collector.USER_ID.profile_picture.url }}" alt="">
+             </div>
+      
           </div>
           <div class="column">
             <div>
@@ -174,10 +204,11 @@
               <h1 class="sty-subtitle-lower-font-size sty-font-family-hind">
                 {{ Collector.description }}
               </h1>
+              <h1 class="has-text-right">by: {{ Collector.USER_ID.username }}</h1>
             </div>
           </div>
           <div class="column is-2"></div>
-        </div>
+        </a>
 
         <!-- prettier-ignore -->
         {% endfor %} {% else %}
@@ -198,10 +229,12 @@
         {% for user in user_profile %}
         <!-- //prettier-ignore -->
 
-        <div class="columns is-vcentered">
+        <a class="columns is-vcentered sty-white-remove-link-color" href="/diyconn/profile/get/{{ user.username }}">
           <div class="column is-2"></div>
           <div class="column is-2">
-            <h1>--PROFILE-PIC--</h1>
+            <div class="sty-profile-pic-search">
+                 <img src="{{ user.profile_picture.url }}" alt="">
+             </div>
           </div>
           <div class="column">
             <div>
@@ -212,12 +245,13 @@
               </h1>
 
               <h1 class="sty-subtitle-lower-font-size sty-font-family-hind">
-                {{ Collector.bio }}
+                Bio: {{ user.bio }}
               </h1>
+            
             </div>
           </div>
           <div class="column is-2"></div>
-        </div>
+        </a>
 
         <!-- prettier-ignore -->
         {% endfor %} {% else %}

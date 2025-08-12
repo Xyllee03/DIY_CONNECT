@@ -1,0 +1,55 @@
+{% extends '../subpages_base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        /* {% block styles %}*/
+            /* {% endblock styles %}*/
+    </style>
+</head>
+<body>
+ 
+
+        <!-- prettier-ignore -->
+    {% block content %}
+       <div id="get_link" data-url="{% url 'main:diyconn_home' %}" hidden></div>
+    <!-- //prettier-ignore -->
+<h1>TestSetting</h1>
+        <!-- prettier-ignore -->
+    {% endblock content %}
+    <!-- //prettier-ignore -->
+
+    <script>
+           // {% block scripts %}
+   function Initialized() {
+        let usr_all_bck_opt_ref = document.querySelectorAll(
+          "#usr_all_bck_opt_ref"
+        );
+        let get_link = document.getElementById("get_link");
+        usr_all_bck_opt_ref.forEach((element) => {
+          element.href = get_link.getAttribute("data-url");
+        });
+
+        let usr_all_bck_opt_label = document.querySelectorAll(
+          "#usr_all_bck_opt_label"
+        );
+     
+
+        //Trial Checking
+        usr_all_bck_opt_label.forEach((element) => {
+          element.textContent = "Settings" 
+        });
+      
+        //console.log(usr_all_end_opt_ref);
+      }
+
+      Initialized();
+              // {% endblock scripts %}
+    </script>
+</body>
+</html>

@@ -317,7 +317,7 @@ def postSearch(request, search_item):
     get_contributor = UserPost.objects.filter(title__icontains=search_item, user_role_type ="Contributor")
     get_collector = UserPost.objects.filter(title__icontains=search_item, user_role_type ="Collector")
     get_users = UserSites.objects.filter(username__icontains=search_item)
-
+    
     # Testing
 
     """
@@ -906,3 +906,9 @@ def reviews(request, user_id):
     }
     print("this is for review")
     return render(request,'main/subpages/reviews/review.html', context)
+
+#Settings
+def setting(request):
+    print("setting")
+    context ={}
+    return render(request,'main/subpages/settings/setting.html', context)

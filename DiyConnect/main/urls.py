@@ -72,5 +72,9 @@ urlpatterns = [
   #Reviews
    path('diyconn/reviews/<int:user_id>', views.reviews,  name="reviews"),
 
+
+   #Setting
+   path('diyconn/setting/', views.setting,  name="setting"),
+
  
 ]
