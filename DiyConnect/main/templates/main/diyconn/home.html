@@ -97,6 +97,9 @@
       .nav-arrow:hover {
         background: rgba(255, 255, 255, 0.9);
       }
+      .sty-mobile-home-content {
+        display: none;
+      }
       /* MOBILE */
       @media (max-width: 768px) {
         .sty-sect-opt-icon {
@@ -180,6 +183,9 @@
         .modal-close {
           top: 5px;
           right: 5px;
+        }
+        .sty-mobile-home-content {
+          display: block;
         }
       }
       /* {% endblock styles %} */
@@ -468,9 +474,12 @@
                              <p>
                    ${data.new_posts.description}
                    </p>
-                      <br>   
+                      <br>
+                      <div class ='sty-mobile-home-content'>
                      <p>
-                Author:  <a href="/diyconn/profile/get/${data.new_posts.username}"><u> ${data.new_posts.username} </u></a> at: ${new Date(
+                Author:  <a href="/diyconn/profile/get/${
+                  data.new_posts.username
+                }"><u> ${data.new_posts.username} </u></a> at: ${new Date(
             data.new_posts.date_modified
           ).toLocaleDateString("en-US", {
             year: "numeric",
@@ -480,7 +489,7 @@
                    </p>
                    <p>Location: ${data.new_posts.user_location.subdivision} - ${
             data.new_posts.user_location.city_or_municipality
-          }</p>
+          }</p></div>   
                  </h1>
                  <div class="columns mt-5 is-vcentered sty-sect-cl-opt is-mobile">
                    <div class="column has-text-centered ">
@@ -494,11 +503,13 @@
                     
                      <h1 
     onclick="${
-     data.new_posts.ownership_post=== true
-                ? ``:
-      data.new_posts.role_post === "Showcase" && data.new_posts.already_liked == false
-        ? `postLikeAdd(event)`:
-      data.new_posts.role_post === "Showcase" && data.new_posts.already_liked == true
+      data.new_posts.ownership_post === true
+        ? ``
+        : data.new_posts.role_post === "Showcase" &&
+          data.new_posts.already_liked == false
+        ? `postLikeAdd(event)`
+        : data.new_posts.role_post === "Showcase" &&
+          data.new_posts.already_liked == true
         ? `postlikeRemoved(event)`
         : `mdl_openRequest(event, '${data.new_posts.title.replace(
             /'/g,
@@ -511,11 +522,13 @@
    
   >
     ${
-   data.new_posts.ownership_post=== true
-                ? `Posted`:
- data.new_posts.role_post === "Showcase" && data.new_posts.already_liked == false
-        ? `Like: ${data.new_posts.like}`:
-      data.new_posts.role_post === "Showcase" && data.new_posts.already_liked == true
+      data.new_posts.ownership_post === true
+        ? `Posted`
+        : data.new_posts.role_post === "Showcase" &&
+          data.new_posts.already_liked == false
+        ? `Like: ${data.new_posts.like}`
+        : data.new_posts.role_post === "Showcase" &&
+          data.new_posts.already_liked == true
         ? `Liked: ${data.new_posts.like}`
         : "Accept Request"
     }
@@ -781,18 +794,18 @@
       //POST LIKE
       function postLikeAdd(event) {
         let target = event.currentTarget;
-        let get_post_id = target.getAttribute("data-post-id")
-           let json_data = {
+        let get_post_id = target.getAttribute("data-post-id");
+        let json_data = {
           post_id: get_post_id,
         };
-        console.log(json_data)
-          let response = fetch(`/post/like/add/`, {
+        console.log(json_data);
+        let response = fetch(`/post/like/add/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": getCookie("csrftoken"),
           },
-           body: JSON.stringify(json_data),
+          body: JSON.stringify(json_data),
           mode: "same-origin",
         })
           .then((response) => {
@@ -807,33 +820,32 @@
           .then((res) => {
             console.log(res);
             const str = target.textContent;
-            const number = str.match(/\d+/)[0];  // Returns "123" as a string
-            const num = parseInt(number, 10);    // Converts to number
-            target.textContent = `Liked: ${num +1}`
-            target.setAttribute("onclick","postlikeRemoved(event)")
-           // window.location.href = res.redirect_url;
+            const number = str.match(/\d+/)[0]; // Returns "123" as a string
+            const num = parseInt(number, 10); // Converts to number
+            target.textContent = `Liked: ${num + 1}`;
+            target.setAttribute("onclick", "postlikeRemoved(event)");
+            // window.location.href = res.redirect_url;
           })
           .catch((err) => {
             console.log(err);
 
             console.log("Error:", err.error || "An unexpected error occurred");
           });
-
       }
-      function postlikeRemoved(event){
-     let target = event.currentTarget;
-        let get_post_id = target.getAttribute("data-post-id")
-           let json_data = {
+      function postlikeRemoved(event) {
+        let target = event.currentTarget;
+        let get_post_id = target.getAttribute("data-post-id");
+        let json_data = {
           post_id: get_post_id,
         };
-        console.log(json_data)
-          let response = fetch(`/post/like/removed/`, {
+        console.log(json_data);
+        let response = fetch(`/post/like/removed/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": getCookie("csrftoken"),
           },
-           body: JSON.stringify(json_data),
+          body: JSON.stringify(json_data),
           mode: "same-origin",
         })
           .then((response) => {
@@ -847,12 +859,12 @@
           })
           .then((res) => {
             console.log(res);
-           const str = target.textContent;
-            const number = str.match(/\d+/)[0];  // Returns "123" as a string
-            const num = parseInt(number, 10);    // Converts to number
-            target.textContent = `Like: ${num -1}`
-            target.setAttribute("onclick","postLikeAdd(event)")
-           // window.location.href = res.redirect_url;
+            const str = target.textContent;
+            const number = str.match(/\d+/)[0]; // Returns "123" as a string
+            const num = parseInt(number, 10); // Converts to number
+            target.textContent = `Like: ${num - 1}`;
+            target.setAttribute("onclick", "postLikeAdd(event)");
+            // window.location.href = res.redirect_url;
           })
           .catch((err) => {
             console.log(err);
@@ -860,7 +872,6 @@
             console.log("Error:", err.error || "An unexpected error occurred");
           });
       }
-      
 
       //{% endblock scripts%}
     </script>

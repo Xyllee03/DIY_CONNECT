@@ -358,7 +358,19 @@
             console.log(err);
           });
       }
+      let mdl_search = document.getElementById("mdl_search");
 
+      function mdl_open_search() {
+        mdl_search.classList.add("is-active");
+      }
+      function mdl_close_search() {
+        mdl_search.classList.remove("is-active");
+      }
+
+      function search_mobile() {
+        let inp_mobile_search = document.getElementById("inp_mobile_search");
+        window.location.href = `/diyconnect/search/${inp_mobile_search.value}`;
+      }
       //{% block scripts %}
       //{% endblock scripts%}
     </script>

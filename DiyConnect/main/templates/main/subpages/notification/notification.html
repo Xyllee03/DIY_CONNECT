@@ -1,0 +1,244 @@
+{% extends '../subpages_base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}
+    <title>Notification | DIY CONNECT</title>
+    {% endblock title %}
+    <style>
+      /* {% block styles %}*/
+      .sty-bkg-alternate-1 {
+        background-color: #283618;
+        color: white;
+        padding-left: 4px;
+        padding-right: 4px;
+      }
+      .sty-bkg-alternate-2 {
+        background-color: white;
+        color: black;
+      }
+
+      .sty-header-title {
+        font-size: 40px;
+        font-weight: 600;
+      }
+      .sty-score-txt {
+        font-size: 36px;
+        font-weight: 800;
+      }
+      .sty-fm-hind {
+        font-family: "Hind Madurai", sans-serif;
+        font-style: normal;
+      }
+
+      .sty-fm-montserrat {
+        font-family: "Montserrat", sans-serif;
+        font-optical-sizing: auto;
+
+        font-style: normal;
+      }
+      .sty_profile_section {
+        height: 150px;
+        width: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden; /* Ensures image doesn't spill outside */
+        border-radius: 50%; /* Make the container round */
+        background: #eee; /* Optional fallback background */
+      }
+
+      .sty_profile_section img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Fill the container while keeping aspect ratio */
+      }
+      .sty-stars {
+        font-size: 24px;
+        color: gold;
+      }
+      @media (max-width: 768px) {
+        .sty-header-title {
+          font-size: 28px; /* Smaller but still bold on mobile */
+        }
+
+        .sty-score-txt {
+          font-size: 24px;
+          text-align: center;
+        }
+
+        .sty_profile_section {
+          height: 80px;
+          width: 80px;
+          margin: 0 auto; /* Center in smaller screens */
+        }
+
+        .sty-bkg-alternate-1,
+        .sty-bkg-alternate-2 {
+          padding-left: 8px;
+          padding-right: 8px;
+          font-size: 14px;
+        }
+
+        .sty-fm-hind,
+        .sty-fm-montserrat {
+          font-size: 14px;
+          line-height: 1.4;
+        }
+
+        .sty_profile_section {
+          height: 60px;
+          width: 60px;
+        }
+        .sty-stars {
+          font-size: 10px;
+          color: gold;
+        }
+      }
+      /* {% endblock styles %}*/
+    </style>
+  </head>
+  <body>
+    <!-- prettier-ignore -->
+    {% block content %}
+    <!-- //prettier-ignore  -->
+    <div class="container">
+      <div class="container">
+        <!-- prettier-ignore -->
+        {% if notifications  %}
+        <!-- //prettier-ignore -->
+        {% for notification in notifications %}
+        <!-- REVIEW CONTAINER (alternate-1) -->
+
+        <div class="get_bkg_element sty-bkg-alternate-1">
+          <div class="columns is-vcentered is-mobile my-4">
+            <div class="column has-text-centered">
+              <figure class="sty_profile_section">
+                <img
+                  class=""
+                  src="{{ notification.USER_NOTIFY_TRIGGER.profile_picture.url }}"
+                />
+              </figure>
+            </div>
+            <div class="column is-6">
+              <h1 class="sty-sect-opt sty-fm-montserrat sty-header-title">
+                {% if notification.type == "request" %}
+                <p>
+                  {{ notification.USER_NOTIFY_TRIGGER.username }} trying to
+                  fulfill your request
+                </p>
+                {% elif notification.type == "cancelled" %}
+                <p>
+                  {{ notification.USER_NOTIFY_TRIGGER.username }} cancelled to
+                  fulfill your request
+                </p>
+                {% endif %}
+              </h1>
+              <h1 class="sty-fm-hind has-text-right">
+                {{ notification.created_at }}
+              </h1>
+            </div>
+
+            <div class="column is-3">
+              <div class="has-text-centered">
+                <h1 class="sty-score-txt sty-fm-montserrat">
+                  <ion-icon name="arrow-forward"></ion-icon>
+                </h1>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% endfor %}
+        <!-- REVIEW CONTAINER (alternate-1) -->
+        <!-- REVIEW CONTAINER (alternate-2) -->
+
+        <!--
+      <div class="sty-bkg-alternate-2">
+        <div class="columns is-vcentered">
+          <div class="column has-text-centered is-2">
+            <h1>pfp</h1>
+          </div>
+          <div class="column">
+            <h1 class="sty-sect-opt sty-fm-montserrat sty-header-title">
+              300 pcs of Plastics Bottles
+            </h1>
+            <h1 class="sty-fm-hind">
+              Thank you for providing exactly what I needed — your help made my
+              project possible!
+            </h1>
+            <h1 class="has-text-right sty-fm-hind">by: RecycleKing_92</h1>
+          </div>
+
+          <div class="column is-3">
+            <div class="has-text-centered">
+              <h1 class="sty-score-txt sty-fm-montserrat">4.5</h1>
+              <h1>stars</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+       -->
+        <!-- REVIEW CONTAINER (alternate-2) -->
+
+        <!-- prettier-ignore -->
+        {% else %}
+        <!-- //this part else  -->
+        <h1 class="has-text-centered">
+          There is no notifications you received.
+        </h1>
+        <!-- //prettier-ignore -->
+
+        <!-- prettier-ignore -->
+        {% endif %}
+        <!-- //this part endif -->
+        <!-- //prettier-ignore -->
+      </div>
+    </div>
+
+    <div id="get_link" data-url="{% url 'main:diyconn_home' %}" hidden></div>
+
+    <!-- prettier-ignore -->
+    {% endblock content %}
+    <!-- //prettier-ignore  -->
+    <script>
+      // {% block scripts %}
+
+      function Initialized() {
+        //
+
+        let get_link = document.getElementById("get_link");
+        let usr_all_bck_opt_ref = document.querySelectorAll(
+          "#usr_all_bck_opt_ref"
+        );
+        usr_all_bck_opt_ref.forEach((element) => {
+          element.href = get_link.getAttribute("data-url");
+        });
+
+        let usr_all_bck_opt_label = document.querySelectorAll(
+          "#usr_all_bck_opt_label"
+        );
+        usr_all_bck_opt_label.forEach((element) => {
+          element.textContent = "Notification";
+        });
+
+        //let get_search_item = document.getElementById("get_search_item");
+        //let usr_all_end_opt = document.getElementById("usr_all_end_opt");
+
+        //ini_new_input.value = get_search_item.getAttribute("data-url");
+        /*
+        let ini_new_input = document.createElement("input");
+        ini_new_input.classList.add("input");
+        ini_new_input.classList.add("sty-inp-se");
+        ini_new_input.id = "inp_se_people";
+        usr_all_end_opt.appendChild(ini_new_input);
+        */
+      }
+      Initialized();
+      // {% endblock scripts %}
+    </script>
+  </body>
+</html>

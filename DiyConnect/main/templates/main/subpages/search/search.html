@@ -56,7 +56,7 @@
       padding: 40px;
       border-radius: 16px;
     }
-      .sty-profile-pic-search {
+    .sty-profile-pic-search {
       height: 120px;
       width: 120px; /* fixed to match height for a perfect circle */
       border-radius: 50%;
@@ -72,8 +72,30 @@
       width: 100%;
       object-fit: cover; /* ensures image fills circle without distortion */
     }
-    .sty-white-remove-link-color{
+    .sty-white-remove-link-color {
       color: white;
+    }
+    @media (max-width: 768px) {
+      .sty-rem-col {
+        display: none;
+      }
+      .sty-profile-pic-search {
+        height: 60px;
+        width: 60px; /* fixed to match height for a perfect circle */
+      }
+      .sty-head-littl-big-font-size {
+        font-size: 20px !important;
+      }
+      .sty-subtitle-lower-font-size {
+        font-size: 15px !important;
+      }
+      .sty-wrapper-description {
+        white-space: nowrap; /* prevent text from wrapping */
+        overflow: hidden; /* hide overflow */
+        text-overflow: ellipsis; /* show "..." */
+        display: block; /* or inline-block */
+        max-width: 300px; /* adjust to your desired width */
+      }
     }
     /* {% endblock styles %}*/
   </style>
@@ -94,12 +116,15 @@
       {% for Innovator in Innovator_post %}
         <!-- //prettier-ignore -->
 
-        <a class="columns is-vcentered sty-white-remove-link-color " href="/post/specific/{{ Innovator.ID }}">
-          <div class="column is-2"></div>
-          <div class="column is-2">
-             <div class="sty-profile-pic-search">
-           <img src="{{ Innovator.USER_ID.profile_picture.url }}" alt="" >
-           </div>
+        <a
+          class="columns is-vcentered sty-white-remove-link-color is-mobile"
+          href="/post/specific/{{ Innovator.ID }}"
+        >
+          <div class="column is-2 sty-rem-col"></div>
+          <div class="column is-4-mobile is-2-desktop">
+            <div class="sty-profile-pic-search">
+              <img src="{{ Innovator.USER_ID.profile_picture.url }}" alt="" />
+            </div>
           </div>
           <div class="column">
             <div>
@@ -109,15 +134,18 @@
                 {{ Innovator.title }}
               </h1>
 
-              <h1 class="sty-subtitle-lower-font-size sty-font-family-hind">
+              <h1
+                class="sty-subtitle-lower-font-size sty-font-family-hind sty-wrapper-description"
+              >
                 {{ Innovator.description }}
               </h1>
-           
-              <h1 class="has-text-right">by: {{ Innovator.USER_ID.username }}</h1>
-       
+
+              <h1 class="has-text-right">
+                by: {{ Innovator.USER_ID.username }}
+              </h1>
             </div>
           </div>
-          <div class="column is-2"></div>
+          <div class="column is-2 sty-rem-col"></div>
         </a>
 
         <!-- prettier-ignore -->
@@ -140,11 +168,14 @@
       {% for Contributor in Contributor_post %}
         <!-- //prettier-ignore -->
 
-        <a class="columns is-vcentered sty-white-remove-link-color"  href="/post/specific/{{ Contributor.ID }}">
-          <div class="column is-2"></div>
-          <div class="column is-2">
+        <a
+          class="columns is-vcentered sty-white-remove-link-color is-mobile"
+          href="/post/specific/{{ Contributor.ID }}"
+        >
+          <div class="column is-2 sty-rem-col"></div>
+          <div class="column is-4-mobile is-2-desktop">
             <div class="sty-profile-pic-search">
-            <img src="{{ Contributor.USER_ID.profile_picture.url }}" alt="">
+              <img src="{{ Contributor.USER_ID.profile_picture.url }}" alt="" />
             </div>
           </div>
           <div class="column">
@@ -155,13 +186,17 @@
                 {{ Contributor.title }}
               </h1>
 
-              <h1 class="sty-subtitle-lower-font-size sty-font-family-hind">
+              <h1
+                class="sty-subtitle-lower-font-size sty-font-family-hind sty-wrapper-description"
+              >
                 {{ Contributor.description }}
               </h1>
-              <h1 class="has-text-right">by: {{ Contributor.USER_ID.username }}</h1>
+              <h1 class="has-text-right">
+                by: {{ Contributor.USER_ID.username }}
+              </h1>
             </div>
           </div>
-          <div class="column is-2"></div>
+          <div class="column is-2 sty-rem-col"></div>
         </a>
 
         <!-- prettier-ignore -->
@@ -185,13 +220,15 @@
       {% for Collector in Collector_post %}
         <!-- //prettier-ignore -->
 
-        <a class="columns is-vcentered sty-white-remove-link-color" href="/post/specific/{{ Collector.ID }}">
-          <div class="column is-2"></div>
-          <div class="column is-2">
-             <div class="sty-profile-pic-search">
-                 <img src="{{ Collector.USER_ID.profile_picture.url }}" alt="">
-             </div>
-      
+        <a
+          class="columns is-vcentered sty-white-remove-link-color is-mobile"
+          href="/post/specific/{{ Collector.ID }}"
+        >
+          <div class="column is-2 sty-rem-col"></div>
+          <div class="column is-4-mobile is-2-desktop">
+            <div class="sty-profile-pic-search">
+              <img src="{{ Collector.USER_ID.profile_picture.url }}" alt="" />
+            </div>
           </div>
           <div class="column">
             <div>
@@ -201,13 +238,17 @@
                 {{ Collector.title }}
               </h1>
 
-              <h1 class="sty-subtitle-lower-font-size sty-font-family-hind">
+              <h1
+                class="sty-subtitle-lower-font-size sty-font-family-hind sty-wrapper-description"
+              >
                 {{ Collector.description }}
               </h1>
-              <h1 class="has-text-right">by: {{ Collector.USER_ID.username }}</h1>
+              <h1 class="has-text-right">
+                by: {{ Collector.USER_ID.username }}
+              </h1>
             </div>
           </div>
-          <div class="column is-2"></div>
+          <div class="column is-2 sty-rem-col"></div>
         </a>
 
         <!-- prettier-ignore -->
@@ -229,12 +270,15 @@
         {% for user in user_profile %}
         <!-- //prettier-ignore -->
 
-        <a class="columns is-vcentered sty-white-remove-link-color" href="/diyconn/profile/get/{{ user.username }}">
+        <a
+          class="columns is-vcentered sty-white-remove-link-color"
+          href="/diyconn/profile/get/{{ user.username }}"
+        >
           <div class="column is-2"></div>
           <div class="column is-2">
             <div class="sty-profile-pic-search">
-                 <img src="{{ user.profile_picture.url }}" alt="">
-             </div>
+              <img src="{{ user.profile_picture.url }}" alt="" />
+            </div>
           </div>
           <div class="column">
             <div>
@@ -247,7 +291,6 @@
               <h1 class="sty-subtitle-lower-font-size sty-font-family-hind">
                 Bio: {{ user.bio }}
               </h1>
-            
             </div>
           </div>
           <div class="column is-2"></div>
@@ -274,25 +317,25 @@
       function Initialized() {
         //
 
-        let get_link = document.getElementById("get_link");
-        let usr_all_bck_opt_ref = document.getElementById(
-          "usr_all_bck_opt_ref"
-        );
-
-        usr_all_bck_opt_ref.href = get_link.getAttribute("data-url");
-        let usr_all_bck_opt_label = document.getElementById(
-          "usr_all_bck_opt_label"
-        );
-        usr_all_bck_opt_label.textContent = "Search and Explore";
         let get_search_item = document.getElementById("get_search_item");
         let usr_all_end_opt = document.getElementById("usr_all_end_opt");
-        let ini_new_input = document.createElement("input");
-        ini_new_input.classList.add("input");
-        ini_new_input.classList.add("sty-inp-se");
-        ini_new_input.id = "inp_se_items";
-        ini_new_input.value = get_search_item.getAttribute("data-url");
 
-        usr_all_end_opt.appendChild(ini_new_input);
+        //
+        let usr_all_bck_opt_label = document.querySelectorAll(
+          "#usr_all_bck_opt_label"
+        );
+
+        usr_all_bck_opt_label.forEach((element) => {
+          element.textContent = "Search and Explore";
+        });
+        let get_link = document.getElementById("get_link");
+        let usr_all_bck_opt_ref = document.querySelectorAll(
+          "#usr_all_bck_opt_ref"
+        );
+
+        usr_all_bck_opt_ref.forEach((element) => {
+          element.href = get_link.getAttribute("data-url");
+        });
       }
       Initialized();
 

@@ -25,6 +25,20 @@ class MessageStatus(models.TextChoices):
     CANCELLED ='cancelled','Cancelled'
     FULFILLED= 'fulfilled','Fulfilled'
 
+class NotifyType(models.TextChoices):
+    REQUEST = 'request', 'Request'
+    CANCELLED ='cancelled','Cancelled'
+    FULFILLED= 'fulfilled','Fulfilled'
+    MESSAGE ='messaged','Messaged'
+    ADD_FRIEND='add_friend','Add_friend'
+    ACCEPT_FRIEND ='accept_friend','Accept_friend'
+
+class NotifyStatus(models.TextChoices):
+    DELIVERED = 'delivered', 'Delivered'
+    VIEWED ='viewed','Viewed'
+    
+
+
 
 
 def user_profile_pic_path(instance, filename):
@@ -195,3 +209,13 @@ class PostLike(models.Model):
 
     class Meta:
         unique_together = ('user', 'post')  # Prevent double likes
+
+
+
+class Notification(models.Model):
+    ID = models.AutoField(primary_key=True)
+    USER_NOTIFY_OWNER = models.ForeignKey(UserSites, on_delete=models.CASCADE, related_name='user_notify_owner')
+    USER_NOTIFY_TRIGGER= models.ForeignKey(UserSites, on_delete=models.CASCADE, related_name='user_notify_trigger')
+    type = models.CharField(max_length=20, choices=NotifyType.choices)
+    status = models.CharField(max_length=20, choices=NotifyStatus.choices, default=NotifyStatus.DELIVERED)
+    created_at = models.DateTimeField(auto_now_add=True)

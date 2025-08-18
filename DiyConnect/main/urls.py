@@ -73,6 +73,8 @@ urlpatterns = [
    path('diyconn/reviews/<int:user_id>', views.reviews,  name="reviews"),
 
 
+#Notification 
+ path('diyconn/notification/', views.notification,  name="notification"),
    #Setting
    path('diyconn/setting/', views.setting,  name="setting"),
 

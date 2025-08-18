@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse
 import json
 from django.contrib.auth.hashers import check_password
-from .models import UserSites, UserPost, UserPost_BLOB, Friendships, UserMessages, MessageStatus,TaskRequest,Review,PostLike,FriendStatus
+from .models import UserSites, UserPost, UserPost_BLOB, Friendships, UserMessages, MessageStatus,TaskRequest,Review,PostLike,FriendStatus, Notification, NotifyType,NotifyStatus
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 import time
@@ -639,6 +639,13 @@ def MessageAddRequest(request,receiver_id):
                 t.conversation_id = lastID["ID"]
                 t.save()
                 #print("working")
+
+                #NOTIFICATION
+                n=Notification()
+                n.USER_NOTIFY_OWNER = get_receiver
+                n.USER_NOTIFY_TRIGGER= request.user
+                n.type = NotifyType.REQUEST
+                n.save()
                 return JsonResponse({"msg": "Request Added"}, status=200)
             else:
                
@@ -850,11 +857,18 @@ def request_fulfiller_cancelled(request):
         try:
             data = json.loads(request.body)
             get_taskRequest =TaskRequest.objects.get(POST_ID=data['post_id'],conversation_id =data['conversation_id'])
+            get_notify_owner = UserSites.objects.get(ID=get_taskRequest.POST_ID.USER_ID.ID)
             get_conversation = UserMessages.objects.get(ID=data['conversation_id'])
             get_conversation.status = MessageStatus.CANCELLED
             get_conversation.save()
             get_taskRequest.delete()
-
+            
+            #notification
+            n =Notification()
+            n.USER_NOTIFY_OWNER = get_notify_owner
+            n.USER_NOTIFY_TRIGGER= request.user
+            n.type = NotifyType.CANCELLED
+            n.save()
             return JsonResponse({"msg": "Fulfilling Request Cancelled"}, status=200)
         except:
             return JsonResponse({"msg": "Internal Error"}, status=500)
@@ -912,3 +926,12 @@ def setting(request):
     print("setting")
     context ={}
     return render(request,'main/subpages/settings/setting.html', context)
+    
+
+def notification(request):
+    get_notification = Notification.objects.filter(USER_NOTIFY_OWNER=request.user)
+    print("notification")
+    for notif in get_notification:
+        print(notif.type)
+    context={"notifications":get_notification}
+    return render(request,'main/subpages/notification/notification.html', context)

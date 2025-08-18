@@ -51,7 +51,7 @@
             >
               Collector
             </a>
-               <a
+            <a
               class="navbar-item sty-h-navbar-role-items"
               id="nav_getElement_choice_role"
               onclick="navbar_role_change()"
@@ -68,7 +68,10 @@
           <h1 class="">
             <ion-icon name="people"></ion-icon></h1
         ></a>
-        <a class="navbar-item sty-h-navbar-icons">
+        <a
+          class="navbar-item sty-h-navbar-icons"
+          href="{% url 'main:notification' %}"
+        >
           <h1 class="">
             <ion-icon name="notifications"></ion-icon></h1
         ></a>
@@ -214,11 +217,21 @@
                 href="{% url 'main:Messages'%}"
                 class="dropdown-item sty_choices_menu_icons"
               >
-             <ion-icon name="chatbox-ellipses"></ion-icon></ion-icon>&nbsp; Messages
+                <ion-icon name="chatbox-ellipses"></ion-icon>&nbsp; Messages
               </a>
-              <h1 class="dropdown-item sty_choices_menu_icons">
+
+              <div
+                class="dropdown-item sty_choices_menu_icons"
+                onclick="mdl_open_search()"
+              >
+                <ion-icon name="search"></ion-icon>&nbsp; Search
+              </div>
+              <a
+                href="{% url 'main:notification' %}"
+                class="dropdown-item sty_choices_menu_icons"
+              >
                 <ion-icon name="notifications"></ion-icon> &nbsp; Notification
-              </h1>
+              </a>
               <h1
                 href="{% url 'main:profile_user' username=username %}"
                 class="dropdown-item sty_choices_menu_icons"
@@ -262,11 +275,11 @@
               >
                 Collector
               </h1>
-                 <h1
+              <h1
                 class="dropdown-item select-role-item-mobile is-active"
                 onclick="navbar_role_change_mobile()"
               >
-               Showcase
+                Showcase
               </h1>
             </div>
           </div>
@@ -284,3 +297,29 @@
   </div>
 </nav>
 
+<!-- MODAL For Search (Start) -->
+<div class="modal" id="mdl_search">
+  <div class="modal-background" onclick="mdl_close_search()"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title sty-mdl-head has-text-centered">Search</p>
+      <button
+        class="delete"
+        aria-label="close"
+        onclick="mdl_close_search()"
+      ></button>
+    </header>
+    <section class="modal-card-body has-text-centered">
+      <input type="text" class="input" id="inp_mobile_search" />
+    </section>
+    <!-- Follow auth_registerationProfile to center the btn -->
+    <footer class="modal-card-foot">
+      <div class="sty-mdl-footer-btn">
+        <a class="button sty-mdl-btn-submit" onclick="search_mobile()">
+          Find
+        </a>
+      </div>
+    </footer>
+  </div>
+</div>
+<!-- MODAL FOR Search (END)-->
