@@ -75,6 +75,7 @@ urlpatterns = [
 
 #Notification 
  path('diyconn/notification/', views.notification,  name="notification"),
+  path('diyconn/notification/viewed/<int:notif_id>', views.notification_viewed,  name="notification_viewed"),
    #Setting
    path('diyconn/setting/', views.setting,  name="setting"),
 

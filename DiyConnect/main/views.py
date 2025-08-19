@@ -573,7 +573,7 @@ def MessageConvesationAdd(request, receiver_id):
         request.session["selectedMessage"] = receiver_id
         lastID =UserMessages.objects.values('ID').last()
         data = json.loads(request.body)
-      
+
         sender = UserSites.objects.get(ID=request.user.ID)
         reciever = UserSites.objects.get(ID=receiver_id)
         messages = UserMessages()
@@ -582,6 +582,12 @@ def MessageConvesationAdd(request, receiver_id):
         messages.USER_RECIPIENT_ID = reciever
         messages.message_text =data['message']
         messages.save()
+
+        n =Notification()
+        n.USER_NOTIFY_OWNER = reciever
+        n.USER_NOTIFY_TRIGGER = sender
+        n.type = NotifyType.MESSAGE
+        n.save()
         return JsonResponse({"msg": "Messages Data Retrieve Successfully"}, status=200)
         
 
@@ -589,7 +595,7 @@ def MessageConvesationAdd(request, receiver_id):
 def MessageAdd(request, receiver_id):
     if(request.method =="POST"):
         get_receiver = UserSites.objects.get(ID = receiver_id)
-       
+
         check_exist_conversation = UserMessages.objects.filter(
     Q(USER_SENDER_ID=request.user, USER_RECIPIENT_ID=get_receiver, message_text__isnull=False) |
     Q(USER_SENDER_ID=get_receiver, USER_RECIPIENT_ID=request.user, message_text__isnull=False)
@@ -687,13 +693,22 @@ def peopleFriendRequest_accepted(request, user_id):
     accept_request.status ="accepted" 
     accept_request.save()
 
+    n = Notification()
+    n.USER_NOTIFY_OWNER = requester_user
+    n.USER_NOTIFY_TRIGGER = request.user
+    n.type = NotifyType.ACCEPT_FRIEND
+    n.save() 
+
     return JsonResponse({"msg": "This is for friend request accepted"}, status=200)
 
 def peopleFriendRequest_pending(request, user_id):
     requester_user = UserSites.objects.get(ID=user_id)
     reject_request= Friendships.objects.get(RECEIVER_ID =request.user, REQUESTER_ID =requester_user)
-    reject_request.status ="pending" 
+    reject_request.status ="pending"
+ 
     reject_request.save()
+    remove_notification = Notification.objects.filter(    Q(USER_NOTIFY_OWNER=request.user, USER_NOTIFY_TRIGGER=reject_request) | Q(USER_NOTIFY_OWNER=reject_request, USER_NOTIFY_TRIGGER=request.user), type =NotifyType.ACCEPT_FRIEND).first()
+    remove_notification.delete()
     return JsonResponse({"msg": "This is for friend request rejected"}, status=200)
 
 
@@ -730,6 +745,11 @@ def peopleAdd(request, user_id):
             f.RECEIVER_ID = getUser_receiver_request
             f.REQUESTER_ID = getUser_requester_request
             f.save()
+            n = Notification()
+            n.USER_NOTIFY_OWNER = getUser_receiver_request
+            n.USER_NOTIFY_TRIGGER =getUser_requester_request
+            n.type = NotifyType.ADD_FRIEND
+            n.save()
             return JsonResponse({"msg": "Friend request sent successfully."}, status=200)
         else:
             return JsonResponse({"msg": "Invalid request method."}, status=500)
@@ -741,6 +761,8 @@ def peopleDelete(request, user_id):
     try:
         if(request.method =="POST"):
             remove_friend_request = Friendships.objects.filter(    Q(REQUESTER_ID=request.user, RECEIVER_ID=user_id) | Q(REQUESTER_ID=user_id, RECEIVER_ID=request.user)).first()
+            remove_notification = Notification.objects.filter(    Q(USER_NOTIFY_OWNER=request.user, USER_NOTIFY_TRIGGER=user_id) | Q(USER_NOTIFY_OWNER=user_id, USER_NOTIFY_TRIGGER=request.user), type =NotifyType.ACCEPT_FRIEND).first()
+            remove_notification.delete()
             remove_friend_request.delete()
             #print("this is for delete method")
             return JsonResponse({"msg": "Friend removed successfully."}, status=200)
@@ -887,8 +909,12 @@ def request_receiver_completed(request):
   
         get_taskRequest.accepted =True
         get_taskRequest.completed=True
-   
-        
+        get_owner =UserSites.objects.get(ID =get_taskRequest.USER_FULLFILL_REQUEST.ID)
+        n =Notification()
+        n.USER_NOTIFY_OWNER = get_owner
+        n.USER_NOTIFY_TRIGGER= request.user
+        n.type =NotifyType.FULFILLED
+        n.save()
         r = Review()
         r.post_title =get_taskRequest.POST_ID.title
         r.USER_FULLFILL_REQUEST= get_taskRequest.USER_FULLFILL_REQUEST
@@ -927,7 +953,7 @@ def setting(request):
     context ={}
     return render(request,'main/subpages/settings/setting.html', context)
     
-
+#notification
 def notification(request):
     get_notification = Notification.objects.filter(USER_NOTIFY_OWNER=request.user)
     print("notification")
@@ -935,3 +961,13 @@ def notification(request):
         print(notif.type)
     context={"notifications":get_notification}
     return render(request,'main/subpages/notification/notification.html', context)
+
+
+def notification_viewed(request, notif_id):
+    print(notif_id)
+    if request.method =="POST":
+        get_notif_obj = Notification.objects.get(ID=notif_id)
+        get_notif_obj.status =NotifyStatus.VIEWED
+        get_notif_obj.save()
+        print("viewed")
+        return JsonResponse({"msg": "Notification Viewed"}, status=200)

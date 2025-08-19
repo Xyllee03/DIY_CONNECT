@@ -28,7 +28,11 @@
       .sty-score-txt {
         font-size: 36px;
         font-weight: 800;
+        color: white !important;
       }
+      .sty-score-txt-1{color: black;
+        font-size: 36px;
+        font-weight: 800;}
       .sty-fm-hind {
         font-family: "Hind Madurai", sans-serif;
         font-style: normal;
@@ -60,6 +64,9 @@
         font-size: 24px;
         color: gold;
       }
+      .sty-icon-right-arrow{
+        color:white !important
+      }
       @media (max-width: 768px) {
         .sty-header-title {
           font-size: 28px; /* Smaller but still bold on mobile */
@@ -69,6 +76,11 @@
           font-size: 24px;
           text-align: center;
         }
+
+         .sty-score-txt-1{color: black;
+       font-size: 24px;
+          text-align: center;
+        font-weight: 800;}
 
         .sty_profile_section {
           height: 80px;
@@ -112,8 +124,8 @@
         <!-- //prettier-ignore -->
         {% for notification in notifications %}
         <!-- REVIEW CONTAINER (alternate-1) -->
-
-        <div class="get_bkg_element sty-bkg-alternate-1">
+       
+        <div class="get_bkg_element {% if notification.status == 'delivered'%} sty-bkg-alternate-1 {% else %}  sty-bkg-alternate-2 {% endif %}" >
           <div class="columns is-vcentered is-mobile my-4">
             <div class="column has-text-centered">
               <figure class="sty_profile_section">
@@ -135,6 +147,23 @@
                   {{ notification.USER_NOTIFY_TRIGGER.username }} cancelled to
                   fulfill your request
                 </p>
+
+                  {% elif notification.type == "fulfilled" %}
+                <p>
+                 You have been completed {{ notification.USER_NOTIFY_OWNER.username }} his request.
+                </p>
+                  {% elif notification.type == "messaged" %}
+                <p>
+                  {{ notification.USER_NOTIFY_TRIGGER.username }} send you a messaged
+                </p>
+                    {% elif notification.type == "add_friend" %}
+                <p>
+                  {{ notification.USER_NOTIFY_TRIGGER.username }} send you a friend request.
+                </p>
+                    {% elif notification.type == "accept_friend" %}
+                <p>
+                  {{ notification.USER_NOTIFY_TRIGGER.username }} accepted your friend request.
+                </p>
                 {% endif %}
               </h1>
               <h1 class="sty-fm-hind has-text-right">
@@ -144,9 +173,39 @@
 
             <div class="column is-3">
               <div class="has-text-centered">
-                <h1 class="sty-score-txt sty-fm-montserrat">
+
+                     {% if notification.type == "request" %}
+             
+                    <div  class="{% if notification.status == 'delivered'%} sty-score-txt {% else %}  sty-score-txt-1 {% endif %} sty-fm-montserrat" data-url="/diyconn/messages/" data-id-notif="{{ notification.ID }}" onclick="notif_viewed(event)">
                   <ion-icon name="arrow-forward"></ion-icon>
-                </h1>
+                </div>
+                 
+            
+                {% elif notification.type == "cancelled" %}
+               
+                 <div class="{% if notification.status == 'delivered'%} sty-score-txt {% else %}  sty-score-txt-1 {% endif %} sty-fm-montserrat" data-url="/diyconn/messages/" data-id-notif="{{ notification.ID }}" onclick="notif_viewed(event)">
+                  <ion-icon name="arrow-forward"></ion-icon>
+                </div>
+
+                  {% elif notification.type == "fulfilled" %}
+             
+                 <div class="{% if notification.status == 'delivered'%} sty-score-txt {% else %}  sty-score-txt-1 {% endif %} sty-fm-montserrat" data-url="/diyconn/messages/" data-id-notif="{{ notification.ID }}" onclick="notif_viewed(event)">
+                  <ion-icon name="arrow-forward"></ion-icon>
+                </div>
+                  {% elif notification.type == "messaged" %}
+                 <div class="{% if notification.status == 'delivered'%} sty-score-txt {% else %}  sty-score-txt-1 {% endif %} sty-fm-montserrat" data-url="/diyconn/messages/" data-id-notif="{{ notification.ID }}" onclick="notif_viewed(event)">
+                  <ion-icon name="arrow-forward"></ion-icon>
+                </div>
+                    {% elif notification.type == "add_friend" %}
+                <div class="{% if notification.status == 'delivered'%} sty-score-txt {% else %}  sty-score-txt-1 {% endif %} sty-fm-montserrat" data-url="/diyconnect/people/" data-id-notif="{{ notification.ID }}" onclick="notif_viewed(event)">
+                  <ion-icon name="arrow-forward"></ion-icon>
+                </div>
+                    {% elif notification.type == "accept_friend" %}
+              <div class="{% if notification.status == 'delivered'%} sty-score-txt {% else %}  sty-score-txt-1 {% endif %} sty-fm-montserrat" data-url="/diyconnect/people/" data-id-notif="{{ notification.ID }}" onclick="notif_viewed(event)">
+                  <ion-icon name="arrow-forward"></ion-icon>
+                </div>
+                {% endif %}
+              
               </div>
             </div>
           </div>
@@ -238,6 +297,35 @@
         */
       }
       Initialized();
+
+
+      function notif_viewed(event){
+        console.log("test notif")
+        let target= event.currentTarget
+       let get_url = target.getAttribute("data-url")
+       let data_id_notif = target.getAttribute("data-id-notif")
+       
+       let response = fetch(
+            `/diyconn/notification/viewed/${data_id_notif}`,
+            {
+                 method: "POST",
+           headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+          }
+          )
+            .then((res) => {
+              return res.json();
+            })
+            .then((msg) => {
+              console.log(msg);
+             window.location.href =`${get_url}`
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+      }
       // {% endblock scripts %}
     </script>
   </body>
