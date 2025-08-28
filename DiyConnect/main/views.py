@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse
 import json
 from django.contrib.auth.hashers import check_password
-from .models import UserSites, UserPost, UserPost_BLOB, Friendships, UserMessages, MessageStatus,TaskRequest,Review,PostLike,FriendStatus, Notification, NotifyType,NotifyStatus
+from .models import UserSites, UserPost, UserPost_BLOB, Friendships, UserMessages, MessageStatus,TaskRequest,Review,PostLike,FriendStatus, Notification, NotifyType,NotifyStatus, FogotPasswordFixed
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 import time
@@ -10,7 +10,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.db.models.functions import Random
 from django.db.models import Q, Max, OuterRef, Subquery, F,Case, When,Exists
 from django.db import models
-
+import random
+import string
 
 # Create your views here.
 
@@ -63,6 +64,11 @@ def authentication_registration(request):
     context ={}
     return render(request,'main/authentication/auth_registration.html', context)
 
+def authentication_forgot_password(request):
+    context={
+        
+    }
+    return render(request,'main/authentication/auth_forgot_pass.html', context)
 
 def authentication_preLoad(request):
     if request.method =="POST":
@@ -214,18 +220,21 @@ def postGet(request,lastest_post, role_post):
     while time.time() - start_time < timeout:
             try:
                 new_posts = UserPost.objects.filter(user_role_type=role_post).order_by("-modified_at")[lastest_post]
-        
+
                 if new_posts:
                     total_likes =0
                     lastest_post +=1  # Update latest post ID
                     get_blob_info  = UserPost_BLOB.objects.filter(USER_POST_ID = new_posts).order_by('position')
                     item = get_blob_info.first().blob.url
-                    
+                    print(request)
                     get_likes_filter = PostLike.objects.filter(post =new_posts)
-                    already_liked = PostLike.objects.filter(post=new_posts, user=request.user).exists()
+                    if request.user.is_authenticated:
+                        already_liked = PostLike.objects.filter(post=new_posts, user=request.user).exists()
+                       
+                    else:
+                        already_liked = "guest"
                     for like in get_likes_filter:
                         total_likes+=1
-                       
                     return JsonResponse({
                 'new_posts':{
                     'id': new_posts.ID,
@@ -949,10 +958,53 @@ def reviews(request, user_id):
 
 #Settings
 def setting(request):
+
+    get_user= UserSites.objects.get(ID=request.user.ID)
     print("setting")
-    context ={}
+    context ={"user":get_user}
     return render(request,'main/subpages/settings/setting.html', context)
+
+def setting_verify_password(request):
+    data = json.loads(request.body)
+    get_owner = UserSites.objects.get(ID= request.user.ID)
+    test_password =get_owner.check_password(data['verify_password'])
+ 
+    if test_password == True:
+          return JsonResponse({"msg": "Verify password correct"}, status=200)
+    else:
+          return JsonResponse({"msg": "Verify password wrong"}, status=500)
     
+
+
+def setting_save_changes(request):
+    print("save_changes")
+    changed = False
+    get_user = UserSites.objects.get(ID=request.user.ID)
+    new_password = request.POST.get("inp_new_password")
+    subdivision = request.POST.get("inp_subdivision")
+    image_file = request.FILES.get("inp_image_prof")
+
+    
+    if(new_password !=None and new_password!=""):
+        get_user.password = new_password
+        changed = True
+    if(subdivision !=None and subdivision!=""):
+        get_user.subdivision = subdivision
+        changed = True
+    if(image_file !=None and image_file!=""):
+        changed = True
+        get_user.profile_picture = image_file
+
+    if (new_password !=None and new_password!="" and changed==True):
+        get_user.save()
+        logout(request)
+        return JsonResponse({"msg": "Verify password correct","redirect_url":"/authentication/login/"}, status=200)
+    if changed:
+        get_user.save()
+
+    return JsonResponse({"msg": "Verify password correct","redirect_url":"/diyconn/setting/"}, status=200)
+
+
 #notification
 def notification(request):
     get_notification = Notification.objects.filter(USER_NOTIFY_OWNER=request.user)
@@ -971,3 +1023,41 @@ def notification_viewed(request, notif_id):
         get_notif_obj.save()
         print("viewed")
         return JsonResponse({"msg": "Notification Viewed"}, status=200)
+    
+
+
+def changeNewpassword(request):
+    data = json.loads(request.body)
+    getUser= UserSites.objects.filter(email =data["user_email"]).first()
+    length =7
+    characters = string.ascii_letters + string.digits  # A-Z, a-z, 0-9
+    result = ''.join(random.choice(characters) for _ in range(length))
+    print(getUser.username)
+
+
+    
+    if getUser:
+    
+        f = FogotPasswordFixed()
+        f.REFENCE_USER = getUser
+        f.new_password_change = result
+        getUser.password = result
+        print(result)
+        f.save()
+        getUser.save()
+      
+        return JsonResponse({"msg": "Changed password success"}, status=200)
+    else:
+        return JsonResponse({"msg": "Internal error can't change password"}, status=500)
+    
+#admin
+def admin_forgotPassword(request):
+    get_all = FogotPasswordFixed.objects.all().order_by("created_at")
+    context={
+        "data": get_all
+    }
+    print("Your")
+    return render(request,'main/admin_temp/admin_forgot_password.html', context)
+
+
+  

@@ -70,6 +70,13 @@
         ></a>
         <a
           class="navbar-item sty-h-navbar-icons"
+          href="{% url 'main:setting' %}"
+        >
+          <h1 class="">
+            <ion-icon name="settings"></ion-icon></h1
+        ></a>
+        <a
+          class="navbar-item sty-h-navbar-icons"
           href="{% url 'main:notification' %}"
         >
           <h1 class="">
@@ -199,6 +206,12 @@
                 class="dropdown-item sty_choices_menu_icons"
               >
                 <ion-icon name="people"></ion-icon>&nbsp; People
+              </a>
+              <a
+                href="{% url 'main:setting'%}"
+                class="dropdown-item sty_choices_menu_icons"
+              >
+                <ion-icon name="settings"></ion-icon>&nbsp; Settings
               </a>
               <a
                 href="{% url 'main:postAdd' %}"

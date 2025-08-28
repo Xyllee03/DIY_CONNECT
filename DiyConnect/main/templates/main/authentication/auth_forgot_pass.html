@@ -1,0 +1,179 @@
+{% extends './auth_base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- prettier-ignore -->
+    {% block title %}
+    <!-- //prettier-ignore -->
+    <title>Forgot Password | DIY CONNECT</title>
+    <!-- prettier-ignore -->
+    {% endblock title %}
+    <!-- //prettier-ignore -->
+    <style>
+      /* {% block styles %} */
+      .sty-mdl-footer-btn {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+      .sty-mdl-head {
+        font-size: 36px;
+        font-weight: 800;
+        color: black;
+      }
+      .sty-mdl-msg {
+        font-size: 20px;
+        font-weight: 400;
+        color: black;
+      }
+      .sty-mdl-btn-submit {
+        color: #ffffff;
+        font-weight: 600;
+        background-color: #283618;
+        font-size: 25px;
+      }
+
+      @media (max-width: 768px) {
+        .sty-mdl-head {
+          font-size: 24px;
+        }
+      }
+      /* {% endblock styles %}*/
+    </style>
+  </head>
+  <body>
+    <!-- prettier-ignore -->
+    {% block content %}
+    <!-- //prettier-ignore -->
+    <div class="container container-bkg">
+      <div class="has-text-centered">
+        <h1 class="sty-sty-auth-header sty-size-auth-header mb-6">
+          DIY Connect
+        </h1>
+        <h1 class="sty-sty-sub-header-authLogin mb-4 sty-size-sub-header">
+          Change Password
+        </h1>
+        <div>
+          <div class="columns">
+            <div class="column is-2 sty-sty-auth-label-mobile"></div>
+            <div class="column sty-sty-auth-label-mobile">
+              <div class="has-text-centered">
+                <h1 class="sty-sty-auth-label sty-size-auth-label">Email:</h1>
+              </div>
+            </div>
+            <div class="column is-4">
+              <div>
+                <input
+                  type="email"
+                  class="input is-medium sty-sty-inp-border"
+                  placeholder="Email"
+                  id="inp_email"
+                />
+              </div>
+            </div>
+            <div class="column is-2 sty-sty-auth-label-mobile"></div>
+          </div>
+
+          <div>
+            <h1 class="sty-err-msg" id="err_msg">
+              We could not find an account associated with that email address.
+            </h1>
+            <div
+              class="button sty-btn-submit"
+              id="btn_submit"
+              onclick="btn_submit_forgotPassword()"
+            >
+              Submit
+            </div>
+          </div>
+          <h1 class="sty-sty-subtitle-login mb-5">
+            Please enter the email address associated with your username. Our
+            support team will assist you in resetting your password. Pleased be
+            advice that it will take time to received an email
+          </h1>
+        </div>
+      </div>
+    </div>
+    <!-- MODAL-->
+    <div class="modal" id="mdl_changePassword">
+      <div class="modal-background" onclick=""></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title sty-mdl-head has-text-centered">
+            Complete Forgot Password
+          </p>
+        </header>
+        <section class="modal-card-body has-text-centered">
+          <h1 class="sty-mdl-msg">
+            Your password has been successfully changed. Please wait for an
+            email with your new password.
+          </h1>
+        </section>
+
+        <footer class="modal-card-foot">
+          <div class="sty-mdl-footer-btn">
+            <a
+              class="button sty-mdl-btn-submit"
+              href="{% url 'main:authentication_login' %}"
+              onclick=""
+            >
+              Continue
+            </a>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <!-- MODAL -->
+    <!-- prettier-ignore -->
+    {% endblock content %}
+    <!-- //prettier-ignore -->
+
+    <script>
+      // {% block scripts %}
+      let mdl_changePassword = document.getElementById("mdl_changePassword");
+
+      let err_msg = document.getElementById("err_msg");
+      err_msg.style.display = "None";
+      function btn_submit_forgotPassword() {
+        mdl_changePassword.classList.remove("is-active");
+        err_msg.style.display = "None";
+        let inp_email = document.getElementById("inp_email");
+
+        let json_data = {
+          user_email: inp_email.value,
+        };
+        let response = fetch("{% url 'main:changeNewpassword' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+          body: JSON.stringify(json_data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // If response status is not OK (400, 500, etc.), throw an error
+              return response.json().then((errData) => {
+                throw errData;
+              });
+            }
+            return response.json(); // Otherwise, parse the JSON response
+          })
+          .then((msg) => {
+            mdl_changePassword.classList.add("is-active");
+            console.log(msg);
+          })
+          .catch((err) => {
+            //console.log(err);
+            err_msg.style.display = "block";
+            console.log("Error:", err.error || "An unexpected error occurred");
+          });
+      }
+      // {% endblock scripts %}
+    </script>
+  </body>
+</html>

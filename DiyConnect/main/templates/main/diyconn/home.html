@@ -447,9 +447,12 @@
                   <div class="columns is-vcentered sty-mobile-profile-section ">
                 <div class="column is-2">
          
-  <img class="is-rounded profile-img-circle" src="${
-    data.new_posts.profile_urls
-  }" />
+<img class="is-rounded profile-img-circle" 
+     src="${
+       data.new_posts.profile_urls
+         ? data.new_posts.profile_urls
+         : "/static/main/images/default-profile.jpg"
+     }" />
 
                 </div>
                 <div class="column has-text-left sty-mdl-msg">
@@ -511,6 +514,9 @@
         : data.new_posts.role_post === "Showcase" &&
           data.new_posts.already_liked == true
         ? `postlikeRemoved(event)`
+        : data.new_posts.role_post === "Showcase" &&
+          data.new_posts.already_liked == "guest"
+        ? ``
         : `mdl_openRequest(event, '${data.new_posts.title.replace(
             /'/g,
             "\\'"
@@ -530,6 +536,9 @@
         : data.new_posts.role_post === "Showcase" &&
           data.new_posts.already_liked == true
         ? `Liked: ${data.new_posts.like}`
+        : data.new_posts.role_post === "Showcase" &&
+          data.new_posts.already_liked == "guest"
+        ? `Like: ${data.new_posts.like}`
         : "Accept Request"
     }
     

@@ -12,6 +12,8 @@ urlpatterns = [
     path('authentication/registration/', views.authentication_registration, name="authentication_registration" ),
     path('authentication/profile/', views.authentication_profile, name="authentication_profile"),
      path('authentication/PreLoad/', views.authentication_preLoad, name="authentication_preLoad"),
+          path('authentication/forgot-password/', views.authentication_forgot_password, name="authentication_forgot_password"),
+           path('authentication/changepassword/', views.changeNewpassword, name="changeNewpassword"),
 
      # CRUD OPERATION AUTHENTICATION
     path('authentication/ADD/', views.authentication_ADD, name="authentication_ADD"),
@@ -78,6 +80,11 @@ urlpatterns = [
   path('diyconn/notification/viewed/<int:notif_id>', views.notification_viewed,  name="notification_viewed"),
    #Setting
    path('diyconn/setting/', views.setting,  name="setting"),
-
+    path('diyconn/setting/verify-password', views.setting_verify_password,  name="setting_verify_password"),
+     path('diyconn/setting/save-changes', views.setting_save_changes,  name="setting_save_changes"),
  
+
+ #admin
+     path('diyconn/admin-fogotPassword/', views.admin_forgotPassword,  name="admin_forgotPassword"),
+
 ]

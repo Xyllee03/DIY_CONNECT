@@ -219,3 +219,11 @@ class Notification(models.Model):
     type = models.CharField(max_length=20, choices=NotifyType.choices)
     status = models.CharField(max_length=20, choices=NotifyStatus.choices, default=NotifyStatus.DELIVERED)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+class FogotPasswordFixed(models.Model):
+    ID=models.AutoField(primary_key=True)
+    REFENCE_USER =models.ForeignKey(UserSites, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    new_password_change = models.TextField()

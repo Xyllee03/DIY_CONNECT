@@ -10,18 +10,23 @@
     {% endblock title %}
     <!-- //prettier-ignore
       -->
-    <style></style>
   </head>
 
   <body>
+    {% load static %}
+
     <!-- prettier-ignore -->
     {% block content %}
     <!-- //prettier-ignore -->
     <div class="container container-bkg">
       <div class="has-text-centered">
-        <h1 class="sty-sty-auth-header sty-size-auth-header mb-6">
-          DIY Connect
-        </h1>
+        <h1 class="sty-sty-auth-header sty-size-auth-header">DIY Connect</h1>
+        <img
+          class="image_logo mb-6"
+          src="{% static 'main/images/diy_conn_logo_bkg.png' %}"
+          alt="My image"
+        />
+
         <h1 class="sty-sty-sub-header-authLogin mb-4 sty-size-sub-header">
           Login
         </h1>
@@ -84,6 +89,11 @@
               Or just visit the site to see what offers waiting for you
               <a href="/diyconnect/home/">Proceed as a guest</a>
             </h1>
+            <a
+              href="{% url 'main:authentication_forgot_password' %}"
+              class="has-text-centered"
+              >Forgot password?
+            </a>
           </div>
         </div>
       </div>

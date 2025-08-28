@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}
+    <title></title>
+    {% endblock title %}
+    <style>
+      /* {% block styles %} */
+      .inherit_width {
+        width: 100%;
+      }
+      /* {% endblock styles %} */
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <section class="hero is-fullheight">
+      <div class="hero-body">
+        <div class="inherit_width">
+          <!-- prettier-ignore -->
+          {% block content %}
+          <!-- //prettier-ignore -->
+          <!-- prettier-ignore -->
+          {% endblock content %}
+          <!-- //prettier-ignore -->
+        </div>
+      </div>
+    </section>
+
+    <script>
+      async function initializeCSRF() {
+        let response = await fetch("{% url 'main:set_csrf_token' %}", {
+          method: "GET",
+          credentials: "include", //  Ensures cookies are sent and received
+        });
+
+        if (response.ok) {
+          console.log("CSRF Token Initialized");
+        } else {
+          console.error("Failed to initialize CSRF");
+        }
+      }
+
+      // Call this function when the page loads
+      initializeCSRF();
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      // {% block scripts %}
+      //{% endblock scripts %}
+    </script>
+  </body>
+</html>

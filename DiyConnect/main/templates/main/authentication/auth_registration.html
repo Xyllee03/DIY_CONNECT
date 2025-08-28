@@ -20,8 +20,13 @@
       <div class="columns is-vcentered">
         <div class="column logo-mobile">
           <div class="has-text-left">
-            <a class="button" href="{% url 'main:authentication_login' %}">
-              DIY CONNECT LOGO
+            <a href="{% url 'main:authentication_login' %}">
+              {% load static %}
+              <img
+                class="image_logo"
+                src="{% static 'main/images/diy_conn_logo_bkg.png' %}"
+                alt="My image"
+              />
             </a>
           </div>
         </div>

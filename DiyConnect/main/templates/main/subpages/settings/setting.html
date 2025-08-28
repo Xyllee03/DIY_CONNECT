@@ -2,31 +2,350 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
 
     <style>
-        /* {% block styles %}*/
-            /* {% endblock styles %}*/
-    </style>
-</head>
-<body>
- 
+      /* {% block styles %}*/
+      .sty-profile-img {
+        height: 400px;
+        width: 400px; /* fixed to match height for a perfect circle */
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto; /* centers the whole circle in its container */
+      }
 
-        <!-- prettier-ignore -->
+      .sty-profile-img img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover; /* ensures image fills circle without distortion */
+      }
+      /* Modal DELETE Friend Request */
+      .sty-mdl-footer-btn {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+      .sty-mdl-head {
+        font-size: 36px;
+        font-weight: 800;
+        color: black;
+      }
+      .sty-mdl-msg {
+        font-size: 20px;
+        font-weight: 400;
+        color: black;
+      }
+      .sty-mdl-btn-submit {
+        color: #ffffff;
+        font-weight: 600;
+        background-color: #283618;
+        font-size: 25px;
+      }
+      .sty-header-profile {
+        font-size: 45px;
+        color: black;
+        font-family: "Montserrat", sans-serif;
+        font-optical-sizing: auto;
+        font-style: normal;
+        font-weight: 800;
+      }
+      .sty-mdl-bio-text-area {
+        font-size: 20px;
+        font-family: "Hind Madurai", sans-serif;
+        font-style: normal;
+        width: 100%;
+        height: 149px;
+      }
+      .sty-label {
+        font-size: 20px;
+        font-family: "Hind Madurai", sans-serif;
+        font-style: normal;
+        font-weight: 500;
+        color: black;
+      }
+      .sty_inputs {
+        font-size: 20px;
+        font-family: "Hind Madurai", sans-serif;
+        font-style: normal;
+        background-color: #fefae0;
+        border: 2px solid #283618;
+      }
+      .sty-btn-all {
+        background-color: #283618;
+        color: #fefae0;
+      }
+      .textarea-wrapper {
+        display: flex;
+        justify-content: center; /* horizontal */
+        align-items: center; /* vertical */
+        height: 200px; /* adjust as needed */
+        border: 1px solid #ccc; /* just for demo */
+      }
+
+      .centered-textarea {
+        text-align: center;
+        resize: none;
+        width: 100%;
+        height: 100%;
+        border: none;
+        outline: none;
+      }
+      .sty_inp_dropdown select {
+        font-size: 20px !important;
+        background-color: #fefae0;
+        border: 2px solid #283618;
+      }
+      .sty_inputs:disabled {
+        background-color: #e0d9ab;
+      }
+      .sty-error {
+        font-size: 12px;
+        color: red;
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          overflow-x: hidden; /* prevents unwanted horizontal scroll */
+        }
+        .sty-profile-img {
+          height: 250px;
+          width: 250px; /* fixed to match height for a perfect circle */
+        }
+        .sty_inp_dropdown_mobile {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .sty-header-profile {
+          font-size: 20px;
+          text-align: center;
+        }
+        .sty_inputs {
+          font-size: 15px;
+        }
+        .sty_inp_dropdown select {
+          font-size: 15px !important;
+        }
+        .sty-label {
+          font-size: 15px;
+        }
+        .sty-btn-all {
+          font-size: 15px;
+        }
+        .sty-mobile-verify {
+          font-size: 10px !important;
+          position: relative;
+          right: 23px; /* moves element 10px to the left */
+        }
+        .sty-error {
+          font-size: 9px;
+          color: red;
+          display: none;
+        }
+      }
+
+      /* {% endblock styles %}*/
+    </style>
+  </head>
+  <body>
+    <!-- prettier-ignore -->
     {% block content %}
-       <div id="get_link" data-url="{% url 'main:diyconn_home' %}" hidden></div>
+    <div id="get_link" data-url="{% url 'main:diyconn_home' %}" hidden></div>
     <!-- //prettier-ignore -->
-<h1>TestSetting</h1>
-        <!-- prettier-ignore -->
+    <div class="container">
+      <div class="columns is-vcentered">
+        <div class="column">
+          <h1 class="sty-header-profile">"{{ user.username }}" Information</h1>
+          <div class="columns is-vcentered is-mobile">
+            <div class="column is-3">
+              <h1 class="sty-label">Bio:</h1>
+            </div>
+            <div class="column">
+              <textarea
+                name=""
+                id="inp_bio"
+                class="sty-mdl-bio-text-area sty_inputs"
+              >
+{{ user.bio }}</textarea
+              >
+            </div>
+          </div>
+          <div class="columns is-vcentered is-mobile">
+            <div class="column is-3">
+              <h1 class="sty-label">Subdivision:</h1>
+            </div>
+            <div class="column">
+              <div class="sty_inp_dropdown_mobile">
+                <div class="select sty_inp_dropdown">
+                  <select id="inp_subdivision">
+                    <option value="South-2">South-2</option>
+                    <option value="South-1">South-1</option>
+                    <option value="East-1">East-1</option>
+                    <!-- prettier-ignore
+                  <select id="inp_subdivision">
+                <option value="South-2" {% if user.subdivision == "South-2" %}selected{% endif %}>South-2</option>
+                 <option value="South-1" {% if user.subdivision == "South-1" %}selected{% endif %}>South-1</option>
+                  <option value="East-1"  {% if user.subdivision == "East-1" %}selected{% endif %}>East-1</option>
+                  </select>
+                     //prettier-ignore -->
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="columns is-vcentered is-mobile">
+            <div class="column is-3">
+              <h1 class="sty-label">Email:</h1>
+            </div>
+            <div class="column">
+              <input
+                type="text"
+                class="input sty_inputs"
+                value="{{ user.email }}"
+              />
+            </div>
+          </div>
+          <div class="columns is-vcentered is-mobile">
+            <div class="column is-3">
+              <h1 class="sty-label">Current Password:</h1>
+            </div>
+            <div class="column">
+              <h1 class="sty-error" id="err_password_verify">
+                The current password you entered is incorrect.
+              </h1>
+
+              <input
+                type="text"
+                class="input sty_inputs"
+                id="inp_verify_password"
+              />
+            </div>
+            <div class="column has-text-centered is-2">
+              <div class="sty-mobile-verify">
+                <div
+                  class="button is-rounded sty-btn-all"
+                  onclick="btn_verify_password(event)"
+                >
+                  Verify
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="columns is-vcentered is-mobile">
+            <div class="column is-3">
+              <h1 class="sty-label">New password:</h1>
+            </div>
+            <div class="column">
+              <input
+                type="text"
+                id="inp_new_password"
+                class="input sty_inputs"
+              />
+            </div>
+          </div>
+          <div class="columns is-vcentered is-mobile">
+            <div class="column is-3">
+              <h1 class="sty-label">Re-type password:</h1>
+            </div>
+            <div class="column">
+              <input
+                type="text"
+                id="inp_retype_password"
+                class="input sty_inputs"
+              />
+            </div>
+          </div>
+          <h1 class="sty-error" id="err_password_retype">
+            The new password and re-type password does not match.
+          </h1>
+        </div>
+        <div class="column">
+          <div class="has-text-centered">
+            <input
+              type="file"
+              id="inp_image_profile"
+              accept="image/*"
+              style="display: none"
+            />
+            <div class="sty-profile-img">
+              <img
+                src="{{ user.profile_picture.url }}"
+                alt=""
+                id="show_profile_img"
+              />
+            </div>
+            <div class="button mt-4 sty-btn-all" id="btn_edit_profile">
+              Edit picture profile
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="has-text-centered">
+        <div class="button sty-btn-all" onclick="mdl_open_setting()">
+          Saved Changes
+        </div>
+      </div>
+    </div>
+
+    <!-- SAVED MODAL -->
+    <div class="modal" id="mdl_saved_setting">
+      <div class="modal-background" onclick="mdl_close_setting()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title sty-mdl-head has-text-centered">
+            Saved Changes
+          </p>
+          <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body has-text-centered">
+          <h1 class="sty-mdl-msg">
+            Once you make these changes, you won’t be able to undo them. Do you
+            want to continue?
+          </h1>
+          <input
+            type="text"
+            name=""
+            id="inp_user_ID_friendRemove"
+            value=""
+            hidden
+          />
+        </section>
+
+        <footer class="modal-card-foot">
+          <div class="sty-mdl-footer-btn">
+            <a
+              class="button sty-mdl-btn-submit"
+              onclick="btn_setting_save_changes()"
+            >
+              Continue
+            </a>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- prettier-ignore -->
     {% endblock content %}
     <!-- //prettier-ignore -->
 
     <script>
-           // {% block scripts %}
-   function Initialized() {
+      // {% block scripts %}
+      let inp_new_password = document.getElementById("inp_new_password");
+      let inp_retype_password = document.getElementById("inp_retype_password");
+      function Initialized() {
+        inp_new_password.disabled = true;
+        inp_retype_password.disabled = true;
         let usr_all_bck_opt_ref = document.querySelectorAll(
           "#usr_all_bck_opt_ref"
         );
@@ -38,18 +357,138 @@
         let usr_all_bck_opt_label = document.querySelectorAll(
           "#usr_all_bck_opt_label"
         );
-     
 
         //Trial Checking
         usr_all_bck_opt_label.forEach((element) => {
-          element.textContent = "Settings" 
+          element.textContent = "Settings";
         });
-      
+
         //console.log(usr_all_end_opt_ref);
       }
 
       Initialized();
-              // {% endblock scripts %}
+      let mdl_saved_setting = document.getElementById("mdl_saved_setting");
+
+      function mdl_open_setting() {
+        mdl_saved_setting.classList.add("is-active");
+      }
+      function mdl_close_setting() {
+        mdl_saved_setting.classList.remove("is-active");
+      }
+      let show_profile_img = document.getElementById("show_profile_img");
+      let btn_edit_profile = document.getElementById("btn_edit_profile");
+      let inp_image_profile = document.getElementById("inp_image_profile");
+      btn_edit_profile.addEventListener("click", () => {
+        inp_image_profile.click();
+      });
+
+      inp_image_profile.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            show_profile_img.src = e.target.result; // update preview
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      function btn_verify_password(event) {
+        let target = event.currentTarget;
+        let err_password_verify = document.getElementById(
+          "err_password_verify"
+        );
+
+        let inp_verify_password = document.getElementById(
+          "inp_verify_password"
+        );
+        let json_data = {
+          verify_password: inp_verify_password.value,
+        };
+        let response = fetch("{% url 'main:setting_verify_password' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+          body: JSON.stringify(json_data),
+        })
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error("Request failed: " + res.status); // force rejection
+            }
+            return res.json();
+          })
+          .then((msg) => {
+            inp_new_password.disabled = false;
+            inp_retype_password.disabled = false;
+            err_password_verify.style.display = "none";
+            target.innerHTML = `Verify &nbsp; <ion-icon name="checkmark-circle"></ion-icon>`;
+
+            console.log(msg);
+          })
+          .catch((err) => {
+            err_password_verify.style.display = "block";
+            inp_new_password.disabled = true;
+            inp_retype_password.disabled = true;
+            target.innerHTML = `Verify &nbsp; <ion-icon name="close-circle"></ion-icon>`;
+            console.log(err);
+          });
+      }
+
+      function btn_setting_save_changes() {
+        let = err_password_retype = document.getElementById(
+          "err_password_retype"
+        );
+        err_password_retype.style.display = "none";
+        let get_inp_new_password = document.getElementById("inp_new_password");
+        let get_inp_retype_password = document.getElementById(
+          "inp_retype_password"
+        );
+        let get_inp_subdivision = document.getElementById("inp_subdivision");
+        let get_inp_bio = document.getElementById("inp_bio");
+        let inp_image_profile = document.getElementById("inp_image_profile");
+        if (get_inp_new_password.value != get_inp_retype_password.value) {
+          err_password_retype.style.display = "block";
+          console.log("password does not match");
+          return;
+        } else {
+          console.log("password match");
+        }
+
+        let formData = new FormData();
+        formData.append("inp_new_password", get_inp_new_password.value);
+        formData.append("inp_subdivision", get_inp_subdivision.value);
+
+        // get the selected file
+        if (inp_image_profile.files.length > 0) {
+          formData.append("inp_image_prof", inp_image_profile.files[0]);
+        }
+
+        let response = fetch("{% url 'main:setting_save_changes' %}", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+
+          body: formData,
+        })
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error("Request failed: " + res.status); // force rejection
+            }
+            return res.json();
+          })
+          .then((msg) => {
+            console.log(msg);
+            window.location.href = `${msg.redirect_url}`;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      // {% endblock scripts %}
     </script>
-</body>
+  </body>
 </html>
