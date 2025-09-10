@@ -1,0 +1,78 @@
+{% extends './admin_temp.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}
+    <title>Admin | Check Users</title>
+    {% endblock title %}
+  </head>
+  <body>
+    <!-- prettier-ignore -->
+    {% block content %}
+    <!-- //prettier-ignore -->
+    <a href="{% url 'main:admin_dashboard' %}" class="button is-info">Home</a>
+    <div>User Details</div>
+    <div class="columns">
+      <div class="column has-text-centered">
+        <h1>#</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Username</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>First & Last Name</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Email</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Date Created</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Last Login</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Actions</h1>
+      </div>
+    </div>
+
+    {% for user in users %}
+
+    <div class="columns">
+      <div class="column has-text-centered">
+        <h1>{{ forloop.counter }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>{{ user.username }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>{{ user.email }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>{{ user.date_created }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>{{ user.last_login }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        <div class="button has-background-danger">Delete</div>
+      </div>
+    </div>
+    {% endfor %}
+    <!-- prettier-ignore -->
+    {% endblock content %}
+    <!-- //prettier-ignore -->
+
+    <script>
+      //{% block scripts %}
+      console.log("this for admin check users");
+      //{% endblock scripts %}
+    </script>
+  </body>
+</html>

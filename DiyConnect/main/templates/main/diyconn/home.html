@@ -438,6 +438,9 @@
 
           let div_newPost = document.createElement("div");
           div_newPost.classList.add("container");
+          const safeTitle = data.new_posts.title
+            .replace(/'/g, "\\'") // escape single quotes
+            .replace(/\r?\n/g, "\\n"); // escape real newlines into "\n"
 
           //clean_path = image_path.replace("/upload/", "");
           div_newPost.innerHTML = `
@@ -517,10 +520,7 @@
         : data.new_posts.role_post === "Showcase" &&
           data.new_posts.already_liked == "guest"
         ? ``
-        : `mdl_openRequest(event, '${data.new_posts.title.replace(
-            /'/g,
-            "\\'"
-          )}', '${data.new_posts.user}')`
+        : `mdl_openRequest(event, '${safeTitle}', '${data.new_posts.user}');`
     }" 
     data-post-id="${data.new_posts.id}"
   

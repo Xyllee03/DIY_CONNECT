@@ -279,11 +279,19 @@
               style="display: none"
             />
             <div class="sty-profile-img">
+              {% if user.profile_picture %}
               <img
                 src="{{ user.profile_picture.url }}"
-                alt=""
+                alt="Profile Picture"
                 id="show_profile_img"
               />
+              {% else %}
+              <img
+                src="/static/images/default.png"
+                alt="Default Profile"
+                id="show_profile_img"
+              />
+              {% endif %}
             </div>
             <div class="button mt-4 sty-btn-all" id="btn_edit_profile">
               Edit picture profile
@@ -460,6 +468,7 @@
         let formData = new FormData();
         formData.append("inp_new_password", get_inp_new_password.value);
         formData.append("inp_subdivision", get_inp_subdivision.value);
+        formData.append("inp_bio", get_inp_bio.value);
 
         // get the selected file
         if (inp_image_profile.files.length > 0) {

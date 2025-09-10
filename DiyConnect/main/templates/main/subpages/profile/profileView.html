@@ -217,6 +217,36 @@
     .sty-border-devider {
       border-right: 3px solid #283618;
     }
+
+    .gradient-text {
+      font-size: 64px;
+      font-weight: bold;
+      background: linear-gradient(
+        270deg,
+        #ff6b6b,
+        #f8e71c,
+        #6bff95,
+        #6b8bff,
+        #d36bff
+      );
+      background-size: 1000% 1000%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientMove 8s ease infinite;
+    }
+
+    @keyframes gradientMove {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
     /* MOBILE */
     @media (max-width: 768px) {
       .sty-mdl-msg {
@@ -277,6 +307,10 @@
         height: 200px;
         width: 200px;
       }
+      .gradient-text {
+        font-size: 20px;
+      }
+
       .sty-profile-name {
         font-size: 20px;
         font-weight: 600;
@@ -334,7 +368,13 @@
             <img src="{{ user_details.profile_picture.url }}" alt="">
         </div>
         <div class="has-text-centered">
-        <h1 class="sty-profile-name"> {{ user_details.username }}</h1>
+          {% if check_admin %}
+
+        <h1 class="gradient-text"> {{ user_details.username }}</h1><div class="tag"> ADMINISTRATOR</div>
+
+        {% else %}
+              <h1 class="sty-profile-name"> {{ user_details.username }}</h1>
+          {% endif %}
         <h1 class="sty-profile-bio mb-5">" {{ user_details.bio }} "</h1>
         </div>
         <div class="columns has-text-centered sty-profile-btn-bkg is-vcentered is-mobile ">
@@ -363,10 +403,7 @@
             <h1 class="sty-subheader-description">Post</h1>
             <h1 class="sty-profile-records">{{ number_post_contributor }}</h1>
           </div>
-          <div class="column has-text-centered sty-records-borders p-4">
-            <h1 class="sty-subheader-description">Level</h1>
-                 <h1 class="sty-profile-records">--Data--</h1>
-          </div>
+         
            <div class="column has-text-centered sty-records-borders p-4 sty-rem-rightborder">
             <h1 class="sty-subheader-description">Rating</h1>
                  <h1 class="sty-profile-records">{{ avg_rating_contributor }}</h1>
@@ -378,10 +415,7 @@
             <h1 class="sty-subheader-description">Post</h1>
             <h1 class="sty-profile-records">{{ number_post_innovator }}</h1>
           </div>
-          <div class="column has-text-centered sty-records-borders p-4">
-            <h1 class="sty-subheader-description">Level</h1>
-                 <h1 class="sty-profile-records">--Data--</h1>
-          </div>
+         
            <div class="column has-text-centered sty-records-borders p-4 sty-rem-rightborder">
             <h1 class="sty-subheader-description">Rating</h1>
                  <h1 class="sty-profile-records">{{ avg_rating_innovator }}</h1>
@@ -393,10 +427,7 @@
             <h1 class="sty-subheader-description">Post</h1>
          <h1 class="sty-profile-records">{{ number_post_collector }}</h1>
           </div>
-          <div class="column has-text-centered sty-records-borders p-4">
-            <h1 class="sty-subheader-description">Level</h1>
-             <h1 class="sty-profile-records">--Data--</h1>
-          </div>
+         
            <div class="column has-text-centered sty-records-borders p-4 sty-rem-rightborder">
             <h1 class="sty-subheader-description">Rating</h1>
            <h1 class="sty-profile-records">{{ avg_rating_collector  }}</h1>

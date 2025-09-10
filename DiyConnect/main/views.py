@@ -4,7 +4,7 @@ import json
 from django.contrib.auth.hashers import check_password
 from .models import UserSites, UserPost, UserPost_BLOB, Friendships, UserMessages, MessageStatus,TaskRequest,Review,PostLike,FriendStatus, Notification, NotifyType,NotifyStatus, FogotPasswordFixed
 from django.contrib.auth import authenticate, login,logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 import time
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.db.models.functions import Random
@@ -134,7 +134,7 @@ def home(request):
     return render(request,'main/diyconn/home.html', context)
 
 # POST
-
+@login_required
 def postLikeAdd(request):
     if(request.method =="POST"):
         data = json.loads(request.body)
@@ -150,7 +150,7 @@ def postLikeAdd(request):
         return JsonResponse({"msg": "Liked Post"}, status=200)
         
 
-
+@login_required
 def postLikeRemoved(request):
     data = json.loads(request.body)
     print(data)
@@ -169,6 +169,7 @@ def postGet_specific(request,post_id):
               "post_data_blob":get_post_blobs,
               }
      return render(request,'main/subpages/post/postRetrieve.html', context)
+
 
 def postGet_profile(request, username):
    
@@ -205,12 +206,14 @@ def postGet_profile(request, username):
     
     return JsonResponse({"msg": "Checking if there is a post", "items":context}, status=200)
 
+
 def postRoleChange(request):
     if(request.method =="POST"):
         data = json.loads(request.body)
         request.session["RolesPostFilter"] = data['role']
       
         return JsonResponse({"msg": "Changing Item Post"}, status=200)
+
 
 def postGet(request,lastest_post, role_post):
     timeout = 30
@@ -228,6 +231,7 @@ def postGet(request,lastest_post, role_post):
                     item = get_blob_info.first().blob.url
                     print(request)
                     get_likes_filter = PostLike.objects.filter(post =new_posts)
+                  
                     if request.user.is_authenticated:
                         already_liked = PostLike.objects.filter(post=new_posts, user=request.user).exists()
                        
@@ -406,6 +410,7 @@ def postEditSave(request, post_id):
 
 
 #messages
+@login_required
 def MessageMobile(request):
     context= {}
     
@@ -433,6 +438,7 @@ def Messages(request):
 
     context ={"id":data_user_id}
     return render(request, 'main/subpages/messages/messages.html',context)
+
 @login_required
 def MessagesGet(request):
     selected_message = request.session.get("selectedMessage")
@@ -533,6 +539,7 @@ def MessagesGet(request):
             })
         return JsonResponse({"msg": "Messages Data Retrieve Successfully","messages": context, "selected_message":selected_message}, status=200)
 
+@login_required
 def MessageConversationGet(request,sender_id):
     request.session["selectedMessage"] =sender_id
     if(request.method =="POST"):
@@ -695,6 +702,7 @@ def peopleFriendRequest_get(request):
     
     return JsonResponse({"msg": "Friend request sent successfully", "FriendRequest": context}, status=200)
 
+@login_required
 def peopleFriendRequest_accepted(request, user_id):
   
     requester_user = UserSites.objects.get(ID=user_id)
@@ -710,6 +718,7 @@ def peopleFriendRequest_accepted(request, user_id):
 
     return JsonResponse({"msg": "This is for friend request accepted"}, status=200)
 
+@login_required
 def peopleFriendRequest_pending(request, user_id):
     requester_user = UserSites.objects.get(ID=user_id)
     reject_request= Friendships.objects.get(RECEIVER_ID =request.user, REQUESTER_ID =requester_user)
@@ -721,6 +730,7 @@ def peopleFriendRequest_pending(request, user_id):
     return JsonResponse({"msg": "This is for friend request rejected"}, status=200)
 
 
+@login_required
 def peopleGetDiscover(request):
     try:
         users = UserSites.objects.exclude(ID = request.user.ID).order_by(Random())
@@ -743,6 +753,7 @@ def peopleGetDiscover(request):
         return JsonResponse({"msg": "An error occurred while retrieving the people to discover"}, status=500)
 
 
+@login_required
 def peopleAdd(request, user_id):
     try:
 
@@ -766,6 +777,7 @@ def peopleAdd(request, user_id):
         #print(f"Error in add_friend_request: {e}")  # helpful for debugging
         return JsonResponse({"msg": "An error occurred while sending the friend request."}, status=500)
 
+@login_required
 def peopleDelete(request, user_id):
     try:
         if(request.method =="POST"):
@@ -781,6 +793,7 @@ def peopleDelete(request, user_id):
         #print(f"Error in add_delete_friend_request: {e}")  # helpful for debugging
         return JsonResponse({"msg": "An error occurred while delete the friend status."}, status=500)
 
+@login_required
 def peopleFriends(request):
     
     if(request.method =="POST"):
@@ -808,15 +821,21 @@ def peopleFriends(request):
         #print("this is for people Friends")
         return JsonResponse({"msg": "Friends list retrieved successfully.","FriendList": context}, status=200)
 
+@login_required
 def profile_user(request, username):
     check_owner_post = False
     get_user_id=''
+   
 
     user_details = UserSites.objects.get(username=username)
     get_user_number_post_contributor = UserPost.objects.filter(USER_ID=user_details, user_role_type ="Contributor").count()
     get_user_number_post_innovator = UserPost.objects.filter(USER_ID=user_details, user_role_type ="Innovator").count()
     get_user_number_post_collector = UserPost.objects.filter(USER_ID=user_details, user_role_type ="Collector").count()
-
+    chk_admin = False
+    if(user_details.is_superuser):
+        chk_admin =True
+    else:
+        chk_admin = False
     avg_rating_contributor = avg_rating_collector = avg_rating_innovator=0
     arr_avg_contributor, arr_avg_collector, arr_avg_innovator = [], [], []
     get_reviews = Review.objects.filter(USER_FULLFILL_REQUEST = user_details)
@@ -876,13 +895,14 @@ def profile_user(request, username):
         "avg_rating_collector": round(avg_rating_collector),
         "avg_rating_innovator":round(avg_rating_innovator),
         "friend_status":friend_status,
+        "check_admin": chk_admin,
 
     }
     return render(request,'main/subpages/profile/profileView.html', context)
 
 
 #TASKREQUEST
-
+@login_required
 def request_fulfiller_cancelled(request):
     if(request.method =="POST"):
         try:
@@ -907,6 +927,7 @@ def request_fulfiller_cancelled(request):
 
 
 # ADDED REVIEW AND REQUEST COMPLETED
+@login_required
 def request_receiver_completed(request):
     if(request.method =="POST"):
     
@@ -943,7 +964,7 @@ def request_receiver_completed(request):
 
 
 #Reviews
-
+@login_required
 def reviews(request, user_id):
     context ={}
     get_user = UserSites.objects.get(ID = user_id)
@@ -957,6 +978,7 @@ def reviews(request, user_id):
     return render(request,'main/subpages/reviews/review.html', context)
 
 #Settings
+@login_required
 def setting(request):
 
     get_user= UserSites.objects.get(ID=request.user.ID)
@@ -964,6 +986,7 @@ def setting(request):
     context ={"user":get_user}
     return render(request,'main/subpages/settings/setting.html', context)
 
+@login_required
 def setting_verify_password(request):
     data = json.loads(request.body)
     get_owner = UserSites.objects.get(ID= request.user.ID)
@@ -975,7 +998,7 @@ def setting_verify_password(request):
           return JsonResponse({"msg": "Verify password wrong"}, status=500)
     
 
-
+@login_required
 def setting_save_changes(request):
     print("save_changes")
     changed = False
@@ -983,6 +1006,7 @@ def setting_save_changes(request):
     new_password = request.POST.get("inp_new_password")
     subdivision = request.POST.get("inp_subdivision")
     image_file = request.FILES.get("inp_image_prof")
+    bio  = request.POST.get("inp_bio")
 
     
     if(new_password !=None and new_password!=""):
@@ -994,7 +1018,8 @@ def setting_save_changes(request):
     if(image_file !=None and image_file!=""):
         changed = True
         get_user.profile_picture = image_file
-
+    if(bio !=None and bio!=""):
+        get_user.bio = bio
     if (new_password !=None and new_password!="" and changed==True):
         get_user.save()
         logout(request)
@@ -1006,6 +1031,7 @@ def setting_save_changes(request):
 
 
 #notification
+@login_required
 def notification(request):
     get_notification = Notification.objects.filter(USER_NOTIFY_OWNER=request.user)
     print("notification")
@@ -1014,7 +1040,7 @@ def notification(request):
     context={"notifications":get_notification}
     return render(request,'main/subpages/notification/notification.html', context)
 
-
+@login_required
 def notification_viewed(request, notif_id):
     print(notif_id)
     if request.method =="POST":
@@ -1051,7 +1077,14 @@ def changeNewpassword(request):
         return JsonResponse({"msg": "Internal error can't change password"}, status=500)
     
 #admin
+
+def superuser_required(user):
+    return user.is_superuser
+
+@user_passes_test(superuser_required)
+@login_required
 def admin_forgotPassword(request):
+    
     get_all = FogotPasswordFixed.objects.all().order_by("created_at")
     context={
         "data": get_all
@@ -1060,4 +1093,47 @@ def admin_forgotPassword(request):
     return render(request,'main/admin_temp/admin_forgot_password.html', context)
 
 
-  
+@user_passes_test(superuser_required)
+@login_required
+def admin_dashboard(request):
+    context={    
+    }
+    print("dashboard")
+    return render(request,'main/admin_temp/admin_dashboard.html', context)
+
+@user_passes_test(superuser_required)
+@login_required
+def admin_checkUserpostDetails(request):
+    post_details =[]
+    get_all_userpost = UserPost.objects.all().order_by("modified_at")
+    for userPost in get_all_userpost:
+        up_b= UserPost_BLOB.objects.filter(USER_POST_ID=userPost.ID).order_by("-position")
+        post_details.append({
+            'post':userPost,
+            'blob':up_b
+        })
+        #print(post_details)
+    context ={
+        'post_details':post_details
+    }
+    return render(request,'main/admin_temp/admin_postDetails.html', context)
+
+@user_passes_test(superuser_required)
+@login_required
+def admin_deletePostDetails(request,post_id):
+    if(request.method =="POST"):
+        u = UserPost.objects.get(ID=post_id)
+        u.delete()
+        print("this is delete post")
+        return JsonResponse({"msg": "Deleting Post"}, status=200)
+    else:
+        return JsonResponse({"msg": "Issue on deleting"}, status=200)
+    
+def admin_CheckUsers(request):
+    get_user = UserSites.objects.all().order_by("username")
+    context ={
+
+        "users":get_user
+    }
+    return render(request,'main/admin_temp/admin_checkUsers.html', context)
+    

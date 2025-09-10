@@ -1,0 +1,166 @@
+{% extends './admin_temp.html' %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}
+    <title>Admin | UserPostDetails</title>
+    {% endblock title %}
+  </head>
+
+  <body>
+    <!-- prettier-ignore -->
+    {% block content %}
+    <a href="{% url 'main:admin_dashboard' %}" class="button is-info">Home</a>
+    <!-- //prettier-ignore -->
+    <div>User Post Details</div>
+    <div class="columns">
+      <div class="column has-text-centered">
+        <h1>#</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Username</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Post Title</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Description</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Post Pictures</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Time Modified</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Actions</h1>
+      </div>
+    </div>
+    {% for post in post_details %}
+    <div class="columns is-vcentered">
+      <div class="column has-text-centered">
+        <h1>{{ forloop.counter }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>{{ post.post.USER_ID.username }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>{{ post.post.title }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>{{ post.post.description }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        {% for blob_BL in post.blob %}
+        <a href="{{ blob_BL.blob.url }}" target="_blank">
+          <img src="{{ blob_BL.blob.url }}" alt="Blob Image" width="200" />
+        </a>
+
+        {% endfor %}
+      </div>
+      <div class="column has-text-centered">
+        <h1>{{ post.post.modified_at }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        <div
+          class="button has-background-danger"
+          data-id-post="{{ post.post.ID }}"
+          data-title-post="{{ post.post.title }}"
+          onclick="btn_openDelete_mdl(event)"
+        >
+          Delete
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="mdl_delete_post">
+      <div class="modal-background" onclick="btn_closeDelete_mdl()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title has-text-centered">Delete Post</p>
+          <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+          <!-- Content ... -->
+          <div id="mdl_txt_content"></div>
+        </section>
+        <footer class="modal-card-foot">
+          <div class="buttons">
+            <button
+              class="button is-success"
+              id="btn_mdl_submit_delete"
+              onclick="btn_submit_delete(event)"
+            >
+              Save changes
+            </button>
+            <button class="button" onclick="btn_closeDelete_mdl()">
+              Cancel
+            </button>
+          </div>
+        </footer>
+      </div>
+    </div>
+    {% endfor %}
+    <div></div>
+    <!-- prettier-ignore -->
+    {% endblock content %}
+    <!-- //prettier-ignore -->
+    <script>
+      //{% block scripts %}
+      let mdl_txt_content = document.getElementById("mdl_txt_content");
+      let mdl_delete_post = document.getElementById("mdl_delete_post");
+      let btn_mdl_submit_delete = document.getElementById(
+        "btn_mdl_submit_delete"
+      );
+      function btn_closeDelete_mdl() {
+        mdl_delete_post.classList.remove("is-active");
+        mdl_txt_content.innerHTML = ``;
+        btn_mdl_submit_delete.setAttribute("data-post-id", "");
+      }
+      function btn_openDelete_mdl(event) {
+        let target = event.currentTarget;
+        let get_title = target.getAttribute("data-title-post");
+        let post_id = target.getAttribute("data-id-post");
+        mdl_txt_content.innerHTML = `<p> Are you sure you want to delete the post: "${get_title}"</p>`;
+        mdl_delete_post.classList.add("is-active");
+        btn_mdl_submit_delete.setAttribute("data-post-id", post_id);
+      }
+
+      function btn_submit_delete(event) {
+        let target = event.currentTarget;
+        let post_id = target.getAttribute("data-post-id");
+
+        let response = fetch(`/diyconn/admin-postDelete/${post_id}`, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // If response status is not OK (400, 500, etc.), throw an error
+              return response.json().then((errData) => {
+                throw errData;
+              });
+            }
+            return response.json(); // Otherwise, parse the JSON response
+          })
+          .then((msg) => {
+            window.location.reload();
+            console.log(msg);
+          })
+          .catch((err) => {
+            //console.log(err);
+            console.log("Error:", err.error || "An unexpected error occurred");
+            let err_msg = document.getElementById("err_msg");
+            err_msg.textContent = `${err.error}`;
+          });
+      }
+
+      // {% endblock scripts %}
+    </script>
+  </body>
+</html>

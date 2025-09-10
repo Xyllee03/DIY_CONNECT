@@ -110,13 +110,14 @@
                 Collector
               </h1>
             </div>
-                  <div class="column">
+            <div class="column">
               <h1
                 id="sty_choice_role"
                 class="sty-subtitle-low-font-size sty-font-family-roboto sty-role sty-subtitle-low-font-size-mobile"
                 onclick="role_post_desc()"
               >
-                Showcase              </h1>
+                Showcase
+              </h1>
             </div>
           </div>
           <!-- Hidden Role-->
@@ -207,6 +208,7 @@
         let ini_inp_role = document.getElementById("inp_role");
         let ini_desc_onchange = document.getElementById("desc_onchange");
         let role_desc = ini_inp_role.value;
+        //console.log(role_desc);
         let sty_choice_role = document.querySelectorAll("#sty_choice_role");
         sty_choice_role.forEach((el) =>
           el.classList.add("sty-role-not-selected")
@@ -268,12 +270,11 @@
           desc_onchange.innerHTML =
             "A Collector is an individual who gathers recyclable items that can be exchanged for money or other benefits. If you are a collector, you should only <b> post items that you are actively looking to collect and are willing to pick up or receive.</b> This helps facilitate an efficient exchange process while promoting recycling and sustainability.";
           inp_role.value = "Collector";
+        } else if (role_desc == "Showcase") {
+          desc_onchange.innerHTML =
+            "If you are posting in the Showcase section, make sure to only share completed works or creative uses of materials, not items you are giving away or requesting.<b> This helps foster a culture of innovation, motivates others to act sustainably, and builds a shared gallery of eco-friendly inspiration. <u> PLEASE INCLUDE LINKS OR GUIDELINES ON HOW YOU DID IT  </u></b>";
+          inp_role.value = "Showcase";
         }
-        else if (role_desc == "Showcase") {
-        desc_onchange.innerHTML =
-          "If you are posting in the Showcase section, make sure to only share completed works or creative uses of materials, not items you are giving away or requesting.<b> This helps foster a culture of innovation, motivates others to act sustainably, and builds a shared gallery of eco-friendly inspiration.</b>";
-        inp_role.value = "Showcase";
-      }
         event.target.classList.remove("sty-role-not-selected");
         event.target.classList.add("sty-role-selected");
       }

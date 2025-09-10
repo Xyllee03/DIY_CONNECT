@@ -86,5 +86,12 @@ urlpatterns = [
 
  #admin
      path('diyconn/admin-fogotPassword/', views.admin_forgotPassword,  name="admin_forgotPassword"),
+     path('diyconn/admin-dashboard/', views.admin_dashboard,  name="admin_dashboard"),
+     path('diyconn/admin-checkUserpost/', views.admin_CheckUsers,  name="admin_CheckUsers"),
+  path('diyconn/admin-checkUserpostDetails/', views.admin_checkUserpostDetails,  name="admin_checkUserpostDetails"),
+    path('diyconn/admin-postDelete/<int:post_id>', views.admin_deletePostDetails,  name="admin_deletePostDetails"),
+
+
+     
 
 ]

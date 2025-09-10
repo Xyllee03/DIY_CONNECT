@@ -1,0 +1,35 @@
+{% extends './admin_temp.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}
+    <title>Admin | Dashboard</title>
+    {% endblock title %}
+    <style>
+      /*{% block styles %}*/
+
+      .header-admin {
+        font-size: 64px;
+        color: black;
+      }
+      /*{% endblock styles %}*/
+    </style>
+  </head>
+  <body>
+    <!-- prettier-ignore -->
+    {% block content %}
+    <h1 class="header-admin">Admin Dashboard</h1>
+    <!-- //prettier-ignore -->
+    <a href="{% url 'main:admin_forgotPassword' %}">Forgot Password</a>
+    <br />
+    <a href="{% url 'main:admin_checkUserpostDetails' %}">Post Details</a>
+    <br />
+    <a href="{% url 'main:admin_CheckUsers' %}">Users Check</a>
+    <!-- prettier-ignore -->
+    {% endblock content %}
+    <!-- //prettier-ignore -->
+  </body>
+</html>
