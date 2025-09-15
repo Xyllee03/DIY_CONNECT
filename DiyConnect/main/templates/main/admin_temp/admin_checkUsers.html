@@ -61,16 +61,106 @@
         <h1>{{ user.last_login }}</h1>
       </div>
       <div class="column has-text-centered">
-        <div class="button has-background-danger">Delete</div>
+        <div
+          class="button has-background-danger"
+          onclick="btn_openDelete_user_mdl(event)"
+          userdata-username="{{ user.username }}"
+          userdata-id="{{ user.ID }}"
+        >
+          Delete
+        </div>
       </div>
     </div>
     {% endfor %}
+
+    <div class="modal" id="mdl_delete_user_post">
+      <div class="modal-background" onclick="btn_closeDelete_user_mdl()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title has-text-centered">Delete User</p>
+          <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+          <!-- Content ... -->
+          <div id="mdl_txt_content_user"></div>
+        </section>
+        <footer class="modal-card-foot">
+          <div class="buttons">
+            <button
+              class="button is-success"
+              id="btn_mdl_submit_delete"
+              onclick="btn_submit_delete_user(event)"
+            >
+              Save changes
+            </button>
+            <button class="button" onclick="btn_closeDelete_user_mdl()">
+              Cancel
+            </button>
+          </div>
+        </footer>
+      </div>
+    </div>
     <!-- prettier-ignore -->
     {% endblock content %}
     <!-- //prettier-ignore -->
 
     <script>
-      //{% block scripts %}
+      //{% block scripts %}e
+      let mdl_txt_content_user = document.getElementById(
+        "mdl_txt_content_user"
+      );
+      let mdl_delete_user_post = document.getElementById(
+        "mdl_delete_user_post"
+      );
+      let btn_mdl_submit_delete = document.getElementById(
+        "btn_mdl_submit_delete"
+      );
+      function btn_openDelete_user_mdl(event) {
+        let target = event.currentTarget;
+        let get_username = target.getAttribute("userdata-username");
+        let get_user_id = target.getAttribute("userdata-id");
+        mdl_txt_content_user.textContent = `Do you want to delete the User: ${get_username}`;
+        mdl_delete_user_post.classList.add("is-active");
+
+        btn_mdl_submit_delete.setAttribute("user-id", `${get_user_id}`);
+      }
+      function btn_closeDelete_user_mdl() {
+        mdl_delete_user_post.classList.remove("is-active");
+        mdl_txt_content_user.textContent = ``;
+        btn_mdl_submit_delete.setAttribute("user-id", ``);
+      }
+
+      function btn_submit_delete_user(event) {
+        let target = event.currentTarget;
+        let user_id = target.getAttribute("user-id");
+
+        let response = fetch(`/diyconn/admin-UserDelete/${user_id}`, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // If response status is not OK (400, 500, etc.), throw an error
+              return response.json().then((errData) => {
+                throw errData;
+              });
+            }
+            return response.json(); // Otherwise, parse the JSON response
+          })
+          .then((msg) => {
+            window.location.reload();
+            console.log(msg);
+          })
+          .catch((err) => {
+            //console.log(err);
+            console.log("Error:", err.error || "An unexpected error occurred");
+            let err_msg = document.getElementById("err_msg");
+            err_msg.textContent = `${err.error}`;
+          });
+      }
       console.log("this for admin check users");
       //{% endblock scripts %}
     </script>

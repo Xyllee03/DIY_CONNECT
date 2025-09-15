@@ -71,7 +71,9 @@
       .sty-mdl-footer-btn {
         width: 100%;
         display: flex;
+        flex-direction: column;
         justify-content: center;
+        align-items: center;
       }
       .sty-mdl-head {
         font-size: 36px;
@@ -103,6 +105,33 @@
         border-radius: 50%;
       }
 
+      .sty-feedback {
+        color: blue;
+      }
+
+      .sty-feedback:hover {
+        cursor: pointer;
+      }
+
+      .sty-mdl-comment-text-area {
+        font-size: 20px;
+        font-family: "Hind Madurai", sans-serif;
+        font-style: normal;
+        width: 520px;
+        height: 149px;
+        border: solid black 3px;
+      }
+
+      .sty-star-rate-icon {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 82px;
+        color: #ccc;
+      }
+      .sty-star-rate-icon.active ion-icon {
+        color: gold !important;
+      }
       @media (max-width: 768px) {
         /* Navbar Mobile start*/
         .sty-navbar-desktop {
@@ -152,6 +181,12 @@
             }
             /* Navbar Mobile end*/
         }
+        .sty-star-rate-icon {
+          font-size: 40px;
+        }
+        .sty-mdl-comment-text-area {
+          width: 100%;
+        }
       }
     </style>
   </head>
@@ -187,6 +222,13 @@
         <!-- Follow auth_registerationProfile to center the btn -->
         <footer class="modal-card-foot">
           <div class="sty-mdl-footer-btn">
+            <h1
+              class="has-text-centered mb-4 sty-feedback"
+              onclick="mdl_f_feedback_open()"
+            >
+              Before you leave why not give us some feedback
+            </h1>
+
             <a
               class="button sty-mdl-btn-submit"
               id="btn_mdl_logout"
@@ -194,6 +236,90 @@
             >
               Continue
             </a>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <div class="modal" id="mdl_feedback">
+      <div class="modal-background" onclick="mdl_f_feedback_close()"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title sty-mdl-head has-text-centered">
+            Feedback
+          </p>
+          <button
+            class="delete"
+            aria-label="close"
+            onclick="mdl_f_feedback_close()"
+          ></button>
+        </header>
+        <section class="modal-card-body has-text-centered">
+          <h1 class="sty-mdl-msg">Please state your feedback</h1>
+          <textarea
+            placeholder="comment.."
+            class="sty-mdl-comment-text-area"
+            id="inp_comment_feedback"
+          ></textarea>
+          <input type="text" id="rate_feedback" hidden value="0" />
+          <div class="columns has-text-centered is-mobile" id="rating-stars">
+            <div class="column">
+              <button
+                class="sty-star-rate-icon"
+                data-value="1"
+                onclick="stars(event)"
+              >
+                <ion-icon name="star"></ion-icon>
+              </button>
+            </div>
+            <div class="column">
+              <button
+                class="sty-star-rate-icon"
+                data-value="2"
+                onclick="stars(event)"
+              >
+                <ion-icon name="star"></ion-icon>
+              </button>
+            </div>
+            <div class="column">
+              <button
+                class="sty-star-rate-icon"
+                data-value="3"
+                onclick="stars(event)"
+              >
+                <ion-icon name="star"></ion-icon>
+              </button>
+            </div>
+            <div class="column">
+              <button
+                class="sty-star-rate-icon"
+                data-value="4"
+                onclick="stars(event)"
+              >
+                <ion-icon name="star"></ion-icon>
+              </button>
+            </div>
+            <div class="column">
+              <button
+                class="sty-star-rate-icon"
+                data-value="5"
+                onclick="stars(event)"
+              >
+                <ion-icon name="star"></ion-icon>
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- Follow auth_registerationProfile to center the btn -->
+        <footer class="modal-card-foot">
+          <div class="sty-mdl-footer-btn">
+            <h1
+              class="button sty-mdl-btn-submit"
+              id="btn_submit_feedback"
+              onclick="submit_feedback(event)"
+            >
+              Submit
+            </h1>
           </div>
         </footer>
       </div>
@@ -256,6 +382,82 @@
         mdl_logout.classList.add("is-active");
       });
       */
+
+      // --- FEEDBACK SECTION
+      let mdl_feedback = document.getElementById("mdl_feedback");
+      function mdl_f_feedback_close() {
+        mdl_feedback.classList.remove("is-active");
+        mdl_f_logout_close();
+      }
+      function mdl_f_feedback_open() {
+        mdl_feedback.classList.add("is-active");
+        mdl_f_logout_close();
+        let btn_submit_feedback = document.getElementById(
+          "btn_submit_feedback"
+        );
+        let get_navbar_username = document.getElementById(
+          "get_navbar_username"
+        );
+        btn_submit_feedback.setAttribute(
+          "data-username",
+          `${get_navbar_username.textContent}`
+        );
+      }
+
+      function submit_feedback(event) {
+        let target = event.currentTarget;
+        let get_username = target.getAttribute("data-username");
+        let rate_feedback = document.getElementById("rate_feedback");
+        let inp_comment_feedback = document.getElementById(
+          "inp_comment_feedback"
+        );
+        let json_data = {
+          feedback: inp_comment_feedback.value,
+          username: get_username,
+          rating: rate_feedback.value,
+        };
+        let response = fetch("{% url 'main:user_feedback' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+          body: JSON.stringify(json_data),
+        })
+          .then((res) => {
+            return res.json();
+          })
+          .then((msg) => {
+            console.log(msg);
+            mdl_f_feedback_close();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+
+      // -- STARS
+      let rate_feedback = document.getElementById("rate_feedback");
+      let selectedRating = 0;
+      function stars(event) {
+        get_target = event.currentTarget;
+        selectedRating = get_target.getAttribute("data-value");
+        rate_feedback.value = selectedRating;
+        highlightStars(selectedRating);
+        console.log("Selected rating:", selectedRating);
+      }
+
+      function highlightStars(rating) {
+        let element_stars = document.querySelectorAll(".sty-star-rate-icon");
+        element_stars.forEach((star, i) => {
+          if (i < rating) {
+            star.classList.add("active");
+          } else {
+            star.classList.remove("active");
+          }
+        });
+      }
       function mdl_f_logout_open() {
         mdl_logout.classList.add("is-active");
       }

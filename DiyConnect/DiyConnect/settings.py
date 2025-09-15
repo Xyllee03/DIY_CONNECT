@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-mhtj_#mwz1_1lzh1cu%qik+qs5@@@1t*6w1^jslblz3!un!^6q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS =config("ALLOWED_HOST").split(" ")
 
 
 # Application definition
@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'DiyConnect.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-"""
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -97,7 +97,7 @@ DATABASES = {
         'PORT': '3306',
             }
 }
-
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -157,3 +157,6 @@ MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../upload'))"
 """
 MEDIA_URL = '/media/'  # URL path where media files will be accessible
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
+
+
+

@@ -106,7 +106,9 @@
   <script>
     //{% block scripts %}
     let btn_submit = document.getElementById("btn_submit");
+    let err_msg = document.getElementById("err_msg");
     btn_submit.addEventListener("click", () => {
+      err_msg.textContent = ``;
       let json_data = Validate();
       let response = fetch("{% url 'main:authentication_login' %}", {
         method: "POST",
@@ -133,7 +135,7 @@
         .catch((err) => {
           //console.log(err);
           console.log("Error:", err.error || "An unexpected error occurred");
-          let err_msg = document.getElementById("err_msg");
+
           err_msg.textContent = `${err.error}`;
         });
     });

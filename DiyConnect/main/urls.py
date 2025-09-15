@@ -83,6 +83,8 @@ urlpatterns = [
     path('diyconn/setting/verify-password', views.setting_verify_password,  name="setting_verify_password"),
      path('diyconn/setting/save-changes', views.setting_save_changes,  name="setting_save_changes"),
  
+ #feedback 
+    path('diyconn/feedback/add', views.user_feedback,  name="user_feedback"),
 
  #admin
      path('diyconn/admin-fogotPassword/', views.admin_forgotPassword,  name="admin_forgotPassword"),
@@ -90,6 +92,8 @@ urlpatterns = [
      path('diyconn/admin-checkUserpost/', views.admin_CheckUsers,  name="admin_CheckUsers"),
   path('diyconn/admin-checkUserpostDetails/', views.admin_checkUserpostDetails,  name="admin_checkUserpostDetails"),
     path('diyconn/admin-postDelete/<int:post_id>', views.admin_deletePostDetails,  name="admin_deletePostDetails"),
+      path('diyconn/admin-feedback/', views.admin_feedbackCheck,  name="admin_feedbackCheck"),
+    path('diyconn/admin-UserDelete/<int:user_id>', views.admin_deleteUser,  name="admin_deleteUser"),
 
 
      

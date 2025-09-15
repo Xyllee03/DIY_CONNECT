@@ -1,0 +1,60 @@
+{% extends './admin_temp.html' %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}
+    <title>Admin | Feedback Check</title>
+    {% endblock title %}
+  </head>
+  <body>
+    <!-- prettier-ignore -->
+    {% block content %}
+    <a href="{% url 'main:admin_dashboard' %}" class="button is-info">Home</a>
+    <!-- //prettier-ignore -->
+    <h1 class="mb-5">This show people feedback</h1>
+
+    <div class="columns border-admin is-vcentered">
+      <div class="column has-text-centered">
+        <h1>#</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Username:</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Created At:</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Feedback:</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>Rating:</h1>
+      </div>
+    </div>
+
+    {% for feedback in feedbacks %}
+    <div class="columns border-admin is-vcentered">
+      <div class="column has-text-centered">
+        <h1>{{ forloop.counter }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>{{ feedback.username }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>{{ feedback.created_at }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>{{ feedback.feedback_msg }}</h1>
+      </div>
+      <div class="column has-text-centered">
+        <h1>{{ feedback.rate }}</h1>
+      </div>
+    </div>
+    {% endfor %}
+    <!-- prettier-ignore -->
+    {% endblock content %}
+
+    <!-- //prettier-ignore -->
+  </body>
+</html>

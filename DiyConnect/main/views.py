@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse
 import json
 from django.contrib.auth.hashers import check_password
-from .models import UserSites, UserPost, UserPost_BLOB, Friendships, UserMessages, MessageStatus,TaskRequest,Review,PostLike,FriendStatus, Notification, NotifyType,NotifyStatus, FogotPasswordFixed
+from .models import UserSites, UserPost, UserPost_BLOB, Friendships, UserMessages, MessageStatus,TaskRequest,Review,PostLike,FriendStatus, Notification, NotifyType,NotifyStatus, FogotPasswordFixed,Feedback
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 import time
@@ -779,19 +779,19 @@ def peopleAdd(request, user_id):
 
 @login_required
 def peopleDelete(request, user_id):
-    try:
+    #try:
         if(request.method =="POST"):
             remove_friend_request = Friendships.objects.filter(    Q(REQUESTER_ID=request.user, RECEIVER_ID=user_id) | Q(REQUESTER_ID=user_id, RECEIVER_ID=request.user)).first()
-            remove_notification = Notification.objects.filter(    Q(USER_NOTIFY_OWNER=request.user, USER_NOTIFY_TRIGGER=user_id) | Q(USER_NOTIFY_OWNER=user_id, USER_NOTIFY_TRIGGER=request.user), type =NotifyType.ACCEPT_FRIEND).first()
-            remove_notification.delete()
+            Notification.objects.filter(Q(USER_NOTIFY_OWNER=request.user, USER_NOTIFY_TRIGGER=user_id) | Q(USER_NOTIFY_OWNER=user_id, USER_NOTIFY_TRIGGER=request.user),type=NotifyType.ACCEPT_FRIEND).delete()
+
             remove_friend_request.delete()
             #print("this is for delete method")
             return JsonResponse({"msg": "Friend removed successfully."}, status=200)
         else:
             return JsonResponse({"msg": "Invalid request method."}, status=500)
-    except Exception as e:
+    #except Exception as e:
         #print(f"Error in add_delete_friend_request: {e}")  # helpful for debugging
-        return JsonResponse({"msg": "An error occurred while delete the friend status."}, status=500)
+        #return JsonResponse({"msg": "An error occurred while delete the friend status."}, status=500)
 
 @login_required
 def peopleFriends(request):
@@ -1076,6 +1076,21 @@ def changeNewpassword(request):
     else:
         return JsonResponse({"msg": "Internal error can't change password"}, status=500)
     
+@login_required
+def user_feedback(request):
+    data = json.loads(request.body)
+    print(data)
+    print("user feedback")
+
+    if request.method =="POST":
+        f = Feedback()
+        f.username = data['username']
+        f.feedback_msg = data['feedback']
+        f.rate = data['rating']
+        f.save()
+        return JsonResponse({"msg": "Create a feedback"}, status=200)
+    else:
+        return JsonResponse({"msg": "Internal error can't create feedback"}, status=500)
 #admin
 
 def superuser_required(user):
@@ -1128,7 +1143,10 @@ def admin_deletePostDetails(request,post_id):
         return JsonResponse({"msg": "Deleting Post"}, status=200)
     else:
         return JsonResponse({"msg": "Issue on deleting"}, status=200)
-    
+
+
+@user_passes_test(superuser_required)
+@login_required    
 def admin_CheckUsers(request):
     get_user = UserSites.objects.all().order_by("username")
     context ={
@@ -1136,4 +1154,27 @@ def admin_CheckUsers(request):
         "users":get_user
     }
     return render(request,'main/admin_temp/admin_checkUsers.html', context)
+
+@user_passes_test(superuser_required)
+@login_required
+def admin_deleteUser(request, user_id):
+    if request.method =="POST":
+        getUser = UserSites.objects.get(ID=user_id)
+        getUser.delete()
+        print("this is delete user")
+        return JsonResponse({"msg": "The user has been deleted"}, status=200)
+    else:
+        return JsonResponse({"msg": "There is an issue deleting a user"}, status=500)
+
+
+@user_passes_test(superuser_required)
+@login_required
+def admin_feedbackCheck(request):
+    f = Feedback.objects.all().order_by("-created_at")
+    print(f)
+    context ={
+        "feedbacks": f
+      
+    }
+    return render(request,'main/admin_temp/admin_feedback_check.html', context)
     

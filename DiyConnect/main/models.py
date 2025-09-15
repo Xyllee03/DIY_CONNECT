@@ -227,3 +227,11 @@ class FogotPasswordFixed(models.Model):
     REFENCE_USER =models.ForeignKey(UserSites, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     new_password_change = models.TextField()
+
+
+class Feedback(models.Model):
+    ID = models.AutoField(primary_key=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    feedback_msg = models.TextField()
+    rate = models.IntegerField(default =0)
+    username =models.CharField(max_length=255)

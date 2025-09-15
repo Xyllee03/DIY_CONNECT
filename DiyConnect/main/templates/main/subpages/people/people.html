@@ -731,7 +731,7 @@
                       Remove Friend
                     </div>
               
-                    <h1 class="button sty-icon" id="msg-icon-container-${element.id}"  >
+                    <h1 class="button sty-icon" id="msg-icon-container-${element.id}" data-user-id="${element.id}"  onclick ="btnUsermsg_post(event)"  >
                     <ion-icon name="chatbubble-ellipses"></ion-icon>
                     </h1>
                   </div>
@@ -799,6 +799,38 @@
           })
           .catch((err) => {
             console.log(err);
+          });
+      }
+
+      function btnUsermsg_post(event) {
+        get_user_id = event.currentTarget.getAttribute("data-user-id");
+        console.log(`msg link:${get_user_id}`);
+        //print(json_data);
+
+        let response = fetch(`/diyconn/messages/add/${get_user_id}`, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          mode: "same-origin",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // If response status is not OK (400, 500, etc.), throw an error
+              return response.json().then((errData) => {
+                throw errData;
+              });
+            }
+            return response.json(); // Otherwise, parse the JSON response
+          })
+          .then((res) => {
+            console.log(res);
+            window.location.href = res.redirect_url;
+          })
+          .catch((err) => {
+            console.log(err);
+
+            console.log("Error:", err.error || "An unexpected error occurred");
           });
       }
       // Initialized Friends list
