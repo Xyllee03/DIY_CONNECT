@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+       'whitenoise.middleware.WhiteNoiseMiddleware', 
      
 ]
 
@@ -148,7 +149,7 @@ AUTHENTICATION_BACKENDS = [
     'main.auth_backends.UserSiteBackend',
 ]
 
-import os
+
 AUTH_USER_MODEL = 'main.Usersites'
 CSRF_COOKIE_SECURE = True
 """
