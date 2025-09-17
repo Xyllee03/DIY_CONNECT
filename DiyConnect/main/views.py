@@ -1177,4 +1177,8 @@ def admin_feedbackCheck(request):
       
     }
     return render(request,'main/admin_temp/admin_feedback_check.html', context)
-    
+
+
+
+def custom_404_view(request, exception=None):
+    return render(request, "main/404.html", status=404)

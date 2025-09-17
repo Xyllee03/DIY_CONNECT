@@ -301,7 +301,7 @@
       });
 
       function Validate() {
-        //GIVEN
+        //GIVEN\
         let inp_first_name = document.getElementById("inp_first_name").value;
         let inp_last_name = document.getElementById("inp_last_name").value;
         let inp_email = document.getElementById("inp_email").value;
@@ -315,7 +315,7 @@
         ).value;
         let inp_subdivision = document.getElementById("inp_subdivision").value;
         let err_msg = document.getElementById("err_msg");
-
+        err_msg.textContent = "";
         if (
           inp_first_name.trim() !== "" &&
           inp_last_name.trim() !== "" &&
@@ -326,12 +326,18 @@
           inp_subdivision.trim() !== ""
         ) {
           emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          usernameRegex = /^(?!.*admin)[A-Za-z0-9]+$/i;
           if (inp_retype_password !== inp_password) {
             err_msg.textContent =
               "Your password and re-type password doesn't match. Please change it before proceeding.";
             return false;
           } else if (!emailRegex.test(inp_email)) {
             err_msg.textContent = "Check the content of your email validity.";
+            return false;
+          } else if (!usernameRegex.test(inp_username)) {
+            err_msg.textContent =
+              "Username can only contain letters and numbers and must not include 'admin'.";
+
             return false;
           }
         } else {
