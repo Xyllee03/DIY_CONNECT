@@ -1033,7 +1033,7 @@ def setting_save_changes(request):
 #notification
 @login_required
 def notification(request):
-    get_notification = Notification.objects.filter(USER_NOTIFY_OWNER=request.user)
+    get_notification = Notification.objects.filter(USER_NOTIFY_OWNER=request.user).order_by("-created_at")
     print("notification")
     for notif in get_notification:
         print(notif.type)

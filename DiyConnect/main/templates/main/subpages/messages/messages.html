@@ -218,7 +218,10 @@
       .sty-star-rate-icon.active ion-icon {
         color: gold !important;
       }
-
+      #inp_message {
+        background-color: white;
+        color: black;
+      }
       /* FOR MDL */
       @media (max-width: 768px) {
         .sty-left-side-sect {
@@ -743,7 +746,12 @@
                 conversation_section.innerHTML += `
                             <div class="columns">
                         <div class="column">
-                          <h1 class="sty-conversation-text sty-recipient-msg">
+                        <div class ="sty-conversation-text has-text-centered">  ${new Date(
+                          element.created_at
+                        ).toLocaleString("en-PH", {
+                          timeZone: "Asia/Manila",
+                        })} </div>
+                          <h1 class="sty-conversation-text sty-recipient-msg ">
                             ${element.message_text}
                           </h1>
                         </div>
@@ -753,6 +761,11 @@
                 conversation_section.innerHTML += `    <div class="columns">
                         <div class="column is-1"></div>
                         <div class="column">
+                             <div class ="sty-conversation-text has-text-centered">  ${new Date(
+                               element.created_at
+                             ).toLocaleString("en-PH", {
+                               timeZone: "Asia/Manila",
+                             })} </div>
                           <h1 class="sty-conversation-text sty-sender-msg">
                             ${element.message_text}
                           </h1>
